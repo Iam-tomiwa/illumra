@@ -28,7 +28,6 @@ export function FeaturedProductsSection({
 }) {
 	const [selectedCategory, setSelectedCategory] = useState("all-products");
 
-	console.log(products.map(p => p.category));
 	const filteredProducts =
 		selectedCategory === "all-products"
 			? products

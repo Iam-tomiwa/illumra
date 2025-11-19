@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { resolveMediaAsset } from "@/sanity/lib/utils";
+import { cleanString, resolveMediaAsset } from "@/sanity/lib/utils";
 import { heroSection } from "@/sanity/lib/demo";
 import type { HomePageQueryResult, MediaAsset } from "@/sanity.types";
 
@@ -67,7 +67,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
 						{attentionLabel ? (
 							<div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground bg-accent/80 px-4 py-2 text-primary-foreground">
 								{attentionIcon ? (
-									<Icon icon={attentionIcon} className="size-4" />
+									<Icon icon={cleanString(attentionIcon)} className="size-4" />
 								) : null}
 								<span className="text-sm font-medium">{attentionLabel}</span>
 							</div>
