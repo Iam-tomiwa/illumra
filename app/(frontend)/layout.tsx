@@ -11,6 +11,7 @@ import Providers from "./providers";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { categoryQuery } from "@/sanity/lib/queries";
 import { Toaster } from "@/components/ui/sonner";
+import { CategoryType } from "@/components/home-widgets/featured-products-section";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const title = "Illumra";
@@ -54,7 +55,16 @@ export default async function RootLayout({
 					<section className="min-h-screen">
 						<Navbar isDraftMode={isDraftMode} />
 						<main>{children}</main>
-						<Footer categories={categories} />
+						<Footer
+							categories={
+								categories.map(category => ({
+									...category,
+									slug: category.slug ?? null,
+									title: category.title ?? null,
+									description: category.description ?? null,
+								})) as CategoryType[]
+							}
+						/>
 						{isDraftMode && <VisualEditing />}
 					</section>
 					<SpeedInsights />
