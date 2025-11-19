@@ -133,6 +133,19 @@ export default defineType({
 			initialValue: "standard",
 		}),
 		defineField({
+			name: "shortDescription",
+			type: "text",
+			group: "content",
+			rows: 3,
+			description: "Short marketing copy shown on summaries for SEO.",
+			validation: rule => [
+				rule
+					.min(40)
+					.max(320)
+					.error("Write a short description between 40 and 320 characters."),
+			],
+		}),
+		defineField({
 			name: "body",
 			type: "array",
 			group: "content",

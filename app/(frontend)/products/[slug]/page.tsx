@@ -5,6 +5,7 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import { PRODUCT_QUERY } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import SingleProductWrapper from "@/components/products/single-product-wrapper";
+import type { PRODUCT_QUERYResult } from "@/sanity.types";
 
 type Props = {
 	params: Promise<{ slug: string }>;
@@ -54,5 +55,14 @@ export default async function ProductPage({ params }: Props) {
 		return notFound();
 	}
 
-	return <SingleProductWrapper product={product} />;
+	// Convert undefined back to null to match PRODUCT_QUERYResult type
+	const productWithNulls = {
+		...product,
+		title: product.title ?? null,
+		slug: product.slug ?? null,
+		sku: product.sku ?? null,
+		shortDescription: product.shortDescription ?? null,
+	} as NonNullable<PRODUCT_QUERYResult>;
+
+	return <SingleProductWrapper product={productWithNulls} />;
 }
