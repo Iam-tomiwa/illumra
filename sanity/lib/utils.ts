@@ -8,11 +8,31 @@ const imageBuilder = createImageUrlBuilder({
 	dataset: dataset || "",
 });
 
-export const cleanString = (value: string | undefined | null): string =>
-	(value ?? "")
-		.replace(/[\u200B-\u200D\uFEFF]/g, "")
-		.normalize("NFKC")
-		.trim();
+/**
+ * Removes hidden/special space characters only from the end of a string.
+ * This includes zero-width spaces, non-breaking spaces, and other Unicode whitespace characters.
+ * Characters in the middle of the string are preserved.
+ */
+export const cleanString = (value: string | undefined | null): string => {
+	if (!value) return "";
+	return (
+		value
+			// Remove zero-width characters at the end
+			.replace(/[\u200B-\u200D\uFEFF]+$/g, "")
+			// Remove non-breaking spaces and other special spaces at the end
+			.replace(/[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]+$/g, "")
+			// Remove zero-width joiner and non-joiner at the end
+			.replace(/[\u200C\u200D]+$/g, "")
+			// Remove left-to-right and right-to-left marks at the end
+			.replace(/[\u200E\u200F]+$/g, "")
+			// Remove other invisible characters at the end
+			.replace(/[\u2060-\u206F]+$/g, "")
+			// Normalize Unicode characters
+			.normalize("NFKC")
+			// Trim regular whitespace at the end
+			.trim()
+	);
+};
 
 export const urlForImage = (source: any) => {
 	// Ensure that source image contains a valid reference
@@ -138,4 +158,36 @@ export function normalizeNulls<T>(input: T): NullToUndefined<T> {
 		return result as NullToUndefined<T>;
 	}
 	return input as NullToUndefined<T>;
+}
+
+/**
+ * Recursively sanitizes all string values in an object or array by removing hidden/special space characters.
+ * This should be applied to Sanity data after fetching to ensure clean strings throughout the application.
+ */
+export function sanitizeStrings<T>(input: T): T {
+	if (typeof input === "string") {
+		return cleanString(input) as T;
+	}
+	if (Array.isArray(input)) {
+		return input.map(item => sanitizeStrings(item)) as T;
+	}
+	if (typeof input === "object" && input !== null && input !== undefined) {
+		const result: any = {};
+		for (const key in input) {
+			if (Object.prototype.hasOwnProperty.call(input, key)) {
+				const value = (input as any)[key];
+				result[key] = sanitizeStrings(value);
+			}
+		}
+		return result as T;
+	}
+	return input;
+}
+
+/**
+ * Combines normalizeNulls and sanitizeStrings for complete Sanity data cleanup.
+ * Use this function to process all Sanity data after fetching.
+ */
+export function sanitizeSanityData<T>(input: T): NullToUndefined<T> {
+	return sanitizeStrings(normalizeNulls(input)) as NullToUndefined<T>;
 }

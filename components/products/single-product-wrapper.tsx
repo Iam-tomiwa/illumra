@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { PortableTextBlock } from "next-sanity";
 import Link from "next/link";
 import {
+	cleanString,
 	normalizeNulls,
 	ResolvedMediaAsset,
 	resolveMediaAsset,
@@ -101,33 +102,34 @@ export default function SingleProductWrapper({
 							<div>
 								<h2 className="text-2xl font-semibold mb-4">Available Colors</h2>
 								<div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-									{productColors.map((color, index: number) => (
-										<div
-											key={index}
-											className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border/70 bg-card hover:border-primary/50 transition-colors"
-										>
-											{color.hex && (
+									{productColors.map((color, index: number) => {
+										const hex = cleanString(color.hex);
+										const name = cleanString(color.name);
+										return (
+											<div
+												key={index}
+												className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border/70 bg-card hover:border-primary/50 transition-colors"
+											>
 												<div
 													className="w-16 h-16 rounded-md border-2 border-border shadow-sm"
-													style={{ backgroundColor: color.hex }}
+													style={{
+														backgroundColor: hex ? hex : name ? name : "#000000",
+													}}
 													aria-label={color.name || "Color swatch"}
 												/>
-											)}
-											{!color.hex && (
-												<div className="w-16 h-16 rounded-md border-2 border-border bg-muted" />
-											)}
-											<div className="text-center">
-												<p className="text-sm font-medium text-foreground">
-													{color.name || "Unnamed"}
-												</p>
-												{color.partNumber && (
-													<p className="text-xs text-muted-foreground font-mono mt-1">
-														{color.partNumber}
+												<div className="text-center">
+													<p className="text-sm font-medium text-foreground">
+														{color.name || "Unnamed"}
 													</p>
-												)}
+													{color.partNumber && (
+														<p className="text-xs text-muted-foreground font-mono mt-1">
+															{color.partNumber}
+														</p>
+													)}
+												</div>
 											</div>
-										</div>
-									))}
+										);
+									})}
 								</div>
 							</div>
 						)}

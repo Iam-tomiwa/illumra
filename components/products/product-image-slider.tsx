@@ -6,6 +6,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { Navigation, Thumbs, FreeMode } from "swiper/modules";
 import { Icon } from "@iconify/react";
+import InnerImageZoom from "react-inner-image-zoom";
+import "inner-image-zoom/lib/styles.min.css";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -58,14 +60,17 @@ export function ProductImageSlider({ images }: ProductImageSliderProps) {
 				>
 					{validImages.map((image, index) => (
 						<SwiperSlide key={index}>
-							<div className="relative h-full w-full">
-								<Image
+							<div className="relative h-full w-full [&_.iiz]:h-full [&_.iiz]:w-full [&_.iiz__img]:object-contain! [&_.iiz__zoom]:object-contain!">
+								<InnerImageZoom
 									src={image.url}
-									alt={image.alt || `Product image ${index + 1}`}
-									fill
-									className="object-contain"
-									sizes="(max-width: 768px) 100vw, 50vw"
-									priority={index === 0}
+									zoomSrc={image.url}
+									zoomType="hover"
+									zoomScale={2}
+									zoomPreload={index === 0}
+									imgAttributes={{
+										className: "object-contain w-full h-full",
+										alt: image.alt || `Product image ${index + 1}`,
+									}}
 								/>
 							</div>
 						</SwiperSlide>

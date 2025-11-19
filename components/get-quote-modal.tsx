@@ -28,6 +28,7 @@ import ComboBox from "./ui/combo-box-2";
 import { Form } from "./ui/form";
 import { client } from "@/sanity/lib/client";
 import { allProductsQuery } from "@/sanity/lib/queries";
+import { sanitizeSanityData } from "@/sanity/lib/utils";
 
 type ProductOption = {
 	value: string;
@@ -179,7 +180,8 @@ export default function GetQuoteModal({
 			.fetch(allProductsQuery)
 			.then(products => {
 				if (!isMounted) return;
-				const options: ProductOption[] = (products ?? [])
+				const sanitizedProducts = sanitizeSanityData(products ?? []);
+				const options: ProductOption[] = (sanitizedProducts as any[])
 					.filter(Boolean)
 					.map((product: any) => ({
 						value: product?._id,
@@ -218,10 +220,10 @@ export default function GetQuoteModal({
 		return "Select a product";
 	}, [isFetchingProducts, productOptions.length]);
 
+	const productIdValue = form.watch("productId");
 	const selectedProduct = useMemo(() => {
-		const productIdValue = form.watch("productId");
 		return productOptions.find(p => p.value === productIdValue);
-	}, [form.watch("productId"), productOptions]);
+	}, [productIdValue, productOptions]);
 
 	const availableColors = useMemo(() => {
 		// Use props if available (from product page), otherwise use selected product
@@ -231,6 +233,17 @@ export default function GetQuoteModal({
 		return selectedProduct?.meta?.colors ?? [];
 	}, [productColors, selectedProduct]);
 
+	const colorOptions = useMemo(() => {
+		return availableColors.map(color => ({
+			value: color.name ? color.name + "-" + color.partNumber : "",
+			label: color.name || "Unnamed",
+			meta: {
+				partNumber: color.partNumber,
+				hex: color.hex,
+			},
+		}));
+	}, [availableColors]);
+
 	const currentProductTitle = productTitle || selectedProduct?.label || "";
 	const currentProductSku = productSku || selectedProduct?.meta?.sku || "";
 
@@ -238,7 +251,7 @@ export default function GetQuoteModal({
 		try {
 			// Format product name: "Product Name - Color - SKU"
 			let productOfInterest = currentProductTitle;
-			
+
 			if (values.colorId && availableColors.length > 0) {
 				const selectedColor = availableColors.find(
 					(_, index) => index.toString() === values.colorId
@@ -311,7 +324,7 @@ export default function GetQuoteModal({
 								</FieldContent>
 							</Field>
 
-							{availableColors.length > 0 && (
+							{colorOptions.length > 0 && (
 								<Field>
 									<FieldLabel htmlFor="colorId">Color</FieldLabel>
 									<FieldContent>
@@ -319,46 +332,14 @@ export default function GetQuoteModal({
 											name="colorId"
 											control={control}
 											render={({ field }) => (
-												<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-													{availableColors.map((color, index) => (
-														<button
-															key={index}
-															type="button"
-															onClick={() =>
-																field.onChange(
-																	field.value === index.toString()
-																		? ""
-																		: index.toString()
-																)
-															}
-															className={`flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-colors ${
-																field.value === index.toString()
-																	? "border-primary bg-primary/5"
-																	: "border-border/70 bg-card hover:border-primary/50"
-															}`}
-														>
-															{color.hex ? (
-																<div
-																	className="w-12 h-12 rounded-md border-2 border-border shadow-sm"
-																	style={{ backgroundColor: color.hex }}
-																	aria-label={color.name || "Color swatch"}
-																/>
-															) : (
-																<div className="w-12 h-12 rounded-md border-2 border-border bg-muted" />
-															)}
-															<div className="text-center">
-																<p className="text-xs font-medium text-foreground">
-																	{color.name || "Unnamed"}
-																</p>
-																{color.partNumber && (
-																	<p className="text-xs text-muted-foreground font-mono mt-0.5">
-																		{color.partNumber}
-																	</p>
-																)}
-															</div>
-														</button>
-													))}
-												</div>
+												<ComboBox
+													value={field.value}
+													onValueChange={value => field.onChange(value)}
+													options={colorOptions}
+													placeholder="Select a color (optional)"
+													className="w-full"
+													contentClassname="max-h-64"
+												/>
 											)}
 										/>
 									</FieldContent>

@@ -48,6 +48,7 @@
     "react-dom": "^18.3.1",
     "react-fast-marquee": "^1.6.5",
     "react-hook-form": "^7.66.1",
+    "react-inner-image-zoom": "^4.0.1",
     "sanity": "^4.14.2",
     "sanity-plugin-asset-source-unsplash": "^3.0.1",
     "server-only": "^0.0.1",
