@@ -39,7 +39,8 @@ export default defineType({
 			name: "sku",
 			type: "string",
 			group: "content",
-			description: "Base stock keeping unit. If product has color variants, this is the base SKU.",
+			description:
+				"Base stock keeping unit. If product has color variants, this is the base SKU.",
 			validation: rule => [
 				rule
 					.required()
@@ -78,6 +79,9 @@ export default defineType({
 			type: "reference",
 			group: "content",
 			to: [{ type: "productCategory" }],
+			options: {
+				filter: `_type == "productCategory" && !(_id in path("drafts.**"))`,
+			},
 			validation: rule => [
 				rule.required().error("Select a category to enable filtering."),
 			],
