@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { Button } from "@/components/ui/button";
 // import type { ResourceLink } from "@/sanity.types";
 
 type Application = {
@@ -60,12 +59,12 @@ export function ProductResources({
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="rounded-md grid grid-cols-1 md:grid-cols-3 gap-4 border px-4 divide-x divide-border">
 			{/* Downloads */}
 			{hasDownloads && (
-				<div>
+				<div className="py-4">
 					<h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-						Downloads
+						<Icon icon="lucide:file-text" className="size-4" /> Downloads
 					</h3>
 					<div className="space-y-2">
 						{downloads.map((download, index) => {
@@ -78,16 +77,15 @@ export function ProductResources({
 										href={url}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="flex items-center gap-2 justify-start pb-2 hover-border-primary group hover:text-primary transition-colors"
+										className="flex items-center gap-2 justify-start hover-border-primary group hover:text-primary transition-colors underline"
 									>
-										<Icon icon="lucide:file-text" className="size-4" />
 										<span>{download.title || "Download"}</span>
 										{download.file?.asset?.size && (
 											<span className="ml-auto text-xs text-muted-foreground group-hover:text-primary">
 												{formatFileSize(download.file.asset.size)}
 											</span>
 										)}
-										<Icon icon="lucide:download" className="size-5" />
+										<Icon icon="lucide:download" className="size-4" />
 									</Link>
 								</button>
 							);
@@ -97,7 +95,7 @@ export function ProductResources({
 			)}
 			{/* Applications */}
 			{hasApplications && (
-				<div>
+				<div className="py-4">
 					<h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
 						<Icon icon="lucide:lightbulb" className="size-5" />
 						Applications
@@ -107,22 +105,17 @@ export function ProductResources({
 							if (!app.url) return null;
 
 							return (
-								<Button
-									key={index}
-									asChild
-									variant="outline"
-									className="w-full justify-start"
-								>
+								<button key={index} className="justify-start block hover-border p-2">
 									<Link
 										href={app.url}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="flex items-center gap-2"
+										className="flex items-center gap-2 justify-start underline hover-border-primary group hover:text-primary transition-colors"
 									>
-										<Icon icon="lucide:external-link" className="size-4" />
 										<span>{app.title || "View Application"}</span>
+										<Icon icon="lucide:external-link" className="size-4" />
 									</Link>
-								</Button>
+								</button>
 							);
 						})}
 					</div>
@@ -130,7 +123,7 @@ export function ProductResources({
 			)}
 			{/* Wiring Diagrams */}
 			{hasWiringDiagrams && (
-				<div>
+				<div className="py-4">
 					<h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
 						<Icon icon="lucide:git-branch" className="size-5" />
 						Wiring Diagrams
@@ -141,27 +134,22 @@ export function ProductResources({
 							if (!url) return null;
 
 							return (
-								<Button
-									key={index}
-									asChild
-									variant="outline"
-									className="w-full justify-start"
-								>
+								<button key={index} className="justify-start block hover-border p-2">
 									<Link
 										href={url}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="flex items-center gap-2"
+										className="flex items-center gap-2 justify-start underline hover-border-primary group hover:text-primary transition-colors"
 									>
-										<Icon icon="lucide:file-image" className="size-4" />
 										<span>{diagram.title || "View Diagram"}</span>
 										{diagram.file?.asset?.size && (
 											<span className="ml-auto text-xs text-muted-foreground">
 												{formatFileSize(diagram.file.asset.size)}
 											</span>
 										)}
+										<Icon icon="lucide:download" className="size-4" />
 									</Link>
-								</Button>
+								</button>
 							);
 						})}
 					</div>

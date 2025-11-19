@@ -34,7 +34,19 @@ type ProductOption = {
 	label: string;
 	meta?: {
 		slug?: string;
+		colors?: Array<{
+			name?: string | null;
+			partNumber?: string | null;
+			hex?: string | null;
+		}>;
+		sku?: string | null;
 	};
+};
+
+type ProductColor = {
+	name?: string | null;
+	partNumber?: string | null;
+	hex?: string | null;
 };
 
 const states = [
@@ -102,6 +114,7 @@ const inquiryTypes = [
 
 const quoteSchema = z.object({
 	productId: z.string().min(1, "Select a product"),
+	colorId: z.string().optional(),
 	quantity: z
 		.number()
 		.int("Quantity must be a whole number")
@@ -119,10 +132,16 @@ type QuoteFormValues = z.infer<typeof quoteSchema>;
 
 export default function GetQuoteModal({
 	productId,
+	productTitle,
+	productColors,
+	productSku,
 	open,
 	setOpen,
 }: {
 	productId?: string;
+	productTitle?: string;
+	productColors?: ProductColor[] | null;
+	productSku?: string | null;
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }) {
@@ -133,6 +152,7 @@ export default function GetQuoteModal({
 		resolver: zodResolver(quoteSchema),
 		defaultValues: {
 			productId: productId ?? "",
+			colorId: "",
 			quantity: 1,
 			phone: "",
 			name: "",
@@ -166,6 +186,8 @@ export default function GetQuoteModal({
 						label: product?.title ?? "Untitled Product",
 						meta: {
 							slug: product?.slug,
+							colors: product?.colors,
+							sku: product?.sku,
 						},
 					}));
 				setProductOptions(options);
@@ -183,14 +205,58 @@ export default function GetQuoteModal({
 		};
 	}, []);
 
+	// Reset color selection when modal closes
+	useEffect(() => {
+		if (!open) {
+			form.setValue("colorId", "");
+		}
+	}, [open, form]);
+
 	const productPlaceholder = useMemo(() => {
 		if (isFetchingProducts) return "Loading products...";
 		if (!productOptions.length) return "No products available";
 		return "Select a product";
 	}, [isFetchingProducts, productOptions.length]);
 
+	const selectedProduct = useMemo(() => {
+		const productIdValue = form.watch("productId");
+		return productOptions.find(p => p.value === productIdValue);
+	}, [form.watch("productId"), productOptions]);
+
+	const availableColors = useMemo(() => {
+		// Use props if available (from product page), otherwise use selected product
+		if (productColors && productColors.length > 0) {
+			return productColors;
+		}
+		return selectedProduct?.meta?.colors ?? [];
+	}, [productColors, selectedProduct]);
+
+	const currentProductTitle = productTitle || selectedProduct?.label || "";
+	const currentProductSku = productSku || selectedProduct?.meta?.sku || "";
+
 	const onSubmit = async (values: QuoteFormValues) => {
 		try {
+			// Format product name: "Product Name - Color - SKU"
+			let productOfInterest = currentProductTitle;
+			
+			if (values.colorId && availableColors.length > 0) {
+				const selectedColor = availableColors.find(
+					(_, index) => index.toString() === values.colorId
+				);
+				if (selectedColor?.name) {
+					productOfInterest = `${currentProductTitle} - ${selectedColor.name}`;
+					if (selectedColor.partNumber) {
+						productOfInterest += ` - ${selectedColor.partNumber}`;
+					}
+				}
+			} else if (currentProductSku) {
+				productOfInterest = `${currentProductTitle} - ${currentProductSku}`;
+			}
+
+			// Here you would send the form data including productOfInterest
+			console.log("Product of Interest:", productOfInterest);
+			console.log("Form values:", values);
+
 			await new Promise(resolve => setTimeout(resolve, 800));
 			toast.success("Quote request submitted");
 			reset();
@@ -226,7 +292,11 @@ export default function GetQuoteModal({
 										render={({ field }) => (
 											<ComboBox
 												value={field.value}
-												onValueChange={value => field.onChange(value)}
+												onValueChange={value => {
+													field.onChange(value);
+													// Reset color when product changes
+													form.setValue("colorId", "");
+												}}
 												options={productOptions}
 												placeholder={productPlaceholder}
 												isLoading={isFetchingProducts}
@@ -240,6 +310,60 @@ export default function GetQuoteModal({
 									/>
 								</FieldContent>
 							</Field>
+
+							{availableColors.length > 0 && (
+								<Field>
+									<FieldLabel htmlFor="colorId">Color</FieldLabel>
+									<FieldContent>
+										<Controller
+											name="colorId"
+											control={control}
+											render={({ field }) => (
+												<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+													{availableColors.map((color, index) => (
+														<button
+															key={index}
+															type="button"
+															onClick={() =>
+																field.onChange(
+																	field.value === index.toString()
+																		? ""
+																		: index.toString()
+																)
+															}
+															className={`flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-colors ${
+																field.value === index.toString()
+																	? "border-primary bg-primary/5"
+																	: "border-border/70 bg-card hover:border-primary/50"
+															}`}
+														>
+															{color.hex ? (
+																<div
+																	className="w-12 h-12 rounded-md border-2 border-border shadow-sm"
+																	style={{ backgroundColor: color.hex }}
+																	aria-label={color.name || "Color swatch"}
+																/>
+															) : (
+																<div className="w-12 h-12 rounded-md border-2 border-border bg-muted" />
+															)}
+															<div className="text-center">
+																<p className="text-xs font-medium text-foreground">
+																	{color.name || "Unnamed"}
+																</p>
+																{color.partNumber && (
+																	<p className="text-xs text-muted-foreground font-mono mt-0.5">
+																		{color.partNumber}
+																	</p>
+																)}
+															</div>
+														</button>
+													))}
+												</div>
+											)}
+										/>
+									</FieldContent>
+								</Field>
+							)}
 
 							<FieldGroup className="grid gap-4 md:grid-cols-2">
 								<Field>

@@ -13,6 +13,13 @@
  */
 
 // Source: schema.json
+export type ProductColor = {
+  _type: "productColor";
+  name?: string;
+  partNumber?: string;
+  hex?: string;
+};
+
 export type ResourceLink = {
   _type: "resourceLink";
   title?: string;
@@ -95,6 +102,9 @@ export type Product = {
   _rev: string;
   title?: string;
   sku?: string;
+  colors?: Array<{
+    _key: string;
+  } & ProductColor>;
   slug?: Slug;
   category?: {
     _ref: string;
@@ -628,7 +638,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = ResourceLink | SpecificationEntry | BrandLogo | IconFeature | MediaAsset | LinkAction | ProductProtocol | Product | ProductFrequency | ProductVoltage | ProductCategory | Post | Author | AboutPage | CompanyInfo | AboutPageContent | HomePage | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = ProductColor | ResourceLink | SpecificationEntry | BrandLogo | IconFeature | MediaAsset | LinkAction | ProductProtocol | Product | ProductFrequency | ProductVoltage | ProductCategory | Post | Author | AboutPage | CompanyInfo | AboutPageContent | HomePage | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/(frontend)/posts/[slug]/page.tsx
 // Variable: postSlugs
@@ -939,7 +949,7 @@ export type PostQueryResult = {
   } | null;
 } | null;
 // Variable: featuredProductsQuery
-// Query: *[_type == "product" && featureTag == "featured"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "category": category->slug.current,    "sku": sku,  } | order(_createdAt desc)[0...8]
+// Query: *[_type == "product" && featureTag == "featured"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "category": category->slug.current,    "sku": sku,    colors[]{      name,      partNumber,      hex    },  } | order(_createdAt desc)[0...8]
 export type FeaturedProductsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -962,9 +972,14 @@ export type FeaturedProductsQueryResult = Array<{
   } | null;
   category: string | null;
   sku: string | null;
+  colors: Array<{
+    name: string | null;
+    partNumber: string | null;
+    hex: string | null;
+  }> | null;
 }>;
 // Variable: allProductsQuery
-// Query: *[_type == "product"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "category": category->slug.current,    "sku": sku,  } | order(_createdAt desc)
+// Query: *[_type == "product"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "category": category->slug.current,    "sku": sku,    colors[]{      name,      partNumber,      hex    },  } | order(_createdAt desc)
 export type AllProductsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -987,12 +1002,17 @@ export type AllProductsQueryResult = Array<{
   } | null;
   category: string | null;
   sku: string | null;
+  colors: Array<{
+    name: string | null;
+    partNumber: string | null;
+    hex: string | null;
+  }> | null;
 }>;
 // Variable: FILTERED_PRODUCTS_COUNT_QUERY
 // Query: count(    *[      _type == "product" &&      (        !defined($search) ||        $search == "" ||        coalesce(title, "") match $searchWildcard ||        coalesce(sku.current, "") match $searchWildcard      ) &&      (        !defined($category) ||        $category == "" ||        category->slug.current == $category      ) &&      (        !defined($voltage) ||        $voltage == "" ||        voltage->value == $voltage      ) &&      (        !defined($frequency) ||        $frequency == "" ||        frequency->value == $frequency      ) &&      (        !defined($protocols) ||        count($protocols) == 0 ||        count((protocols[]->value)[@ in $protocols]) > 0      )    ]  )
 export type FILTERED_PRODUCTS_COUNT_QUERYResult = number;
 // Variable: PRODUCT_QUERY
-// Query: *[_type == "product" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      sku,      shortDescription,      body[]{        ...,        children[]{          ...        }      },      "category": category->{        _id,        title,        "slug": slug.current      },      "voltage": voltage->{ _id, label, value },      "frequency": frequency->{ _id, label, value },      "protocols": protocols[]->{ _id, label, value },      featureTag,      images[]{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      specifications[defined(label) && defined(value)]{        _type,        label,        value      },      downloads[defined(title) && defined(file.asset)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      applications[defined(url)]{        _type,        title,        url      },      wiringDiagrams[defined(title) && defined(file.asset)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      }    }
+// Query: *[_type == "product" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      sku,      shortDescription,      body[]{        ...,        children[]{          ...        }      },      "category": category->{        _id,        title,        "slug": slug.current      },      "voltage": voltage->{ _id, label, value },      "frequency": frequency->{ _id, label, value },      "protocols": protocols[]->{ _id, label, value },      featureTag,      colors[]{        name,        partNumber,        hex      },      images[]{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      specifications[defined(label) && defined(value)]{        _type,        label,        value      },      downloads[defined(title) && defined(file.asset)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      applications[defined(url)]{        _type,        title,        url      },      wiringDiagrams[defined(title) && defined(file.asset)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      }    }
 export type PRODUCT_QUERYResult = {
   _id: string;
   title: string | null;
@@ -1038,6 +1058,11 @@ export type PRODUCT_QUERYResult = {
     value: string | null;
   }> | null;
   featureTag: "featured" | "standard" | null;
+  colors: Array<{
+    name: string | null;
+    partNumber: string | null;
+    hex: string | null;
+  }> | null;
   images: Array<{
     source: "external" | "upload" | null;
     altText: string | null;
@@ -1155,10 +1180,10 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) [0] {\n    content,\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n\n  }\n": HeroQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content,\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n\n  }\n": PostQueryResult;
-    "\n  *[_type == \"product\" && featureTag == \"featured\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"category\": category->slug.current,\n    \"sku\": sku,\n\n  } | order(_createdAt desc)[0...8]\n": FeaturedProductsQueryResult;
-    "\n  *[_type == \"product\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"category\": category->slug.current,\n    \"sku\": sku,\n\n  } | order(_createdAt desc)\n": AllProductsQueryResult;
+    "\n  *[_type == \"product\" && featureTag == \"featured\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"category\": category->slug.current,\n    \"sku\": sku,\n    colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)[0...8]\n": FeaturedProductsQueryResult;
+    "\n  *[_type == \"product\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"category\": category->slug.current,\n    \"sku\": sku,\n    colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)\n": AllProductsQueryResult;
     "\n  count(\n    *[\n      _type == \"product\" &&\n      (\n        !defined($search) ||\n        $search == \"\" ||\n        coalesce(title, \"\") match $searchWildcard ||\n        coalesce(sku.current, \"\") match $searchWildcard\n      ) &&\n      (\n        !defined($category) ||\n        $category == \"\" ||\n        category->slug.current == $category\n      ) &&\n      (\n        !defined($voltage) ||\n        $voltage == \"\" ||\n        voltage->value == $voltage\n      ) &&\n      (\n        !defined($frequency) ||\n        $frequency == \"\" ||\n        frequency->value == $frequency\n      ) &&\n      (\n        !defined($protocols) ||\n        count($protocols) == 0 ||\n        count((protocols[]->value)[@ in $protocols]) > 0\n      )\n    ]\n  )\n  ": FILTERED_PRODUCTS_COUNT_QUERYResult;
-    "\n    *[_type == \"product\" && slug.current == $slug][0]{\n      _id,\n      title,\n      \"slug\": slug.current,\n      sku,\n      shortDescription,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      \"category\": category->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"voltage\": voltage->{ _id, label, value },\n      \"frequency\": frequency->{ _id, label, value },\n      \"protocols\": protocols[]->{ _id, label, value },\n      featureTag,\n      images[]{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      specifications[defined(label) && defined(value)]{\n        _type,\n        label,\n        value\n      },\n      downloads[defined(title) && defined(file.asset)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      applications[defined(url)]{\n        _type,\n        title,\n        url\n      },\n      wiringDiagrams[defined(title) && defined(file.asset)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      }\n    }\n    ": PRODUCT_QUERYResult;
+    "\n    *[_type == \"product\" && slug.current == $slug][0]{\n      _id,\n      title,\n      \"slug\": slug.current,\n      sku,\n      shortDescription,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      \"category\": category->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"voltage\": voltage->{ _id, label, value },\n      \"frequency\": frequency->{ _id, label, value },\n      \"protocols\": protocols[]->{ _id, label, value },\n      featureTag,\n      colors[]{\n        name,\n        partNumber,\n        hex\n      },\n      images[]{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      specifications[defined(label) && defined(value)]{\n        _type,\n        label,\n        value\n      },\n      downloads[defined(title) && defined(file.asset)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      applications[defined(url)]{\n        _type,\n        title,\n        url\n      },\n      wiringDiagrams[defined(title) && defined(file.asset)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      }\n    }\n    ": PRODUCT_QUERYResult;
     "\n  *[_type == \"aboutPage\"][0]{\n    content{\n      heroDescription,\n      paragraphs[]{\n        ...,\n        children[]{\n          ...\n        }\n      }\n    },\n    companyInfo{\n      overview[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      email,\n      phone,\n      headquarters,\n      satelliteOffice\n    }\n  }\n": AboutPageQueryResult;
   }
 }

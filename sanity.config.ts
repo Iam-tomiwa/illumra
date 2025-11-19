@@ -37,6 +37,7 @@ import { brandLogo } from "@/sanity/schemas/objects/brandLogo";
 import { linkAction } from "@/sanity/schemas/objects/linkAction";
 import { specificationEntry } from "@/sanity/schemas/objects/specificationEntry";
 import { resourceLink } from "@/sanity/schemas/objects/resourceLink";
+import { productColor } from "@/sanity/schemas/objects/productColor";
 import { resolveHref } from "@/sanity/lib/utils";
 
 const homeLocation = {
@@ -80,6 +81,7 @@ export default defineConfig({
 			linkAction,
 			specificationEntry,
 			resourceLink,
+			productColor,
 		],
 	},
 	plugins: [

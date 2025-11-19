@@ -35,6 +35,9 @@ export default function SingleProductWrapper({
 			)
 			.filter(Boolean) as ResolvedMediaAsset[]) ?? [];
 
+	// Access colors directly from product to preserve type
+	const productColors = product.colors;
+
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -92,6 +95,42 @@ export default function SingleProductWrapper({
 								)}
 							</div>
 						</div>
+
+						{/* Color Variants */}
+						{productColors && productColors.length > 0 && (
+							<div>
+								<h2 className="text-2xl font-semibold mb-4">Available Colors</h2>
+								<div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+									{productColors.map((color, index: number) => (
+										<div
+											key={index}
+											className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border/70 bg-card hover:border-primary/50 transition-colors"
+										>
+											{color.hex && (
+												<div
+													className="w-16 h-16 rounded-md border-2 border-border shadow-sm"
+													style={{ backgroundColor: color.hex }}
+													aria-label={color.name || "Color swatch"}
+												/>
+											)}
+											{!color.hex && (
+												<div className="w-16 h-16 rounded-md border-2 border-border bg-muted" />
+											)}
+											<div className="text-center">
+												<p className="text-sm font-medium text-foreground">
+													{color.name || "Unnamed"}
+												</p>
+												{color.partNumber && (
+													<p className="text-xs text-muted-foreground font-mono mt-1">
+														{color.partNumber}
+													</p>
+												)}
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
 
 						{/* Key Features */}
 						<div>
@@ -180,6 +219,9 @@ export default function SingleProductWrapper({
 				</div>
 				<GetQuoteModal
 					productId={normalizedProduct._id}
+					productTitle={normalizedProduct.title}
+					productColors={productColors}
+					productSku={normalizedProduct.sku}
 					open={open}
 					setOpen={setOpen}
 				/>

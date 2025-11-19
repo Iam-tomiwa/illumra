@@ -168,6 +168,11 @@ export const productsQuery = /* groq */ `
     },
     "category": category->slug.current,
     "sku": sku,
+    colors[]{
+      name,
+      partNumber,
+      hex
+    },
 `;
 export const featuredProductsQuery = defineQuery(`
   *[_type == "product" && featureTag == "featured"]{
@@ -237,6 +242,11 @@ export const PRODUCT_QUERY = defineQuery(`
       "frequency": frequency->{ _id, label, value },
       "protocols": protocols[]->{ _id, label, value },
       featureTag,
+      colors[]{
+        name,
+        partNumber,
+        hex
+      },
       images[]{
         source,
         altText,
@@ -252,7 +262,7 @@ export const PRODUCT_QUERY = defineQuery(`
         label,
         value
       },
-      downloads[defined(title) && defined(file.asset)]{
+      downloads[defined(title)]{
         _type,
         title,
         file{
@@ -270,7 +280,7 @@ export const PRODUCT_QUERY = defineQuery(`
         title,
         url
       },
-      wiringDiagrams[defined(title) && defined(file.asset)]{
+      wiringDiagrams[defined(title)]{
         _type,
         title,
         file{

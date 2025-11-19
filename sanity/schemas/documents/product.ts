@@ -3,6 +3,7 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { specificationEntry } from "@/sanity/schemas/objects/specificationEntry";
 import { resourceLink } from "@/sanity/schemas/objects/resourceLink";
+import { productColor } from "@/sanity/schemas/objects/productColor";
 
 const featureTags = [
 	{ title: "Featured", value: "featured" },
@@ -38,7 +39,7 @@ export default defineType({
 			name: "sku",
 			type: "string",
 			group: "content",
-			description: "Stock keeping unit used across the site.",
+			description: "Base stock keeping unit. If product has color variants, this is the base SKU.",
 			validation: rule => [
 				rule
 					.required()
@@ -47,6 +48,17 @@ export default defineType({
 						invert: false,
 					})
 					.error("Enter the SKU using letters, numbers, or dashes."),
+			],
+		}),
+		defineField({
+			name: "colors",
+			type: "array",
+			group: "content",
+			title: "Color Variants",
+			description: "Available color options with their part numbers.",
+			of: [defineArrayMember({ type: productColor.name })],
+			validation: rule => [
+				rule.unique().warning("Duplicate color variants were removed."),
 			],
 		}),
 		defineField({
