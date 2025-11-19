@@ -8,7 +8,11 @@ import { TestimonialsSection } from "@/components/home-widgets/testimonials-sect
 import { CTASection } from "@/components/home-widgets/cta-section";
 import TrustedBy from "@/components/home-widgets/trusted-by-section";
 import FaqSection from "@/components/home-widgets/faq";
-import type { HomePageQueryResult } from "@/sanity.types";
+import type {
+	HomePageQueryResult,
+	CategoryQueryResult,
+	FeaturedProductsQueryResult,
+} from "@/sanity.types";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
 	categoryQuery,
@@ -25,8 +29,12 @@ export default async function WirelessControlSolutionsLandingPage() {
 	const trustedBy = homePage?.trustedBy ?? undefined;
 	const about = homePage?.about ?? undefined;
 
-	const featuredProducts = await sanityFetch({ query: featuredProductsQuery });
-	const categories = await sanityFetch({ query: categoryQuery });
+	const featuredProducts = await sanityFetch({
+		query: featuredProductsQuery,
+	});
+	const categories = await sanityFetch({
+		query: categoryQuery,
+	});
 
 	return (
 		<div className="min-h-screen bg-background text-foreground">

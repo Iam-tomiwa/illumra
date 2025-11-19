@@ -55,14 +55,7 @@ export default async function ProductPage({ params }: Props) {
 		return notFound();
 	}
 
-	// Convert undefined back to null to match PRODUCT_QUERYResult type
-	const productWithNulls = {
-		...product,
-		title: product.title ?? null,
-		slug: product.slug ?? null,
-		sku: product.sku ?? null,
-		shortDescription: product.shortDescription ?? null,
-	} as NonNullable<PRODUCT_QUERYResult>;
-
-	return <SingleProductWrapper product={productWithNulls} />;
+	return (
+		<SingleProductWrapper product={product as NonNullable<PRODUCT_QUERYResult>} />
+	);
 }

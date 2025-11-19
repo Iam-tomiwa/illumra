@@ -191,3 +191,11 @@ export function sanitizeStrings<T>(input: T): T {
 export function sanitizeSanityData<T>(input: T): NullToUndefined<T> {
 	return sanitizeStrings(normalizeNulls(input)) as NullToUndefined<T>;
 }
+
+/**
+ * Sanitizes strings only (removes hidden characters) without converting null to undefined.
+ * Use this when you want to preserve Sanity's null types to match generated types.
+ */
+export function sanitizeSanityStrings<T>(input: T): T {
+	return sanitizeStrings(input) as T;
+}

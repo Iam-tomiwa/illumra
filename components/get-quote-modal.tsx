@@ -28,7 +28,7 @@ import ComboBox from "./ui/combo-box-2";
 import { Form } from "./ui/form";
 import { client } from "@/sanity/lib/client";
 import { allProductsQuery } from "@/sanity/lib/queries";
-import { sanitizeSanityData } from "@/sanity/lib/utils";
+import { sanitizeSanityStrings } from "@/sanity/lib/utils";
 
 type ProductOption = {
 	value: string;
@@ -180,7 +180,7 @@ export default function GetQuoteModal({
 			.fetch(allProductsQuery)
 			.then(products => {
 				if (!isMounted) return;
-				const sanitizedProducts = sanitizeSanityData(products ?? []);
+				const sanitizedProducts = sanitizeSanityStrings(products ?? []);
 				const options: ProductOption[] = (sanitizedProducts as any[])
 					.filter(Boolean)
 					.map((product: any) => ({
