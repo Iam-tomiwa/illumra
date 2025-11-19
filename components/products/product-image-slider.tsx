@@ -65,7 +65,7 @@ export function ProductImageSlider({ images }: ProductImageSliderProps) {
 									src={image.url}
 									zoomSrc={image.url}
 									zoomType="hover"
-									zoomScale={2}
+									zoomScale={1.7}
 									zoomPreload={index === 0}
 									imgAttributes={{
 										className: "object-contain w-full h-full",
