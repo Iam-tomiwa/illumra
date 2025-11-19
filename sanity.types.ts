@@ -132,7 +132,6 @@ export type Product = {
     [internalGroqTypeReferenceTo]?: "productProtocol";
   }>;
   featureTag?: "featured" | "standard";
-  shortDescription?: string;
   body?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -954,7 +953,7 @@ export type FeaturedProductsQueryResult = Array<{
   _id: string;
   title: string | null;
   slug: string | null;
-  shortDescription: string | null;
+  shortDescription: null;
   image: {
     source: "external" | "upload" | null;
     altText: string | null;
@@ -984,7 +983,7 @@ export type AllProductsQueryResult = Array<{
   _id: string;
   title: string | null;
   slug: string | null;
-  shortDescription: string | null;
+  shortDescription: null;
   image: {
     source: "external" | "upload" | null;
     altText: string | null;
@@ -1018,7 +1017,7 @@ export type PRODUCT_QUERYResult = {
   title: string | null;
   slug: string | null;
   sku: string | null;
-  shortDescription: string | null;
+  shortDescription: null;
   body: Array<{
     children: Array<{
       marks?: Array<string>;
