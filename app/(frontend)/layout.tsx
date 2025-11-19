@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
 import { Inter } from "next/font/google";
-import AlertBanner from "@/components/alert-banner";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import Navbar from "@/components/nav";
 import { Footer } from "@/components/footer";
@@ -53,8 +52,7 @@ export default async function RootLayout({
 			<body>
 				<Providers>
 					<section className="min-h-screen">
-						{isDraftMode && <AlertBanner />}
-						<Navbar className={isDraftMode ? "mt-9 top-9" : ""} />
+						<Navbar isDraftMode={isDraftMode} />
 						<main>{children}</main>
 						<Footer categories={categories} />
 						{isDraftMode && <VisualEditing />}

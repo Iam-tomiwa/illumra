@@ -7,8 +7,12 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
+import AlertBanner from "./alert-banner";
 
-const Navbar: React.FC<{ className?: string }> = ({ className }) => {
+const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
+	className,
+	isDraftMode,
+}) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isAboutOpen, setIsAboutOpen] = useState(false);
 
@@ -52,6 +56,7 @@ const Navbar: React.FC<{ className?: string }> = ({ className }) => {
 
 	return (
 		<nav className={cn("sticky w-full top-0 z-50 bg-background", className)}>
+			{isDraftMode && <AlertBanner />}
 			<div className="container w-[95%] mx-auto py-2 relative">
 				<div className="flex justify-between items-center h-16">
 					{/* Logo */}
