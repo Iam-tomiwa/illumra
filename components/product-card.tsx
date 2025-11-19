@@ -1,0 +1,112 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+// import { Icon } from "@iconify/react";
+import { Button } from "@/components/ui/button";
+// import {
+// 	DropdownMenu,
+// 	DropdownMenuContent,
+// 	DropdownMenuItem,
+// 	DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+import { ButtonGroup } from "./ui/button-group";
+import { resolveMediaAsset } from "@/sanity/lib/utils";
+import { FeaturedProductsQueryResult, MediaAsset } from "@/sanity.types";
+
+export interface ProductCardProps {
+	id: string;
+	name: string;
+	image: FeaturedProductsQueryResult[number]["image"];
+	sku?: string;
+	datasheetUrl?: string;
+	installationGuideUrl?: string;
+	detailsUrl?: string;
+	showActions?: boolean;
+}
+
+export function ProductCard({
+	id,
+	name,
+	image,
+	sku,
+	detailsUrl = `/products/${id}`,
+	showActions = false,
+}: ProductCardProps) {
+	const imageResolved = resolveMediaAsset({
+		...(image as MediaAsset),
+		_type: "mediaAsset",
+	});
+
+	return (
+		<div className="bg-white rounded-lg border hover:border-primary transition-shadow p-4 flex flex-col">
+			{/* Product Image */}
+			<Link
+				href={detailsUrl}
+				className="relative aspect-square w-full mb-4 bg-gray-50 rounded-lg overflow-hidden"
+			>
+				<Image
+					src={imageResolved?.url ?? "/images/product-placeholder.png"}
+					alt={imageResolved?.alt ?? name}
+					fill
+					className="object-cover"
+					sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+				/>
+			</Link>
+
+			{/* Product Name */}
+			<h3 className="text-sm font-semibold text-[#565856] mb-2 line-clamp-2 flex-1">
+				{name}
+			</h3>
+
+			{/* SKU if provided */}
+			{sku && <p className="text-xs text-muted-foreground font-mono">{sku}</p>}
+
+			<ButtonGroup className="w-full mt-4">
+				<Button
+					asChild
+					variant="outline"
+					size="sm"
+					className="grow rounded-full border-primary text-xs hover:bg-[#fbce03]"
+				>
+					<Link href={detailsUrl}>View Details</Link>
+				</Button>
+				{/* <DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="outline" size="sm">
+							<Icon icon="lucide:chevron-down" className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="min-w-[160px]">
+						{datasheetUrl && (
+							<DropdownMenuItem asChild>
+								<Link
+									href={datasheetUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex items-center gap-2 cursor-pointer"
+								>
+									<Icon icon="lucide:file-text" className="size-4" />
+									<span>Datasheet</span>
+								</Link>
+							</DropdownMenuItem>
+						)}
+						{installationGuideUrl && (
+							<DropdownMenuItem asChild>
+								<Link
+									href={installationGuideUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex items-center gap-2 cursor-pointer"
+								>
+									<Icon icon="lucide:book-open" className="size-4" />
+									<span>Installation Guide</span>
+								</Link>
+							</DropdownMenuItem>
+						)}
+					</DropdownMenuContent>
+				</DropdownMenu> */}
+			</ButtonGroup>
+		</div>
+	);
+}
