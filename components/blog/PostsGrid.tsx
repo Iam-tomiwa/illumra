@@ -1,8 +1,8 @@
-import type { PostListItem } from "@/sanity/types";
+import type { MoreStoriesQueryResult } from "@/sanity.types";
 import { PostCard } from "./PostCard";
 
 interface PostsGridProps {
-	posts: PostListItem[];
+	posts: MoreStoriesQueryResult;
 	emptyState?: React.ReactNode;
 }
 
@@ -32,5 +32,3 @@ export default function PostsGrid({ posts, emptyState }: PostsGridProps) {
 		</div>
 	);
 }
-
-

@@ -108,7 +108,8 @@ export default function ProductsWrapper(props: ProductsWrapperProps) {
 	// Sync incoming props when filters key changes
 	useEffect(() => {
 		setFilters(initialFilters);
-	}, [filtersKey]);
+	}, [filtersKey, initialFilters]);
+
 	useEffect(() => setSearchInput(initialSearch), [initialSearch]);
 	useEffect(() => setSelectedSort(initialSort), [initialSort]);
 
