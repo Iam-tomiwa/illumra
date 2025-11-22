@@ -50,7 +50,7 @@ export const iconFeature = defineType({
 			name: "url",
 			type: "url",
 			description:
-				"Optional URL that renders the card as a clickable link (can be relative e.g /posts/my-post or absolute e.g https://illumra.com/bluetooth-light-switch-by-illumra).",
+				"Optional URL that renders the card as a clickable link (e.g https://illumra.com/bluetooth-light-switch-by-illumra).",
 			validation: rule => [rule.uri({ scheme: ["http", "https"] })],
 		}),
 	],
