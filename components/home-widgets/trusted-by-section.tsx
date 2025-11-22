@@ -32,12 +32,7 @@ const mapLogo = (logo: Logo): ImageType | undefined => {
 					...(logo.logo as MediaAsset),
 					_type: "mediaAsset",
 				}
-			: undefined,
-		{
-			width: 256,
-			height: 128,
-			fit: "max",
-		}
+			: undefined
 	);
 
 	if (!resolved?.url) {
@@ -91,7 +86,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 										alt={logo.alt}
 										width={180}
 										height={90}
-										className="size-16 w-auto object-contain md:size-20"
+										className="max-h-10 w-full object-contain md:h-20"
 									/>
 								</Link>
 							) : (
@@ -100,7 +95,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 									alt={logo.alt}
 									width={180}
 									height={90}
-									className="size-16 w-auto object-contain md:size-20"
+									className="max-h-10 w-max"
 								/>
 							)}
 						</div>

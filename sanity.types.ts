@@ -42,6 +42,13 @@ export type SpecificationEntry = {
   value?: string;
 };
 
+export type LinkAction = {
+  _type: "linkAction";
+  label?: string;
+  href?: string;
+  icon?: string;
+};
+
 export type BrandLogo = {
   _type: "brandLogo";
   name?: string;
@@ -54,6 +61,7 @@ export type IconFeature = {
   icon?: string;
   title?: string;
   description?: string;
+  url?: string;
 };
 
 export type MediaAsset = {
@@ -75,11 +83,105 @@ export type MediaAsset = {
   altText?: string;
 };
 
-export type LinkAction = {
-  _type: "linkAction";
-  label?: string;
-  href?: string;
-  icon?: string;
+export type CompanyInfo = {
+  _type: "companyInfo";
+  overview?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  email?: string;
+  phone?: string;
+  headquarters?: string;
+  satelliteOffice?: string;
+};
+
+export type AboutPageContent = {
+  _type: "aboutPageContent";
+  heroDescription?: string;
+  paragraphs?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
+
+export type AboutSection = {
+  _type: "aboutSection";
+  title?: string;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal";
+    listItem?: never;
+    markDefs?: null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  cta?: LinkAction;
+  background?: MediaAsset;
+  features?: Array<{
+    _key: string;
+  } & IconFeature>;
+};
+
+export type TrustedBySection = {
+  _type: "trustedBySection";
+  heading?: string;
+  logos?: Array<{
+    _key: string;
+  } & BrandLogo>;
+};
+
+export type ControlSolutionsSection = {
+  _type: "controlSolutionsSection";
+  title?: string;
+  subtitle?: string;
+  features?: Array<{
+    _key: string;
+  } & IconFeature>;
+};
+
+export type HeroSection = {
+  _type: "heroSection";
+  attentionLabel?: string;
+  attentionIcon?: string;
+  headline?: string;
+  summary?: string;
+  primaryAction?: LinkAction;
+  secondaryAction?: LinkAction;
+  backgroundImage?: MediaAsset;
 };
 
 export type ProductProtocol = {
@@ -205,6 +307,12 @@ export type ProductCategory = {
   order?: number;
 };
 
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type Post = {
   _id: string;
   _type: "post";
@@ -276,6 +384,22 @@ export type Author = {
   };
 };
 
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
 export type AboutPage = {
   _id: string;
   _type: "aboutPage";
@@ -284,55 +408,6 @@ export type AboutPage = {
   _rev: string;
   content?: AboutPageContent;
   companyInfo?: CompanyInfo;
-};
-
-export type CompanyInfo = {
-  _type: "companyInfo";
-  overview?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  email?: string;
-  phone?: string;
-  headquarters?: string;
-  satelliteOffice?: string;
-};
-
-export type AboutPageContent = {
-  _type: "aboutPageContent";
-  heroDescription?: string;
-  paragraphs?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
 };
 
 export type HomePage = {
@@ -345,58 +420,6 @@ export type HomePage = {
   controlSolutions?: ControlSolutionsSection;
   trustedBy?: TrustedBySection;
   about?: AboutSection;
-};
-
-export type AboutSection = {
-  _type: "aboutSection";
-  title?: string;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal";
-    listItem?: never;
-    markDefs?: null;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  cta?: LinkAction;
-  background?: MediaAsset;
-  features?: Array<{
-    _key: string;
-  } & IconFeature>;
-};
-
-export type TrustedBySection = {
-  _type: "trustedBySection";
-  heading?: string;
-  logos?: Array<{
-    _key: string;
-  } & BrandLogo>;
-};
-
-export type ControlSolutionsSection = {
-  _type: "controlSolutionsSection";
-  title?: string;
-  subtitle?: string;
-  features?: Array<{
-    _key: string;
-  } & IconFeature>;
-};
-
-export type HeroSection = {
-  _type: "heroSection";
-  attentionLabel?: string;
-  attentionIcon?: string;
-  headline?: string;
-  summary?: string;
-  primaryAction?: LinkAction;
-  secondaryAction?: LinkAction;
-  backgroundImage?: MediaAsset;
 };
 
 export type SanityAssistInstructionTask = {
@@ -546,20 +569,15 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
 };
 
 export type SanityFileAsset = {
@@ -582,6 +600,13 @@ export type SanityFileAsset = {
   path?: string;
   url?: string;
   source?: SanityAssetSourceData;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
 };
 
 export type SanityImageAsset = {
@@ -607,17 +632,6 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
-
 export type Geopoint = {
   _type: "geopoint";
   lat?: number;
@@ -625,20 +639,7 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
-export type AllSanitySchemaTypes = ProductColor | ResourceLink | SpecificationEntry | BrandLogo | IconFeature | MediaAsset | LinkAction | ProductProtocol | Product | ProductFrequency | ProductVoltage | ProductCategory | Post | Author | AboutPage | CompanyInfo | AboutPageContent | HomePage | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutPageContent | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | ProductProtocol | Product | ProductFrequency | ProductVoltage | ProductCategory | Slug | Post | Author | SanityImageCrop | SanityImageHotspot | AboutPage | HomePage | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/(frontend)/posts/[slug]/page.tsx
 // Variable: postSlugs
@@ -659,7 +660,7 @@ export type ProductSlugsResult = Array<{
 // Query: *[_type == "settings"][0]
 export type SettingsQueryResult = null;
 // Variable: homePageQuery
-// Query: *[_type == "homePage"][0]{    hero{      attentionLabel,      attentionIcon,      headline,      summary,      primaryAction{        label,        href,        icon      },      secondaryAction{        label,        href,        icon      },      backgroundImage{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      }    },    controlSolutions{      title,      subtitle,      features[]{        icon,        title,        description      }    },    trustedBy{      heading,      logos[]{        name,        href,        logo{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        }      }    },    about{      title,      body[]{        ...,        children[]{          ...        }      },      cta{        label,        href,        icon      },      background{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      features[]{        icon,        title,        description      }    }  }
+// Query: *[_type == "homePage"][0]{    hero{      attentionLabel,      attentionIcon,      headline,      summary,      primaryAction{        label,        href,        icon      },      secondaryAction{        label,        href,        icon      },      backgroundImage{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      }    },    controlSolutions{      title,      subtitle,      features[]{        icon,        title,        description,        url      }    },    trustedBy{      heading,      logos[]{        name,        href,        logo{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        }      }    },    about{      title,      body[]{        ...,        children[]{          ...        }      },      cta{        label,        href,        icon      },      background{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      features[]{        icon,        title,        description      }    }  }
 export type HomePageQueryResult = {
   hero: {
     attentionLabel: string | null;
@@ -699,6 +700,7 @@ export type HomePageQueryResult = {
       icon: string | null;
       title: string | null;
       description: string | null;
+      url: string | null;
     }> | null;
   } | null;
   trustedBy: {
@@ -1172,7 +1174,7 @@ declare module "@sanity/client" {
     "*[_type == \"post\" && defined(slug.current)]{\"slug\": slug.current}": PostSlugsResult;
     "*[_type == \"product\" && defined(slug.current)]{\"slug\": slug.current}": ProductSlugsResult;
     "*[_type == \"settings\"][0]": SettingsQueryResult;
-    "\n  *[_type == \"homePage\"][0]{\n    hero{\n      attentionLabel,\n      attentionIcon,\n      headline,\n      summary,\n      primaryAction{\n        label,\n        href,\n        icon\n      },\n      secondaryAction{\n        label,\n        href,\n        icon\n      },\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      }\n    },\n    controlSolutions{\n      title,\n      subtitle,\n      features[]{\n        icon,\n        title,\n        description\n      }\n    },\n    trustedBy{\n      heading,\n      logos[]{\n        name,\n        href,\n        logo{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        }\n      }\n    },\n    about{\n      title,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      cta{\n        label,\n        href,\n        icon\n      },\n      background{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      features[]{\n        icon,\n        title,\n        description\n      }\n    }\n  }\n": HomePageQueryResult;
+    "\n  *[_type == \"homePage\"][0]{\n    hero{\n      attentionLabel,\n      attentionIcon,\n      headline,\n      summary,\n      primaryAction{\n        label,\n        href,\n        icon\n      },\n      secondaryAction{\n        label,\n        href,\n        icon\n      },\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      }\n    },\n    controlSolutions{\n      title,\n      subtitle,\n      features[]{\n        icon,\n        title,\n        description,\n        url\n      }\n    },\n    trustedBy{\n      heading,\n      logos[]{\n        name,\n        href,\n        logo{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        }\n      }\n    },\n    about{\n      title,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      cta{\n        label,\n        href,\n        icon\n      },\n      background{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      features[]{\n        icon,\n        title,\n        description\n      }\n    }\n  }\n": HomePageQueryResult;
     "\n  *[_type == \"productCategory\"] {\n    _id,\n    \"slug\": slug.current,\n    title,\n    description\n  } | order(_createdAt desc)  \n": CategoryQueryResult;
     "\n  *[_type == \"productFrequency\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)  \n": ProductFrequencyQueryResult;
     "\n  *[_type == \"productProtocol\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)\n": ProductProtocolQueryResult;

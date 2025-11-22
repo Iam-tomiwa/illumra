@@ -36,7 +36,8 @@ export const homePageQuery = defineQuery(`
       features[]{
         icon,
         title,
-        description
+        description,
+        url
       }
     },
     trustedBy{

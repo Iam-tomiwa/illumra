@@ -56,7 +56,6 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 
 	return (
 		<nav className={cn("sticky w-full top-0 z-50 bg-background", className)}>
-			{isDraftMode && <AlertBanner />}
 			<div className="container w-[95%] mx-auto py-2 relative">
 				<div className="flex justify-between items-center h-16">
 					{/* Logo */}

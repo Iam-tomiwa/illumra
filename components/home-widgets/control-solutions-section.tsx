@@ -2,6 +2,9 @@ import { Icon } from "@iconify/react";
 
 import { controlSolutionsSection } from "@/sanity/lib/demo";
 import type { HomePageQueryResult } from "@/sanity.types";
+import Link from "next/link";
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type ControlSolutionsContent = NonNullable<
 	NonNullable<HomePageQueryResult>["controlSolutions"]
@@ -9,47 +12,31 @@ type ControlSolutionsContent = NonNullable<
 
 type Feature = NonNullable<ControlSolutionsContent["features"]>[number];
 
-type RenderFeature = {
-	icon: string;
-	title: string;
-	description: string;
-};
-
 type EnergyFeaturesProps = {
 	section?: ControlSolutionsContent | null;
-};
-
-const getFeatures = (features?: Feature[] | null): RenderFeature[] => {
-	const fallbackFeatures = (
-		controlSolutionsSection.features ?? []
-	).map<RenderFeature>(feature => ({
-		icon: feature.icon ?? "lucide:sparkles",
-		title: feature.title ?? "Feature",
-		description:
-			feature.description ??
-			"Describe the benefit so visitors understand why it matters.",
-	}));
-
-	if (!features || features.length === 0) {
-		return fallbackFeatures;
-	}
-
-	const mapped = features.map<RenderFeature>(feature => ({
-		icon: feature.icon ?? "lucide:sparkles",
-		title: feature.title ?? "Feature",
-		description:
-			feature.description ??
-			"Describe the benefit so visitors understand why it matters.",
-	}));
-
-	return mapped.length === 0 ? fallbackFeatures : mapped;
 };
 
 export default function EnergyFeatures({ section }: EnergyFeaturesProps) {
 	const content =
 		section ?? (controlSolutionsSection as ControlSolutionsContent);
-	const features = getFeatures(content.features);
 
+	const LinkOrCard = ({
+		url,
+		children,
+		className,
+	}: {
+		url?: string | null;
+		className: string;
+		children: ReactNode;
+	}) => {
+		return url ? (
+			<Link className={className} href={url}>
+				{children}
+			</Link>
+		) : (
+			<div className={className}>{children}</div>
+		);
+	};
 	return (
 		<section className="bg-accent py-12">
 			<div className="container mx-auto px-4">
@@ -64,13 +51,18 @@ export default function EnergyFeatures({ section }: EnergyFeaturesProps) {
 					) : null}
 				</div>
 				<div className="grid gap-6 sm:grid-cols-2">
-					{features.map(feature => (
-						<div
+					{content?.features?.map(feature => (
+						<LinkOrCard
+							className={cn(
+								"flex gap-3 rounded-xl border border-primary/10 bg-background/80 p-6",
+								feature.url &&
+									"cursor-pointer shadow-sm shadow-primary/5 backdrop-blur transition hover:border-primary/40 hover:shadow-lg"
+							)}
 							key={`${feature.title}-${feature.icon}`}
-							className="flex gap-3 rounded-xl border border-primary/10 bg-background/80 p-6 shadow-sm shadow-primary/5 backdrop-blur transition hover:border-primary/40 hover:shadow-lg"
+							url={feature?.url}
 						>
 							<div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-								<Icon icon={feature.icon} className="size-6" />
+								<Icon icon={feature.icon ?? "lucide:sparkles"} className="size-6" />
 							</div>
 							<div>
 								<h3 className="text-lg font-semibold text-foreground">
@@ -80,7 +72,7 @@ export default function EnergyFeatures({ section }: EnergyFeaturesProps) {
 									{feature.description}
 								</p>
 							</div>
-						</div>
+						</LinkOrCard>
 					))}
 				</div>
 			</div>

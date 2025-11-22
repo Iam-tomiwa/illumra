@@ -44,7 +44,7 @@ export async function sanityFetch<const QueryString extends string>({
 			// And we can't cache the responses as it would slow down the live preview experience
 			next: { revalidate: 0 },
 		});
-		return sanitizeSanityStrings(result);
+		return result;
 	}
 	const result = await client.fetch(query, await params, {
 		stega,
@@ -55,5 +55,5 @@ export async function sanityFetch<const QueryString extends string>({
 		// When using the `published` perspective we use time-based revalidation to match the time-to-live on Sanity's API CDN (60 seconds)
 		next: { revalidate: 60 },
 	});
-	return sanitizeSanityStrings(result);
+	return result;
 }
