@@ -12,7 +12,6 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import { categoryQuery } from "@/sanity/lib/queries";
 import { Toaster } from "@/components/ui/sonner";
 import { CategoryType } from "@/components/home-widgets/featured-products-section";
-import AlertBanner from "@/components/alert-banner";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const title = "Illumra";
@@ -54,7 +53,6 @@ export default async function RootLayout({
 			<body>
 				<Providers>
 					<section className="min-h-screen">
-						{isDraftMode && <AlertBanner />}
 						<Navbar isDraftMode={isDraftMode} />
 						<main>{children}</main>
 						<Footer
