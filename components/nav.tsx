@@ -154,7 +154,7 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 					!isMobileMenuOpen
 						? "[clip-path:inset(0_0_100%_0)]"
 						: "[clip-path:inset(0_0_0_0)]"
-				}`}
+				} ${isDraftMode ? "top-[104px]" : "top-[64px]"}`}
 			>
 				<div className="py-12 space-y-6 w-[90%] mx-auto">
 					{navLinks.map(link =>
