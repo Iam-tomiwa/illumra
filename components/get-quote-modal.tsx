@@ -136,6 +136,7 @@ export default function GetQuoteModal({
 	productTitle,
 	productColors,
 	productSku,
+	selectedColor,
 	open,
 	setOpen,
 }: {
@@ -143,6 +144,7 @@ export default function GetQuoteModal({
 	productTitle?: string;
 	productColors?: ProductColor[] | null;
 	productSku?: string | null;
+	selectedColor?: ProductColor | undefined;
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }) {
@@ -153,7 +155,9 @@ export default function GetQuoteModal({
 		resolver: zodResolver(quoteSchema),
 		defaultValues: {
 			productId: productId ?? "",
-			colorId: "",
+			colorId: selectedColor?.name
+				? selectedColor.name + "-" + selectedColor.partNumber
+				: "",
 			quantity: 1,
 			phone: "",
 			name: "",
@@ -210,9 +214,14 @@ export default function GetQuoteModal({
 	// Reset color selection when modal closes
 	useEffect(() => {
 		if (!open) {
-			form.setValue("colorId", "");
+			form.setValue(
+				"colorId",
+				selectedColor?.name
+					? selectedColor.name + "-" + selectedColor.partNumber
+					: ""
+			);
 		}
-	}, [open, form]);
+	}, [open, form, selectedColor]);
 
 	const productPlaceholder = useMemo(() => {
 		if (isFetchingProducts) return "Loading products...";
@@ -247,6 +256,7 @@ export default function GetQuoteModal({
 	const currentProductTitle = productTitle || selectedProduct?.label || "";
 	const currentProductSku = productSku || selectedProduct?.meta?.sku || "";
 
+	// Update the client-side onSubmit function
 	const onSubmit = async (values: QuoteFormValues) => {
 		try {
 			// Format product name: "Product Name - Color - SKU"
@@ -266,11 +276,19 @@ export default function GetQuoteModal({
 				productOfInterest = `${currentProductTitle} - ${currentProductSku}`;
 			}
 
-			// Here you would send the form data including productOfInterest
-			console.log("Product of Interest:", productOfInterest);
-			console.log("Form values:", values);
+			const response = await fetch("/api/submit-quote", {
+				// Your new API endpoint
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ ...values, productOfInterest }),
+			});
 
-			await new Promise(resolve => setTimeout(resolve, 800));
+			if (!response.ok) {
+				throw new Error("Failed to send quote request.");
+			}
+
 			toast.success("Quote request submitted");
 			reset();
 			setOpen(false);

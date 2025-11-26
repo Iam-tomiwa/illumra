@@ -6,13 +6,37 @@ const nextConfig: NextConfig = {
 		SC_DISABLE_SPEEDY: "false",
 	},
 	images: {
-		domains: [
-			"cdn.sanity.io",
-			"images.unsplash.com",
-			"static.wixstatic.com",
-			"kaylac929.wixsite.com",
-			"drive.google.com",
-			"illumra.com",
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "cdn.sanity.io",
+				pathname: "/images/**",
+			},
+			{
+				protocol: "https",
+				hostname: "images.unsplash.com",
+				pathname: "/**",
+			},
+			{
+				protocol: "https",
+				hostname: "static.wixstatic.com",
+				pathname: "/**",
+			},
+			{
+				protocol: "https",
+				hostname: "kaylac929.wixsite.com",
+				pathname: "/**",
+			},
+			{
+				protocol: "https",
+				hostname: "drive.google.com",
+				pathname: "/**",
+			},
+			{
+				protocol: "https",
+				hostname: "illumra.com",
+				pathname: "/**",
+			},
 		],
 	},
 };

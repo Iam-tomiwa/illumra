@@ -169,7 +169,7 @@ export const productsQuery = /* groq */ `
     },
     "category": category->slug.current,
     "sku": sku,
-    colors[]{
+     colors[]{
       name,
       partNumber,
       hex
@@ -179,6 +179,12 @@ export const featuredProductsQuery = defineQuery(`
   *[_type == "product" && featureTag == "featured"]{
    ${productsQuery}
   } | order(_createdAt desc)[0...8]
+`);
+
+export const relevantProductsQuery = defineQuery(`
+  *[_type == "product" && category->slug.current == $category && _id != $excludeId]{
+   ${productsQuery}
+  } | order(_createdAt desc)[0...4]
 `);
 
 export const allProductsQuery = defineQuery(`
@@ -257,6 +263,10 @@ export const PRODUCT_QUERY = defineQuery(`
           crop,
           hotspot
         }
+      },
+      video{
+        title,
+        externalUrl
       },
       specifications[defined(label) && defined(value)]{
         _type,

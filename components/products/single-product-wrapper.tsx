@@ -16,14 +16,18 @@ import {
 	ResourceLinkType,
 } from "@/components/products/product-resources";
 import { Icon } from "@iconify/react";
-import { MediaAsset, PRODUCT_QUERYResult } from "@/sanity.types";
+import { MediaAsset, PRODUCT_QUERYResult, ProductColor } from "@/sanity.types";
 import { Button } from "../ui/button";
 import GetQuoteModal from "../get-quote-modal";
+import { ProductCard } from "../product-card";
+import { ProductType } from "../home-widgets/featured-products-section";
 
 export default function SingleProductWrapper({
 	product,
+	relevantProducts = [],
 }: {
 	product: NonNullable<PRODUCT_QUERYResult>;
+	relevantProducts?: ProductType[];
 }) {
 	const normalizedProduct = normalizeNulls(product);
 	const resolvedImages =
@@ -40,7 +44,11 @@ export default function SingleProductWrapper({
 	const productColors = product.colors;
 
 	const [open, setOpen] = useState(false);
+	const [selectedColor, setSelectedColor] = useState<ProductColor | undefined>(
+		undefined
+	);
 
+	console.log(normalizedProduct);
 	return (
 		<div className="min-h-screen bg-background">
 			{/* Breadcrumb */}
@@ -77,7 +85,10 @@ export default function SingleProductWrapper({
 			<div className="container mx-auto px-4 py-12">
 				<div className="flex flex-col lg:flex-row gap-12 mb-16">
 					{/* Image Slider */}
-					<ProductImageSlider images={resolvedImages} />
+					<ProductImageSlider
+						images={resolvedImages}
+						video={normalizedProduct.video || undefined}
+					/>
 
 					{/* Product Details */}
 					<div className="space-y-8">
@@ -96,43 +107,6 @@ export default function SingleProductWrapper({
 								)}
 							</div>
 						</div>
-
-						{/* Color Variants */}
-						{productColors && productColors.length > 0 && (
-							<div>
-								<h2 className="text-2xl font-semibold mb-4">Available Colors</h2>
-								<div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-									{productColors.map((color, index: number) => {
-										const hex = cleanString(color.hex);
-										const name = cleanString(color.name);
-										return (
-											<div
-												key={index}
-												className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border/70 bg-card hover:border-primary/50 transition-colors"
-											>
-												<div
-													className="w-16 h-16 rounded-md border-2 border-border shadow-sm"
-													style={{
-														backgroundColor: hex ? hex : name ? name : "#000000",
-													}}
-													aria-label={color.name || "Color swatch"}
-												/>
-												<div className="text-center">
-													<p className="text-sm font-medium text-foreground">
-														{color.name || "Unnamed"}
-													</p>
-													{color.partNumber && (
-														<p className="text-xs text-muted-foreground font-mono mt-1">
-															{color.partNumber}
-														</p>
-													)}
-												</div>
-											</div>
-										);
-									})}
-								</div>
-							</div>
-						)}
 
 						{/* Key Features */}
 						<div>
@@ -191,6 +165,51 @@ export default function SingleProductWrapper({
 							</div>
 						</div>
 
+						{/* Color Variants */}
+						{productColors && productColors.length > 0 && (
+							<div>
+								<h2 className="text-2xl font-semibold mb-4">
+									Select From Available Colors
+								</h2>
+								<div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+									{productColors.map((color, index: number) => {
+										const hex = cleanString(color.hex);
+										const name = cleanString(color.name);
+										return (
+											<div
+												key={index}
+												className={`flex flex-col items-center gap-2 p-3 rounded-lg border border-border/70 bg-card  transition-colors cursor-pointer ${
+													selectedColor?.name === color.name &&
+													selectedColor?.partNumber === color.partNumber
+														? "border-primary"
+														: ""
+												}`}
+												onClick={() => setSelectedColor(color as ProductColor)}
+											>
+												<div
+													className="w-16 h-16 rounded-md border-2 border-border shadow-sm"
+													style={{
+														backgroundColor: hex ? hex : name ? name : "#000000",
+													}}
+													aria-label={color.name || "Color swatch"}
+												/>
+												<div className="text-center">
+													<p className="text-sm font-medium text-foreground">
+														{color.name || "Unnamed"}
+													</p>
+													{color.partNumber && (
+														<p className="text-xs text-muted-foreground font-mono mt-1">
+															{color.partNumber}
+														</p>
+													)}
+												</div>
+											</div>
+										);
+									})}
+								</div>
+							</div>
+						)}
+
 						<Button className="w-full" onClick={() => setOpen(true)}>
 							<Icon icon="lucide:contact" className="size-4" /> Get A Quote
 						</Button>
@@ -224,9 +243,31 @@ export default function SingleProductWrapper({
 					productTitle={normalizedProduct.title}
 					productColors={productColors}
 					productSku={normalizedProduct.sku}
+					selectedColor={selectedColor}
 					open={open}
 					setOpen={setOpen}
 				/>
+
+				{/* Relevant Products */}
+				{relevantProducts.length > 0 && (
+					<div className="mt-16">
+						<h2 className="text-2xl font-semibold mb-6">Relevant Products</h2>
+						<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+							{relevantProducts.map(product => {
+								return (
+									<ProductCard
+										key={product?.slug}
+										id={product?._id}
+										name={product?.title ?? ""}
+										sku={product?.sku ?? undefined}
+										image={product?.image}
+										detailsUrl={`/products/${product?.slug}`}
+									/>
+								);
+							})}
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);

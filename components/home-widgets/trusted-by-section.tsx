@@ -87,6 +87,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 										width={180}
 										height={90}
 										className="max-h-10 w-full object-contain md:h-20"
+										unoptimized={logo.src.includes("cdn.sanity.io")}
 									/>
 								</Link>
 							) : (
@@ -96,6 +97,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 									width={180}
 									height={90}
 									className="max-h-10 w-max"
+									unoptimized={logo.src.includes("cdn.sanity.io")}
 								/>
 							)}
 						</div>

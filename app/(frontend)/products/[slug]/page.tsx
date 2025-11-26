@@ -2,7 +2,7 @@ import { defineQuery } from "next-sanity";
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { PRODUCT_QUERY } from "@/sanity/lib/queries";
+import { PRODUCT_QUERY, relevantProductsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import SingleProductWrapper from "@/components/products/single-product-wrapper";
 import type { PRODUCT_QUERYResult } from "@/sanity.types";
@@ -47,8 +47,23 @@ export async function generateMetadata(
 }
 
 export default async function ProductPage({ params }: Props) {
-	const [product] = await Promise.all([
+	const [product, relevantProducts] = await Promise.all([
 		sanityFetch({ query: PRODUCT_QUERY, params }),
+		sanityFetch({
+			query: PRODUCT_QUERY,
+			params,
+		}).then(async product => {
+			if (!product?._id || !product?.category?.slug) {
+				return [];
+			}
+			return sanityFetch({
+				query: relevantProductsQuery,
+				params: {
+					category: product.category.slug,
+					excludeId: product._id,
+				},
+			});
+		}),
 	]);
 
 	if (!product?._id) {
@@ -56,6 +71,9 @@ export default async function ProductPage({ params }: Props) {
 	}
 
 	return (
-		<SingleProductWrapper product={product as NonNullable<PRODUCT_QUERYResult>} />
+		<SingleProductWrapper
+			product={product as NonNullable<PRODUCT_QUERYResult>}
+			relevantProducts={relevantProducts || []}
+		/>
 	);
 }

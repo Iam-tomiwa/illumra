@@ -51,6 +51,7 @@ export function ProductCard({
 					fill
 					className="object-cover"
 					sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+					unoptimized={!!imageResolved?.url?.includes("cdn.sanity.io")}
 				/>
 			</Link>
 

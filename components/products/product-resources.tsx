@@ -77,7 +77,7 @@ export function ProductResources({
 										href={url}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="flex items-center gap-2 justify-start hover-border-primary group hover:text-primary transition-colors underline"
+										className="flex items-center text-left gap-2 justify-start hover-border-primary group hover:text-primary transition-colors underline"
 									>
 										<span>{download.title || "Download"}</span>
 										{download.file?.asset?.size && (
@@ -105,7 +105,10 @@ export function ProductResources({
 							if (!app.url) return null;
 
 							return (
-								<button key={index} className="justify-start block hover-border p-2">
+								<button
+									key={index}
+									className="justify-start text-left block hover-border p-2"
+								>
 									<Link
 										href={app.url}
 										target="_blank"
@@ -134,7 +137,10 @@ export function ProductResources({
 							if (!url) return null;
 
 							return (
-								<button key={index} className="justify-start block hover-border p-2">
+								<button
+									key={index}
+									className="justify-start text-left block hover-border p-2"
+								>
 									<Link
 										href={url}
 										target="_blank"
