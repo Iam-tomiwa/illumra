@@ -240,7 +240,9 @@ export async function POST(req: NextRequest) {
 
 		// 3. Configure the Email to Send (use the imported class)
 		const sendSmtpEmail = new SendSmtpEmail();
-		sendSmtpEmail.to = [{ email: "microdev007@gmail.com", name: "Site Owner" }];
+		sendSmtpEmail.to = [
+			{ email: process.env.NEXT_PUBLIC_SITE_OWNER_EMAIL!, name: "Site Owner" },
+		];
 		sendSmtpEmail.sender = {
 			email: process.env.NEXT_PUBLIC_SITE_OWNER_EMAIL!,
 			name: "Illumra Quote Form",
