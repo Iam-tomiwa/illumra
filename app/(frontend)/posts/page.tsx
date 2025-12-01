@@ -7,7 +7,7 @@ import DateComponent from "@/components/date";
 import MoreStories from "@/components/more-stories";
 import Onboarding from "@/components/onboarding";
 
-import type { HeroQueryResult } from "@/sanity.types";
+import type { HeroQueryResult, MediaAsset } from "@/sanity.types";
 import * as demo from "@/sanity/lib/demo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { heroQuery, settingsQuery } from "@/sanity/lib/queries";
@@ -42,7 +42,9 @@ function HeroPost({
 					{excerpt && (
 						<p className="text-pretty mb-4 text-lg leading-relaxed">{excerpt}</p>
 					)}
-					{author && <Avatar name={author.name} picture={author.picture} />}
+					{author && (
+						<Avatar name={author.name} picture={author.picture as MediaAsset} />
+					)}
 				</div>
 			</div>
 		</article>

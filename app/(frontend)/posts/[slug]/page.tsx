@@ -15,6 +15,7 @@ import * as demo from "@/sanity/lib/demo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { postQuery, settingsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import { MediaAsset } from "@/sanity.types";
 
 type Props = {
 	params: Promise<{ slug: string }>;
@@ -72,7 +73,10 @@ export default async function PostPage({ params }: Props) {
 				</h1>
 				<div className="hidden md:mb-12 md:block">
 					{post.author && (
-						<Avatar name={post.author.name} picture={post.author.picture} />
+						<Avatar
+							name={post.author.name}
+							picture={post.author.picture as MediaAsset}
+						/>
 					)}
 				</div>
 				<div className="mb-8 sm:mx-0 md:mb-16">
@@ -81,7 +85,10 @@ export default async function PostPage({ params }: Props) {
 				<div className="mx-auto max-w-2xl">
 					<div className="mb-6 block md:hidden">
 						{post.author && (
-							<Avatar name={post.author.name} picture={post.author.picture} />
+							<Avatar
+								name={post.author.name}
+								picture={post.author.picture as MediaAsset}
+							/>
 						)}
 					</div>
 					<div className="mb-6 text-lg">

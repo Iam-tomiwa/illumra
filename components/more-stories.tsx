@@ -6,6 +6,7 @@ import DateComponent from "./date";
 
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { moreStoriesQuery } from "@/sanity/lib/queries";
+import { MediaAsset } from "@/sanity.types";
 
 export default async function MoreStories(params: {
 	skip: string;
@@ -34,7 +35,9 @@ export default async function MoreStories(params: {
 							{excerpt && (
 								<p className="text-pretty mb-4 text-lg leading-relaxed">{excerpt}</p>
 							)}
-							{author && <Avatar name={author.name} picture={author.picture} />}
+							{author && (
+								<Avatar name={author.name} picture={author.picture as MediaAsset} />
+							)}
 						</article>
 					);
 				})}
