@@ -38,7 +38,7 @@ export async function generateMetadata(
 		: undefined;
 
 	return {
-		title: product?.title,
+		title: `Illumra - ${product?.title}`,
 		description: product?.shortDescription,
 		openGraph: {
 			images: ogImage ? [ogImage, ...previousImages] : previousImages,

@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
 import { Inter } from "next/font/google";
-import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import Navbar from "@/components/nav";
 import { Footer } from "@/components/footer";
 import Providers from "./providers";
@@ -18,7 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
 	const description =
 		"Revolutionary wireless control solutions for commercial and industrial lighting and HVAC systems. Reduce energy costs by up to 20% with intelligent automation.";
 
-	const ogImage = resolveOpenGraphImage("");
+	const logoUrl =
+		"https://res.cloudinary.com/tomiwadev/image/upload/v1764456817/image_2025-11-29_235333893_k8yazw.png";
 	let metadataBase: URL | undefined = new URL("https://illumra.com");
 
 	return {
@@ -28,8 +28,31 @@ export async function generateMetadata(): Promise<Metadata> {
 			default: title,
 		},
 		description: description,
+		icons: {
+			icon: logoUrl,
+			apple: logoUrl,
+		},
 		openGraph: {
-			images: ogImage ? [ogImage] : [],
+			type: "website",
+			locale: "en_US",
+			url: metadataBase,
+			siteName: title,
+			title: title,
+			description: description,
+			images: [
+				{
+					url: logoUrl,
+					width: 1200,
+					height: 627,
+					alt: "Illumra Logo",
+				},
+			],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: title,
+			description: description,
+			images: [logoUrl],
 		},
 	};
 }

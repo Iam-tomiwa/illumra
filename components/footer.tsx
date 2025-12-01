@@ -78,7 +78,7 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 						<p className="text-sm text-inherit mb-4">Lindon, UT</p>
 					</div>
 					{linkGroups.map(group => (
-						<div className="md:text-right" key={group.title}>
+						<div key={group.title}>
 							<h4 className="font-semibold mb-4">{group.title}</h4>
 							<ul className="space-y-2 text-sm text-inherit">
 								{group.links.map(link => (

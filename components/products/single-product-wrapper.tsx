@@ -21,6 +21,7 @@ import { Button } from "../ui/button";
 import GetQuoteModal from "../get-quote-modal";
 import { ProductCard } from "../product-card";
 import { ProductType } from "../home-widgets/featured-products-section";
+import { toast } from "sonner";
 
 export default function SingleProductWrapper({
 	product,
@@ -47,6 +48,55 @@ export default function SingleProductWrapper({
 	const [selectedColor, setSelectedColor] = useState<ProductColor | undefined>(
 		undefined
 	);
+
+	const handleShare = async () => {
+		const productUrl = `${window.location.origin}/products/${normalizedProduct.slug}`;
+		const shareData = {
+			title: normalizedProduct.title || "Product",
+			text: `Check out ${normalizedProduct.title}${normalizedProduct.sku ? ` (SKU: ${normalizedProduct.sku})` : ""}`,
+			url: productUrl,
+			image: resolvedImages[0]?.url,
+		};
+
+		// Check if Web Share API is supported
+		if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+			try {
+				await navigator.share(shareData);
+				toast.success("Shared successfully!");
+			} catch (error) {
+				// User cancelled or error occurred
+				if ((error as Error).name !== "AbortError") {
+					// Fallback to copy if share fails
+					await copyToClipboard(productUrl);
+				}
+			}
+		} else {
+			// Fallback to copying to clipboard
+			await copyToClipboard(productUrl);
+		}
+	};
+
+	const copyToClipboard = async (text: string) => {
+		try {
+			await navigator.clipboard.writeText(text);
+			toast.success("Product link copied to clipboard!");
+		} catch (error) {
+			// Fallback for older browsers
+			const textArea = document.createElement("textarea");
+			textArea.value = text;
+			textArea.style.position = "fixed";
+			textArea.style.opacity = "0";
+			document.body.appendChild(textArea);
+			textArea.select();
+			try {
+				document.execCommand("copy");
+				toast.success("Product link copied to clipboard!");
+			} catch (err) {
+				toast.error("Failed to copy link");
+			}
+			document.body.removeChild(textArea);
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -84,10 +134,21 @@ export default function SingleProductWrapper({
 			<div className="container mx-auto px-4 py-12">
 				<div className="flex flex-col lg:flex-row gap-12 mb-16">
 					{/* Image Slider */}
-					<ProductImageSlider
-						images={resolvedImages}
-						video={normalizedProduct.video || undefined}
-					/>
+					<div className="relative">
+						<ProductImageSlider
+							images={resolvedImages}
+							video={normalizedProduct.video || undefined}
+						/>
+						<Button
+							variant="outline"
+							onClick={handleShare}
+							size="icon"
+							className="shrink-0 absolute top-4 right-4 z-10"
+							aria-label="Share product aspect-square"
+						>
+							<Icon icon="lucide:share-2" className="size-4" />
+						</Button>
+					</div>
 
 					{/* Product Details */}
 					<div className="space-y-8">
@@ -212,9 +273,11 @@ export default function SingleProductWrapper({
 							</div>
 						)}
 
-						<Button className="w-full" onClick={() => setOpen(true)}>
-							<Icon icon="lucide:contact" className="size-4" /> Get A Quote
-						</Button>
+						<div className="flex gap-3">
+							<Button className="flex-1" onClick={() => setOpen(true)}>
+								<Icon icon="lucide:contact" className="size-4" /> Get A Quote
+							</Button>
+						</div>
 					</div>
 				</div>
 

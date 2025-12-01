@@ -202,7 +202,7 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 					)}
 
 					<Button asChild className="px-8! shadow-lg shadow-primary/20">
-						<Link href="/contact">
+						<Link onClick={toggleMobileMenu} href="/contact">
 							Get A Quote
 							<Icon icon="solar:round-arrow-right-bold" className="size-7" />
 						</Link>
