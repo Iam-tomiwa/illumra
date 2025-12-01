@@ -66,7 +66,7 @@ export default function EnergyFeatures({ section }: EnergyFeaturesProps) {
 							)}
 						>
 							<LinkOrCard
-								className="flex gap-3 rounded-xl border border-primary/10 bg-background/80 p-6"
+								className="flex gap-3 rounded-xl border border-primary/10 bg-background/80 p-6 h-full"
 								url={feature?.url}
 							>
 								<div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
