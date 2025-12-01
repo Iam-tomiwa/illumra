@@ -7,8 +7,31 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
+import type { HomePageQueryResult } from "@/sanity.types";
+import { faqContent } from "@/sanity/lib/demo";
+import { sanitizeSanityData } from "@/sanity/lib/utils";
 
-export default function FaqSection() {
+type FaqSectionProps = {
+	faqs?: NonNullable<HomePageQueryResult>["faq"];
+};
+
+export default function FaqSection({ faqs = [] }: FaqSectionProps) {
+	const normalizedFaqs = faqs ?? faqContent;
+	const gettingStartedFaqs =
+		normalizedFaqs?.filter(
+			faq => sanitizeSanityData(faq?.group) === "gettingStarted"
+		) || [];
+	const generalFaqs =
+		normalizedFaqs?.filter(faq => sanitizeSanityData(faq?.group) === "faq") || [];
+
+	const hasGettingStarted = gettingStartedFaqs.length > 0;
+	const hasGeneralFaqs = generalFaqs.length > 0;
+
+	// // Don't render if no FAQs
+	if (!hasGettingStarted && !hasGeneralFaqs) {
+		return null;
+	}
+
 	return (
 		<section id="faq" className="pt-16 pb-8 bg-background">
 			<div className="container mx-auto px-4 max-w-3xl text-center">
@@ -18,80 +41,45 @@ export default function FaqSection() {
 					LumiControl.
 				</p>
 
-				<Tabs defaultValue="getting-started" className="w-full">
+				<Tabs
+					defaultValue={hasGettingStarted ? "getting-started" : "faq"}
+					className="w-full"
+				>
 					{/* Tabs Header */}
 					<TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-8">
-						<TabsTrigger value="getting-started">Getting Started</TabsTrigger>
-						<TabsTrigger value="faq">FAQ</TabsTrigger>
+						{hasGettingStarted && (
+							<TabsTrigger value="getting-started">Getting Started</TabsTrigger>
+						)}
+						{hasGeneralFaqs && <TabsTrigger value="faq">FAQ</TabsTrigger>}
 					</TabsList>
 
 					{/* Getting Started Tab */}
-					<TabsContent value="getting-started">
-						<Accordion type="single" collapsible className="w-full text-left">
-							<AccordionItem value="item-1">
-								<AccordionTrigger>
-									How do I install LumiControl devices?
-								</AccordionTrigger>
-								<AccordionContent>
-									Simply connect your LumiControl device to power, open the LumiControl
-									app, and follow the in-app pairing guide. Most devices auto-detect
-									within 30 seconds.
-								</AccordionContent>
-							</AccordionItem>
-
-							<AccordionItem value="item-2">
-								<AccordionTrigger>Do I need an internet connection?</AccordionTrigger>
-								<AccordionContent>
-									An internet connection is required for remote access and firmware
-									updates. However, local automation still works without internet once
-									configured.
-								</AccordionContent>
-							</AccordionItem>
-
-							<AccordionItem value="item-3">
-								<AccordionTrigger>
-									Can I control multiple devices at once?
-								</AccordionTrigger>
-								<AccordionContent>
-									Yes! You can create groups or scenes in the LumiControl app to control
-									multiple devices simultaneously.
-								</AccordionContent>
-							</AccordionItem>
-						</Accordion>
-					</TabsContent>
+					{hasGettingStarted && (
+						<TabsContent value="getting-started">
+							<Accordion type="single" collapsible className="w-full text-left">
+								{gettingStartedFaqs.map((faq, index) => (
+									<AccordionItem key={index} value={`getting-started-${index}`}>
+										<AccordionTrigger>{faq?.question}</AccordionTrigger>
+										<AccordionContent>{faq?.answer}</AccordionContent>
+									</AccordionItem>
+								))}
+							</Accordion>
+						</TabsContent>
+					)}
 
 					{/* FAQ Tab */}
-					<TabsContent value="faq">
-						<Accordion type="single" collapsible className="w-full text-left">
-							<AccordionItem value="item-1">
-								<AccordionTrigger>
-									Where can I buy LumiControl products?
-								</AccordionTrigger>
-								<AccordionContent>
-									You can find authorized distributors and online stores on our “Where to
-									Buy” page, accessible from the top navigation.
-								</AccordionContent>
-							</AccordionItem>
-
-							<AccordionItem value="item-2">
-								<AccordionTrigger>
-									Is there a warranty for LumiControl products?
-								</AccordionTrigger>
-								<AccordionContent>
-									All LumiControl products include a 1-year limited warranty covering
-									manufacturer defects and performance issues.
-								</AccordionContent>
-							</AccordionItem>
-
-							<AccordionItem value="item-3">
-								<AccordionTrigger>How can I contact support?</AccordionTrigger>
-								<AccordionContent>
-									Reach our support team via the “Get a Quote” form or by emailing{" "}
-									<span className="font-medium">support@lumicontrol.com</span>.
-								</AccordionContent>
-							</AccordionItem>
-						</Accordion>
-					</TabsContent>
+					{hasGeneralFaqs && (
+						<TabsContent value="faq">
+							<Accordion type="single" collapsible className="w-full text-left">
+								{generalFaqs.map((faq, index) => (
+									<AccordionItem key={index} value={`faq-${index}`}>
+										<AccordionTrigger>{faq?.question}</AccordionTrigger>
+										<AccordionContent>{faq?.answer}</AccordionContent>
+									</AccordionItem>
+								))}
+							</Accordion>
+						</TabsContent>
+					)}
 				</Tabs>
 			</div>
 		</section>

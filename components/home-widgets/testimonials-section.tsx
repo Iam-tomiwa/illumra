@@ -1,57 +1,11 @@
+"use client";
+
 import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
-interface Testimonial {
-	rating: number;
-	text: string;
-	author: {
-		name: string;
-		role: string;
-		company: string;
-		avatar: string;
-		initials: string;
-	};
-}
-
-const testimonials: Testimonial[] = [
-	{
-		rating: 5,
-		text:
-			"“Illumra's wireless switches have simplified our lighting controls, providing a cost-effective and eco-friendly solution. Highly recommended!",
-		author: {
-			name: "Ethan Carter",
-			role: "Operations Director",
-			company: "EcoSolutions Ltd.",
-			avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-			initials: "EC",
-		},
-	},
-	{
-		rating: 5,
-		text:
-			"Illumra's control systems have revolutionized our energy management. Their commitment to innovation and quality is truly commendable.",
-		author: {
-			name: "Sophia Adams",
-			role: "Facilities Manager",
-			company: "BrightWay Inc.",
-			avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-			initials: "SA",
-		},
-	},
-	{
-		rating: 5,
-		text:
-			"The reliability and performance of Illumra's wireless sensors have exceeded our expectations, contributing to significant energy savings. Exceptional products!",
-		author: {
-			name: "Olivia Parker",
-			role: "Energy Efficiency Consultant",
-			company: "SmartEco Solutions",
-			avatar: "https://randomuser.me/api/portraits/men/67.jpg",
-			initials: "DP",
-		},
-	},
-];
+import { HomePageQueryResult, MediaAsset } from "@/sanity.types";
+import { resolveMediaAsset } from "@/sanity/lib/utils";
+import Marquee from "react-fast-marquee";
 
 function StarRating({ rating }: { rating: number }) {
 	return (
@@ -67,7 +21,13 @@ function StarRating({ rating }: { rating: number }) {
 	);
 }
 
-export function TestimonialsSection() {
+export function TestimonialsSection({
+	testimonials,
+}: {
+	testimonials: NonNullable<HomePageQueryResult>["testimonials"];
+}) {
+	const normalizedTestimonials = testimonials ?? [];
+
 	return (
 		<section className="py-20 bg-accent">
 			<div className="container mx-auto px-4">
@@ -79,28 +39,60 @@ export function TestimonialsSection() {
 						Real results from real businesses
 					</p>
 				</div>
-				<div className="grid md:grid-cols-3 gap-6">
-					{testimonials.map(testimonial => (
-						<Card key={testimonial.author.name}>
-							<CardContent className="pt-6">
-								<StarRating rating={testimonial.rating} />
-								<p className="text-muted-foreground mb-6 mt-4">{testimonial.text}</p>
-								<div className="flex items-center gap-3">
-									<Avatar>
-										<AvatarImage src={testimonial.author.avatar} />
-										<AvatarFallback>{testimonial.author.initials}</AvatarFallback>
-									</Avatar>
-									<div>
-										<div className="font-semibold text-sm">{testimonial.author.name}</div>
-										<div className="text-xs text-muted-foreground">
-											{testimonial.author.role}, {testimonial.author.company}
+				<Marquee
+					autoFill
+					pauseOnHover
+					speed={50}
+					gradient
+					gradientColor="var(--accent)"
+					gradientWidth={100}
+					className="py-4 overflow-y-clip"
+				>
+					{normalizedTestimonials.map((testimonial, index) => {
+						const picture = testimonial?.author?.picture as
+							| MediaAsset
+							| null
+							| undefined;
+						const imageResolved = picture
+							? resolveMediaAsset({
+									...picture,
+									_type: "mediaAsset",
+								} as MediaAsset)
+							: undefined;
+						return (
+							<Card
+								key={`${testimonial?.author?.name}-${index}`}
+								className="mx-3 w-[350px] shrink-0"
+							>
+								<CardContent className="pt-6">
+									<StarRating rating={5} />
+									<p className="text-muted-foreground mb-6 mt-4">
+										{testimonial.testimony}
+									</p>
+									<div className="flex items-center gap-3">
+										<Avatar>
+											<AvatarImage
+												src={imageResolved?.url}
+												alt={testimonial?.author?.name || ""}
+											/>
+											<AvatarFallback>
+												{testimonial?.author?.name?.charAt(0)?.toUpperCase() || "?"}
+											</AvatarFallback>
+										</Avatar>
+										<div>
+											<div className="font-semibold text-sm">
+												{testimonial?.author?.name}
+											</div>
+											<div className="text-xs text-muted-foreground">
+												{testimonial?.author?.role}
+											</div>
 										</div>
 									</div>
-								</div>
-							</CardContent>
-						</Card>
-					))}
-				</div>
+								</CardContent>
+							</Card>
+						);
+					})}
+				</Marquee>
 			</div>
 		</section>
 	);

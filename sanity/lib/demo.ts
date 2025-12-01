@@ -408,3 +408,42 @@ export const productCategoriesDemo = [
 		title: "Wireless Light Switch",
 	},
 ];
+
+export const faqContent = [
+	{
+		group: "gettingStarted",
+		question: "How do I install LumiControl devices?",
+		answer:
+			"Simply connect your LumiControl device to power, open the LumiControl app, and follow the in-app pairing guide. Most devices auto-detect within 30 seconds.",
+	},
+	{
+		group: "gettingStarted",
+		question: "Do I need an internet connection?",
+		answer:
+			"An internet connection is required for remote access and firmware updates. However, local automation still works without internet once configured.",
+	},
+	{
+		group: "gettingStarted",
+		question: "Can I control multiple devices at once?",
+		answer:
+			"Yes! You can create groups or scenes in the LumiControl app to control multiple devices simultaneously.",
+	},
+	{
+		group: "faq",
+		question: "Where can I buy LumiControl products?",
+		answer:
+			'You can find authorized distributors and online stores on our "Where to Buy" page, accessible from the top navigation.',
+	},
+	{
+		group: "faq",
+		question: "Is there a warranty for LumiControl products?",
+		answer:
+			"All LumiControl products include a 1-year limited warranty covering manufacturer defects and performance issues.",
+	},
+	{
+		group: "faq",
+		question: "How can I contact support?",
+		answer:
+			'Reach our support team via the "Get a Quote" form or by emailing support@lumicontrol.com.',
+	},
+];

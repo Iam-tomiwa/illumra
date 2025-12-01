@@ -73,7 +73,13 @@ export default function TrustedBy({ section }: TrustedByProps) {
 					<span className="h-px w-16 bg-primary/30" />
 				</div>
 
-				<Marquee autoFill pauseOnHover>
+				<Marquee
+					autoFill
+					pauseOnHover
+					gradient
+					gradientColor="var(--accent)"
+					gradientWidth={100}
+				>
 					{logos.map(logo => (
 						<div
 							key={`${logo.name}-${logo.src}`}

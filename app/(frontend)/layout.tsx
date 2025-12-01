@@ -46,7 +46,11 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }) {
 	const { isEnabled: isDraftMode } = await draftMode();
-	const categories = await sanityFetch({ query: categoryQuery });
+	// Categories are relatively static, so we use a longer revalidation time (1 hour)
+	const categories = await sanityFetch({
+		query: categoryQuery,
+		revalidate: 3600, // 1 hour
+	});
 
 	return (
 		<html lang="en" className={`${inter.variable} bg-white text-black`}>

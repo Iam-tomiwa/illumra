@@ -8,7 +8,7 @@ import { productCategoriesDemo } from "@/sanity/lib/demo";
 
 interface LinkGroup {
 	title: string;
-	links: { label: string; href: string }[];
+	links: { label: string; href: string; target?: string }[];
 }
 
 export function Footer({ categories }: { categories?: CategoryType[] }) {
@@ -33,9 +33,13 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 			title: "Company",
 			links: [
 				{ label: "About Us", href: "/about" },
-				{ label: "Case Studies", href: "#" },
-				{ label: "Support", href: "#" },
-				{ label: "Contact", href: "#" },
+				{ label: "Case Studies", href: "/#projects" },
+				{
+					label: "Support",
+					href: "https://illumra.freshdesk.com/support/home",
+					target: "_blank",
+				},
+				{ label: "Contact", href: "/contact" },
 			],
 		},
 		{
@@ -51,7 +55,6 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 	const legalLinks = [
 		{ label: "Privacy Policy", href: "#" },
 		{ label: "Terms of Service", href: "#" },
-		{ label: "Cookies", href: "#" },
 	];
 	return (
 		<footer className="py-12 bg-accent-foreground text-white border-t border-border">
@@ -72,17 +75,7 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 							Advanced wireless control solutions for commercial and industrial
 							environments.
 						</p>
-						<div className="flex gap-3">
-							<Button size="icon" variant="ghost">
-								<Icon icon="ic:baseline-facebook" className="size-5" />
-							</Button>
-							<Button size="icon" variant="ghost">
-								<Icon icon="ic:baseline-twitter" className="size-5" />
-							</Button>
-							<Button size="icon" variant="ghost">
-								<Icon icon="ic:baseline-linkedin" className="size-5" />
-							</Button>
-						</div>
+						<p className="text-sm text-inherit mb-4">Lindon, UT</p>
 					</div>
 					{linkGroups.map(group => (
 						<div className="md:text-right" key={group.title}>
@@ -90,9 +83,14 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 							<ul className="space-y-2 text-sm text-inherit">
 								{group.links.map(link => (
 									<li key={link.label}>
-										<a href={link.href} className="hover:text-primary transition-colors">
+										<Link
+											href={link.href}
+											target={link.target ?? undefined}
+											rel="noopener noreferrer"
+											className="hover:text-primary transition-colors"
+										>
 											{link.label}
-										</a>
+										</Link>
 									</li>
 								))}
 							</ul>

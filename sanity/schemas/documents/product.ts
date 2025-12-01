@@ -75,15 +75,26 @@ export default defineType({
 			],
 		}),
 		defineField({
-			name: "category",
-			type: "reference",
+			name: "categories",
+			type: "array",
 			group: "content",
-			to: [{ type: "productCategory" }],
-			options: {
-				filter: `_type == "productCategory" && !(_id in path("drafts.**"))`,
-			},
+			title: "Categories",
+			description: "Assign this product to one or more categories.",
+			of: [
+				defineArrayMember({
+					type: "reference",
+					to: [{ type: "productCategory" }],
+					options: {
+						filter: `_type == "productCategory" && !(_id in path("drafts.**"))`,
+					},
+				}),
+			],
 			validation: rule => [
-				rule.required().error("Select a category to enable filtering."),
+				rule
+					.required()
+					.min(1)
+					.error("Select at least one category to enable filtering."),
+				rule.unique().warning("Duplicate categories were removed."),
 			],
 		}),
 		defineField({

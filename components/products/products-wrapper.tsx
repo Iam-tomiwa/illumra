@@ -210,7 +210,7 @@ export default function ProductsWrapper(props: ProductsWrapperProps) {
 
 			<div className="container mx-auto px-4 pt-10 flex gap-8">
 				<aside className="hidden lg:block w-64 shrink-0">
-					<div className="sticky top-24">
+					<div className="sticky top-32">
 						<FilterSidebar
 							filters={filters}
 							categories={categories}
@@ -240,15 +240,17 @@ export default function ProductsWrapper(props: ProductsWrapperProps) {
 									<SheetTitle>Filters</SheetTitle>
 								</SheetHeader>
 
-								<FilterSidebar
-									filters={filters}
-									categories={categories}
-									frequencies={frequencies}
-									protocols={protocols}
-									voltages={voltages}
-									handleReset={() => updateFilters(emptyFilters)}
-									onFiltersChange={updateFilters}
-								/>
+								<div className="overflow-auto">
+									<FilterSidebar
+										filters={filters}
+										categories={categories}
+										frequencies={frequencies}
+										protocols={protocols}
+										voltages={voltages}
+										handleReset={() => updateFilters(emptyFilters)}
+										onFiltersChange={updateFilters}
+									/>
+								</div>
 							</SheetContent>
 						</Sheet>
 

@@ -1,5 +1,6 @@
 import BecomeADistributor from "@/components/about/become-a-distributor";
 import BecomeARep from "@/components/about/become-a-rep";
+import { AnimatedElement } from "@/components/animated-element";
 import PagesHero from "@/components/pages-hero";
 import { Separator } from "@/components/ui/separator";
 
@@ -8,15 +9,21 @@ export default function DistributorsPage() {
 		<div className="bg-accent">
 			<PagesHero>
 				<div className="max-w-3xl">
-					<p className="text-primary mb-4">Find a Rep/Distributor</p>
-					<h1 className="page-title">Where to Buy</h1>
-					<p className="mb-6">
-						Discover local distributors with ease! Simply enter your zip code or
-						address in the provided field, and a detailed map will display all the
-						distributors in area. If you don&apos;t find one nearby, don’t hesitate to
-						reach out to us for assistance. We&apos;re here to help you connect with
-						best options available
-					</p>
+					<AnimatedElement>
+						<p className="text-primary mb-4">Find a Rep/Distributor</p>
+					</AnimatedElement>
+					<AnimatedElement delay={0.1}>
+						<h1 className="page-title">Where to Buy</h1>
+					</AnimatedElement>
+					<AnimatedElement delay={0.2}>
+						<p className="mb-6">
+							Discover local distributors with ease! Simply enter your zip code or
+							address in the provided field, and a detailed map will display all the
+							distributors in area. If you don&apos;t find one nearby, don’t hesitate
+							to reach out to us for assistance. We&apos;re here to help you connect
+							with best options available
+						</p>
+					</AnimatedElement>
 				</div>
 			</PagesHero>
 			<div className="container flex flex-col items-center mx-auto gap-4 px-4 py-20">

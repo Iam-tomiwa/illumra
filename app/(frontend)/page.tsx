@@ -8,11 +8,7 @@ import { TestimonialsSection } from "@/components/home-widgets/testimonials-sect
 import { CTASection } from "@/components/home-widgets/cta-section";
 import TrustedBy from "@/components/home-widgets/trusted-by-section";
 import FaqSection from "@/components/home-widgets/faq";
-import type {
-	HomePageQueryResult,
-	CategoryQueryResult,
-	FeaturedProductsQueryResult,
-} from "@/sanity.types";
+import type { HomePageQueryResult, ProjectsContent } from "@/sanity.types";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
 	categoryQuery,
@@ -28,7 +24,9 @@ export default async function WirelessControlSolutionsLandingPage() {
 	const controlSolutions = homePage?.controlSolutions ?? undefined;
 	const trustedBy = homePage?.trustedBy ?? undefined;
 	const about = homePage?.about ?? undefined;
-
+	const faqs = homePage?.faq ?? undefined;
+	const testimonials = homePage?.testimonials ?? [];
+	const projects = homePage?.projects ?? [];
 	const featuredProducts = await sanityFetch({
 		query: featuredProductsQuery,
 	});
@@ -47,9 +45,9 @@ export default async function WirelessControlSolutionsLandingPage() {
 				categories={categories}
 				products={featuredProducts}
 			/>
-			<ProjectsSection />
-			<TestimonialsSection />
-			<FaqSection />
+			<ProjectsSection projects={projects as ProjectsContent[]} />
+			<TestimonialsSection testimonials={testimonials} />
+			<FaqSection faqs={faqs} />
 			<CTASection />
 		</div>
 	);

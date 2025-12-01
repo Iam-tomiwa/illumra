@@ -14,10 +14,11 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 	isDraftMode,
 }) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [isAboutOpen, setIsAboutOpen] = useState(false);
+	const [isSubMenuOpen, setIsSubMenuOpen] = useState<string | null>(null);
 
 	const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
-	const toggleAboutMenu = () => setIsAboutOpen(prev => !prev);
+	const toggleSubMenu = (name: string) =>
+		setIsSubMenuOpen(prev => (prev === name ? null : name));
 
 	const navLinks = [
 		// { name: "Home", path: "/" },
@@ -40,7 +41,7 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 					path: "https://illumra.freshdesk.com/support/home",
 					target: "_blank",
 				},
-				{ name: "Tutorials", path: "/tutorials" },
+				// { name: "Tutorials", path: "/tutorials" },
 				{ name: "FAQ", path: "/#faq" },
 			],
 		},
@@ -80,24 +81,24 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 									className="relative group hover-border-primary hover:text-primary"
 								>
 									<button
-										onClick={toggleAboutMenu}
+										onClick={() => toggleSubMenu(link.name)}
 										className="flex items-center gap-1 px-3 py-2 font-medium"
 									>
 										{link.name}
 										<ChevronDown
 											className={`size-6 transition-transform duration-200 ${
-												isAboutOpen ? "rotate-180" : ""
+												isSubMenuOpen === link.name ? "rotate-180" : ""
 											}`}
 										/>
 									</button>
 									{/* Submenu */}
 									<div
 										className={`absolute min-w-[200px] overflow-clip left-0 mt-2 bg-background border rounded-xl shadow-lg text-black w-max transition-all duration-200 ${
-											isAboutOpen
+											isSubMenuOpen === link.name
 												? "opacity-100 visible translate-y-0"
 												: "opacity-0 invisible -translate-y-2"
 										} group-hover:opacity-100 group-hover:visible group-hover:translate-y-0`}
-										onMouseLeave={() => setIsAboutOpen(false)}
+										onMouseLeave={() => setIsSubMenuOpen(null)}
 									>
 										{link.submenu.map(sub => (
 											<Link
@@ -126,9 +127,11 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 
 					{/* Desktop Button */}
 					<div className="hidden lg:flex items-center">
-						<Button className="px-8! shadow-lg shadow-primary/20">
-							Get A Quote
-							<Icon icon="solar:round-arrow-right-bold" className="size-7" />
+						<Button asChild className="px-8! shadow-lg shadow-primary/20">
+							<Link href="/contact">
+								Get A Quote
+								<Icon icon="solar:round-arrow-right-bold" className="size-7" />
+							</Link>
 						</Button>
 					</div>
 
@@ -161,17 +164,17 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 						link.submenu ? (
 							<div key={link.name} className="space-y-2">
 								<button
-									onClick={toggleAboutMenu}
+									onClick={() => toggleSubMenu(link.name)}
 									className="w-full flex justify-between items-center text-lg pb-4 border-b border-border font-medium"
 								>
 									{link.name}
 									<ChevronDown
 										className={`w-5 h-5 transition-transform duration-200 ${
-											isAboutOpen ? "rotate-180" : ""
+											isSubMenuOpen === link.name ? "rotate-180" : ""
 										}`}
 									/>
 								</button>
-								{isAboutOpen && (
+								{isSubMenuOpen === link.name && (
 									<div className="pl-4 space-y-2">
 										{link.submenu.map(sub => (
 											<Link
@@ -198,9 +201,11 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 						)
 					)}
 
-					<Button className="px-8! shadow-lg shadow-primary/20">
-						Get A Quote
-						<Icon icon="solar:round-arrow-right-bold" className="size-7" />
+					<Button asChild className="px-8! shadow-lg shadow-primary/20">
+						<Link href="/contact">
+							Get A Quote
+							<Icon icon="solar:round-arrow-right-bold" className="size-7" />
+						</Link>
 					</Button>
 				</div>
 			</div>

@@ -12,6 +12,7 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import { aboutPageQuery } from "@/sanity/lib/queries";
 import { aboutPageContent, companyInfo } from "@/sanity/lib/demo";
 import type { PortableTextBlock } from "next-sanity";
+import { AnimatedElement } from "@/components/animated-element";
 
 type AboutPageQueryResult = {
 	content?: {
@@ -52,22 +53,15 @@ export default async function AboutPage() {
 			{/* Hero Section */}
 			<PagesHero>
 				<div className="max-w-3xl">
-					<h1 className="page-title">About ILLUMRA</h1>
-					<p className="text-xl text-white/90">{heroDescription}</p>
+					<AnimatedElement>
+						<h1 className="page-title">About ILLUMRA</h1>
+					</AnimatedElement>
+					<AnimatedElement delay={0.1}>
+						<p className="text-xl text-white/90">{heroDescription}</p>
+					</AnimatedElement>
 				</div>
 			</PagesHero>
-
-			{/* Main Content Section */}
-			<section className="py-20 bg-white">
-				<div className="container mx-auto px-4 max-w-4xl">
-					<div className="prose prose-lg max-w-none space-y-6">
-						<PortableText value={contentParagraphs} />
-					</div>
-				</div>
-			</section>
-
 			<Separator />
-
 			{/* Company Info Section */}
 			<section className="py-20 bg-accent/30">
 				<div className="container mx-auto px-4 max-w-4xl">

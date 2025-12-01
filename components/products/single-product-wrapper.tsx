@@ -48,7 +48,6 @@ export default function SingleProductWrapper({
 		undefined
 	);
 
-	console.log(normalizedProduct);
 	return (
 		<div className="min-h-screen bg-background">
 			{/* Breadcrumb */}
@@ -112,17 +111,20 @@ export default function SingleProductWrapper({
 						<div>
 							<h2 className="text-2xl font-semibold mb-4">Key Features</h2>
 							<div className="space-y-3">
-								{normalizedProduct.category && (
-									<div className="flex items-center gap-3">
-										<Icon icon="lucide:tag" className="size-5 text-primary shrink-0" />
-										<div>
-											<span className="text-sm text-muted-foreground">Category:</span>
-											<span className="ml-2 font-medium">
-												{normalizedProduct.category.title}
-											</span>
+								{normalizedProduct.categories &&
+									normalizedProduct.categories.length > 0 && (
+										<div className="flex items-center gap-3">
+											<Icon icon="lucide:tag" className="size-5 text-primary shrink-0" />
+											<div>
+												<span className="text-sm text-muted-foreground">Categories:</span>
+												<span className="ml-2 font-medium">
+													{normalizedProduct.categories
+														.map(category => category.title)
+														.join(", ")}
+												</span>
+											</div>
 										</div>
-									</div>
-								)}
+									)}
 								{normalizedProduct.voltage && (
 									<div className="flex items-center gap-3">
 										<Icon icon="lucide:zap" className="size-5 text-primary shrink-0" />
@@ -239,7 +241,7 @@ export default function SingleProductWrapper({
 					</div>
 				</div>
 				<GetQuoteModal
-					productId={normalizedProduct._id}
+					productSlug={normalizedProduct.slug}
 					productTitle={normalizedProduct.title}
 					productColors={productColors}
 					productSku={normalizedProduct.sku}

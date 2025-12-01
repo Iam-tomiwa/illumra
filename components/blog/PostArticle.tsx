@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { PortableTextBlock } from "next-sanity";
-import { urlForImage } from "@/sanity/lib/utils";
+import { urlForImage, resolveMediaAsset } from "@/sanity/lib/utils";
 import type { PostQueryResult } from "@/sanity.types";
 import { RichText } from "@/components/blog/RichText";
 
@@ -37,17 +37,18 @@ export function PostArticle({ post }: PostArticleProps) {
 						<div className="flex items-center gap-3">
 							{(() => {
 								const authorPicture = post.author.picture;
-								const pictureBuilder = authorPicture
-									? urlForImage(authorPicture)
+								const resolvedPicture = authorPicture
+									? resolveMediaAsset(authorPicture as any, {
+											width: 96,
+											height: 96,
+											fit: "crop",
+										})
 									: undefined;
-								return pictureBuilder ? (
+								return resolvedPicture?.url ? (
 									<div className="relative h-10 w-10 overflow-hidden rounded-full bg-muted">
 										<Image
-											src={
-												pictureBuilder.width(96).height(96).fit("crop").url() ??
-												"/vercel.svg"
-											}
-											alt={authorPicture?.alt ?? post.author.name}
+											src={resolvedPicture.url}
+											alt={resolvedPicture.alt ?? post.author.name}
 											fill
 											className="object-cover"
 										/>

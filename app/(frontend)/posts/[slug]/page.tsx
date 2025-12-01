@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import Avatar from "@/components/avatar";
+import Avatar from "@/components/resolved-avatar";
 import CoverImage from "@/components/cover-image";
 import DateComponent from "@/components/date";
 import MoreStories from "@/components/more-stories";

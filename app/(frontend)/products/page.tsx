@@ -106,7 +106,7 @@ export default async function ProductsPage(props: ProductsPageProps) {
 		*[
 			_type == "product" &&
 			(!defined($search) || $search == "" || coalesce(title, "") match $searchWildcard || coalesce(sku, "") match $searchWildcard) &&
-			(!defined($category) || $category == "" || category->slug.current == $category) &&
+			(!defined($category) || $category == "" || count((categories[]->slug.current)[@ == $category]) > 0) &&
 			(!defined($voltage) || $voltage == "" || voltage->value == $voltage) &&
 			(!defined($frequency) || $frequency == "" || frequency->value == $frequency) &&
 			(!defined($protocols) || count($protocols) == 0 || count((protocols[]->value)[@ in $protocols]) > 0)

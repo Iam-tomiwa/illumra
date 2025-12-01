@@ -40,6 +40,9 @@ import { resourceLink } from "@/sanity/schemas/objects/resourceLink";
 import { productColor } from "@/sanity/schemas/objects/productColor";
 import { videoAsset } from "@/sanity/schemas/objects/videoAsset";
 import { resolveHref } from "@/sanity/lib/utils";
+import { faqContent } from "./sanity/schemas/objects/faqContent";
+import { testimonials } from "./sanity/schemas/objects/testimonials";
+import { projectsContent } from "./sanity/schemas/objects/projectsContent";
 
 const homeLocation = {
 	title: "Home",
@@ -84,6 +87,9 @@ export default defineConfig({
 			resourceLink,
 			productColor,
 			videoAsset,
+			faqContent,
+			testimonials,
+			projectsContent,
 		],
 	},
 	plugins: [
@@ -113,11 +119,6 @@ export default defineConfig({
 						locations: [aboutLocation],
 						message: "This document powers the about page content.",
 						tone: "positive",
-					}),
-					settings: defineLocations({
-						locations: [homeLocation],
-						message: "This document is used on all pages",
-						tone: "caution",
 					}),
 					post: defineLocations({
 						select: {

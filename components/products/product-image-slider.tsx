@@ -46,7 +46,7 @@ export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
 	return (
 		<div className="space-y-4 aspect-square min-w-[30%]">
 			{/* Main Image Slider */}
-			<div className="relative max-h-[500px] bg-muted rounded-lg overflow-hidden w-full aspect-square">
+			<div className="relative min-h-[500px] lg:h-[500px] bg-muted rounded-lg overflow-hidden w-full aspect-square">
 				<Swiper
 					modules={[Navigation, Thumbs]}
 					thumbs={{
@@ -65,10 +65,7 @@ export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
 					}}
 				>
 					{hasVideo && (
-						<SwiperSlide
-							className="relative h-full w-full overflow-hidden"
-							key="video"
-						>
+						<SwiperSlide className="relative h-full w-full" key="video">
 							<VideoEmbed
 								url={video.externalUrl!}
 								title={video.title || undefined}

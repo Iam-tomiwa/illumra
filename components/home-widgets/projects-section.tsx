@@ -13,21 +13,25 @@ import "swiper/css/free-mode";
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import type { Swiper as SwiperType } from "swiper";
+import { MediaAsset, ProjectsContent } from "@/sanity.types";
+import { resolveMediaAsset } from "@/sanity/lib/utils";
 
 interface Project {
 	id: string;
 	title: string;
 	image: string;
 	category: string;
+	href: string;
 }
 
-const projects: Project[] = [
+const demoProjects: Project[] = [
 	{
 		id: "1",
 		title: "Residential Home Remodel",
 		category: "Lighting Control",
 		image:
 			"https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 	{
 		id: "2",
@@ -35,6 +39,7 @@ const projects: Project[] = [
 		category: "HVAC & Lighting",
 		image:
 			"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 	{
 		id: "3",
@@ -42,6 +47,7 @@ const projects: Project[] = [
 		category: "Wireless Automation",
 		image:
 			"https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 	{
 		id: "4",
@@ -49,6 +55,7 @@ const projects: Project[] = [
 		category: "Energy Management",
 		image:
 			"https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 	{
 		id: "5",
@@ -56,6 +63,7 @@ const projects: Project[] = [
 		category: "Smart Building",
 		image:
 			"https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 	{
 		id: "6",
@@ -63,6 +71,7 @@ const projects: Project[] = [
 		category: "Industrial Control",
 		image:
 			"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 	{
 		id: "7",
@@ -70,13 +79,14 @@ const projects: Project[] = [
 		category: "Industrial Control",
 		image:
 			"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop",
+		href: "https://www.google.com",
 	},
 ];
 
-export function ProjectsSection() {
+export function ProjectsSection({ projects }: { projects: ProjectsContent[] }) {
 	const swiperRef = useRef<SwiperType | null>(null);
 	return (
-		<section className="py-20 bg-background">
+		<section id="projects" className="py-20 bg-background">
 			<div className="container mx-auto px-4">
 				<div className="grid lg:grid-cols-2 gap-8 mb-12">
 					<div>
@@ -88,8 +98,9 @@ export function ProjectsSection() {
 						<p className="text-lg text-muted-foreground">
 							Explore our portfolio of successful installations across diverse
 							industries. Each project showcases our commitment to delivering
-							innovative wireless control solutions that enhance efficiency, reduce
-							costs, and improve environmental sustainability.
+							innovative wireless control solutions that enhance efficiency, and
+							improve environmental sustainability. <br />
+							<i>Click on any project card to view the detailed PDF.</i>
 						</p>
 					</div>
 				</div>
@@ -102,11 +113,11 @@ export function ProjectsSection() {
 						slidesPerView="auto"
 						freeMode={true}
 						grabCursor={true}
-						// autoplay={{
-						// 	delay: 2500,
-						// 	disableOnInteraction: false,
-						// 	pauseOnMouseEnter: true,
-						// }}
+						autoplay={{
+							delay: 2500,
+							disableOnInteraction: false,
+							pauseOnMouseEnter: true,
+						}}
 						loop={true}
 						onSwiper={swiper => {
 							swiperRef.current = swiper;
@@ -131,32 +142,44 @@ export function ProjectsSection() {
 							},
 						}}
 					>
-						{projects.map(project => (
-							<SwiperSlide key={project.id} className={`w-full`}>
-								<div
-									className={`relative flex flex-col justify-end min-h-[420px] rounded-2xl shadow-lg p-4`}
-								>
-									<Image
-										src={project.image}
-										alt={project.title}
-										fill
-										className={`object-cover`}
-									/>
-									<div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
-									<div className="relative z-50 text-white">
-										<p className="text-xs uppercase text-yellow-400">
-											{project.category}
-										</p>
-										<h3 className="text-2xl font-semibold">{project.title}</h3>
-									</div>
-								</div>
-							</SwiperSlide>
-						))}
+						{projects.map(project => {
+							const picture = project?.picture as MediaAsset | null | undefined;
+							const imageResolved = picture
+								? resolveMediaAsset({
+										...picture,
+										_type: "mediaAsset",
+									} as MediaAsset)
+								: undefined;
+							return (
+								<SwiperSlide key={project.url} className={`w-full`}>
+									<Link
+										href={project.url ?? ""}
+										target="_blank"
+										rel="noopener noreferrer"
+										className={`relative hover:underline cursor-pointer text-white flex flex-col justify-end min-h-[420px] rounded-2xl shadow-lg p-4`}
+									>
+										<Image
+											src={imageResolved?.url ?? ""}
+											alt={imageResolved?.alt ?? ""}
+											fill
+											className={`object-cover`}
+										/>
+										<div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
+										<div className="relative z-50 text-white">
+											<p className="text-xs uppercase text-yellow-400">
+												{project.projectCategory}
+											</p>
+											<h3 className="text-2xl font-semibold">{project.title}</h3>
+										</div>
+									</Link>
+								</SwiperSlide>
+							);
+						})}
 					</Swiper>
 
 					<div className="flex justify-between">
 						{/* View All Link */}
-						<div className="text-center mt-8">
+						{/* <div className="text-center mt-8">
 							<Link
 								href="/projects"
 								className="inline-flex items-center gap-2 font-semibold transition-colors"
@@ -164,10 +187,10 @@ export function ProjectsSection() {
 								<span>View All Projects</span>
 								<Icon icon="solar:arrow-right-bold" className="size-5" />
 							</Link>
-						</div>
+						</div> */}
 
 						{/* Navigation Arrows */}
-						<div className="flex gap-4 pt-6 justify-end">
+						<div className="flex gap-4 pt-6 justify-end ml-auto">
 							<Button
 								variant="outline"
 								size="icon"

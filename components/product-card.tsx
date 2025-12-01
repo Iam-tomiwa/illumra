@@ -31,7 +31,6 @@ export function ProductCard({
 	image,
 	sku,
 	detailsUrl = `/products/${id}`,
-	showActions = false,
 }: ProductCardProps) {
 	const imageResolved = resolveMediaAsset({
 		...(image as MediaAsset),

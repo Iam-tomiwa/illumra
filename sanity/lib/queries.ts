@@ -85,6 +85,43 @@ export const homePageQuery = defineQuery(`
         title,
         description
       }
+    },
+    faq[]{
+      group,
+      question,
+      answer
+    },
+    testimonials[]{
+      author->{
+        "name": coalesce(name, "Anonymous"),
+        picture{
+          source,
+          altText,
+          externalUrl,
+          image{
+            asset,
+            crop,
+            hotspot
+          }
+        },
+        role
+      },
+      testimony,     
+    },
+    projects[]{
+      picture{
+        source,
+        altText,
+        externalUrl,
+        image{
+          asset,
+          crop,
+          hotspot
+        }
+      },
+      title,
+      projectCategory,
+      url
     }
   }
 `);
@@ -129,7 +166,20 @@ const postFields = /* groq */ `
   excerpt,
   coverImage,
   "date": coalesce(date, _updatedAt),
-  "author": author->{"name": coalesce(name, "Anonymous"), picture},
+  "author": author->{
+    "name": coalesce(name, "Anonymous"),
+    picture{
+      source,
+      altText,
+      externalUrl,
+      image{
+        asset,
+        crop,
+        hotspot
+      }
+    },
+    role
+  },
 `;
 
 export const heroQuery = defineQuery(`
@@ -167,7 +217,8 @@ export const productsQuery = /* groq */ `
           hotspot
         }
     },
-    "category": category->slug.current,
+    "categories": categories[]->slug.current,
+    "category": categories[0]->slug.current,
     "sku": sku,
      colors[]{
       name,
@@ -182,7 +233,7 @@ export const featuredProductsQuery = defineQuery(`
 `);
 
 export const relevantProductsQuery = defineQuery(`
-  *[_type == "product" && category->slug.current == $category && _id != $excludeId]{
+  *[_type == "product" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{
    ${productsQuery}
   } | order(_createdAt desc)[0...4]
 `);
@@ -206,7 +257,7 @@ export const FILTERED_PRODUCTS_COUNT_QUERY = defineQuery(`
       (
         !defined($category) ||
         $category == "" ||
-        category->slug.current == $category
+        count((categories[]->slug.current)[@ == $category]) > 0
       ) &&
       (
         !defined($voltage) ||
@@ -240,7 +291,12 @@ export const PRODUCT_QUERY = defineQuery(`
           ...
         }
       },
-      "category": category->{
+      "categories": categories[]->{
+        _id,
+        title,
+        "slug": slug.current
+      },
+      "category": categories[0]->{
         _id,
         title,
         "slug": slug.current
@@ -331,4 +387,17 @@ export const aboutPageQuery = defineQuery(`
       satelliteOffice
     }
   }
+`);
+
+export const PRODUCTS_WITH_VIDEOS_QUERY = defineQuery(`
+  *[_type == "product" && defined(video.externalUrl)]{
+    _id,
+    title,
+    "slug": slug.current,
+    "productUrl": "/products/" + slug.current,
+    video{
+      title,
+      externalUrl
+    }
+  } | order(_createdAt desc)
 `);

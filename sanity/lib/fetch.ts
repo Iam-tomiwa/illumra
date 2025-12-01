@@ -19,11 +19,17 @@ export async function sanityFetch<const QueryString extends string>({
 	 * When outside of the Sanity Studio we also support the Vercel Toolbar Visual Editing feature, which is only enabled in production when it's a Vercel Preview Deployment.
 	 */
 	stega: _stega,
+	/**
+	 * Custom revalidation time in seconds. Defaults to 60 seconds for published content, 0 for drafts.
+	 * Use longer revalidation times (e.g., 3600 for 1 hour) for static data like categories.
+	 */
+	revalidate,
 }: {
 	query: QueryString;
 	params?: QueryParams | Promise<QueryParams>;
 	perspective?: Omit<ClientPerspective, "raw">;
 	stega?: boolean;
+	revalidate?: number;
 }) {
 	const perspective =
 		_perspective || (await draftMode()).isEnabled ? "drafts" : "published";
@@ -51,7 +57,8 @@ export async function sanityFetch<const QueryString extends string>({
 		useCdn: true,
 		// Only enable Stega in production if it's a Vercel Preview Deployment, as the Vercel Toolbar supports Visual Editing
 		// When using the `published` perspective we use time-based revalidation to match the time-to-live on Sanity's API CDN (60 seconds)
-		next: { revalidate: 60 },
+		// Allow custom revalidation times for static data like categories
+		next: { revalidate: revalidate ?? 60 },
 	});
 	return result;
 }

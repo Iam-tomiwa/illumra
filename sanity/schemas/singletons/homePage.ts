@@ -1,5 +1,5 @@
 import { HomeIcon } from "@sanity/icons";
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 import * as demo from "@/sanity/lib/demo";
 
@@ -28,6 +28,21 @@ export const homePage = defineType({
 		{
 			name: "about",
 			title: "About",
+			icon: HomeIcon,
+		},
+		{
+			name: "projects",
+			title: "Projects",
+			icon: HomeIcon,
+		},
+		{
+			name: "testimonials",
+			title: "Testimonials",
+			icon: HomeIcon,
+		},
+		{
+			name: "faq",
+			title: "FAQ",
 			icon: HomeIcon,
 		},
 	],
@@ -81,6 +96,48 @@ export const homePage = defineType({
 				rule
 					.required()
 					.error("Write the about section content to publish the homepage."),
+			],
+		}),
+		defineField({
+			name: "faq",
+			type: "array",
+			group: "faq",
+			title: "FAQs",
+			description: "Add multiple FAQ items to the homepage.",
+			initialValue: demo.faqContent,
+			of: [defineArrayMember({ type: "faqContent" })],
+			validation: rule => [
+				rule.required().min(1).error("Add at least one FAQ item to the homepage."),
+				rule.unique().warning("Duplicate FAQ items were removed."),
+			],
+		}),
+		defineField({
+			name: "testimonials",
+			type: "array",
+			group: "testimonials",
+			title: "Testimonials",
+			description: "Add multiple testimonials to the homepage.",
+			// initialValue: demo.testimonials,
+			of: [defineArrayMember({ type: "testimonials" })],
+			validation: rule => [
+				rule
+					.required()
+					.min(1)
+					.error("Add at least one testimonial to the homepage."),
+				rule.unique().warning("Duplicate testimonial items were removed."),
+			],
+		}),
+		defineField({
+			name: "projects",
+			type: "array",
+			group: "projects",
+			title: "Projects",
+			description: "Add multiple projects to the homepage.",
+			// initialValue: demo.projectsContent,
+			of: [defineArrayMember({ type: "projectsContent" })],
+			validation: rule => [
+				rule.required().min(1).error("Add at least one project to the homepage."),
+				rule.unique().warning("Duplicate project items were removed."),
 			],
 		}),
 	],

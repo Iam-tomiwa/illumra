@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MoreStoriesQueryResult } from "@/sanity.types";
-import { urlForImage } from "@/sanity/lib/utils";
+import { urlForImage, resolveMediaAsset } from "@/sanity/lib/utils";
 
 type PostListItem = NonNullable<MoreStoriesQueryResult[number]>;
 
@@ -70,17 +70,18 @@ export function PostCard({ post, className }: PostCardProps) {
 					<div className="flex items-center gap-3">
 						{(() => {
 							const authorPicture = post.author?.picture;
-							const pictureBuilder = authorPicture
-								? urlForImage(authorPicture)
+							const resolvedPicture = authorPicture
+								? resolveMediaAsset(authorPicture as any, {
+										width: 96,
+										height: 96,
+										fit: "crop",
+									})
 								: undefined;
-							return pictureBuilder ? (
+							return resolvedPicture?.url ? (
 								<div className="relative h-8 w-8 overflow-hidden rounded-full bg-muted">
 									<Image
-										src={
-											pictureBuilder.width(96).height(96).fit("crop").url() ??
-											"/vercel.svg"
-										}
-										alt={authorPicture?.alt ?? post.author?.name ?? "Author"}
+										src={resolvedPicture.url}
+										alt={resolvedPicture.alt ?? post.author?.name ?? "Author"}
 										fill
 										className="object-cover"
 									/>
