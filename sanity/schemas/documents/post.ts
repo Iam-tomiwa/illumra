@@ -1,4 +1,4 @@
-import { DocumentTextIcon } from "@sanity/icons";
+import { DocumentTextIcon, ImageIcon } from "@sanity/icons";
 import { format, parseISO } from "date-fns";
 import { defineField, defineType } from "sanity";
 
@@ -44,7 +44,45 @@ export default defineType({
       name: "content",
       title: "Content",
       type: "array",
-      of: [{ type: "block" }],
+      of: [
+        { type: "block" },
+        {
+          type: "object",
+          name: "contentImage",
+          title: "Image",
+          icon: ImageIcon,
+          fields: [
+            defineField({
+              name: "media",
+              title: "Media",
+              type: "mediaAsset",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "caption",
+              type: "string",
+              title: "Caption",
+              description: "Optional caption to display below the image.",
+            }),
+          ],
+          preview: {
+            select: {
+              altText: "media.altText",
+              source: "media.source",
+              image: "media.image",
+              caption: "caption",
+            },
+            prepare({ altText, source, image, caption }) {
+              return {
+                title: altText || caption || "Image",
+                subtitle: source === "external" ? "External URL" : "Uploaded",
+                media: image,
+              };
+            },
+          },
+        },
+        { type: "videoAsset" },
+      ],
     }),
     defineField({
       name: "excerpt",

@@ -14,6 +14,22 @@ import {
 	type PortableTextBlock,
 } from "next-sanity";
 
+import { resolveMediaAsset } from "@/sanity/lib/utils";
+import { MediaAsset, VideoAsset } from "@/sanity.types";
+import { VideoEmbed } from "@/components/products/video-embed";
+
+interface ContentImageValue {
+	_type: "contentImage";
+	_key: string;
+	media?: MediaAsset;
+	caption?: string;
+}
+
+interface VideoAssetValue extends Omit<VideoAsset, "_type"> {
+	_type: "videoAsset";
+	_key: string;
+}
+
 export default function CustomPortableText({
 	className,
 	value,
@@ -36,6 +52,54 @@ export default function CustomPortableText({
 					<a href={value?.href} className="px-2" rel="noreferrer noopener">
 						{children}
 					</a>
+				);
+			},
+		},
+		types: {
+			contentImage: ({ value }: { value: ContentImageValue }) => {
+				const resolved = resolveMediaAsset(value.media, { width: 1200 });
+
+				if (!resolved?.url) {
+					return null;
+				}
+
+				return (
+					<figure className="my-8">
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img
+							className="w-full rounded-lg"
+							src={resolved.url}
+							alt={resolved.alt || ""}
+							loading="lazy"
+						/>
+						{value.caption && (
+							<figcaption className="mt-2 text-center text-sm text-gray-500">
+								{value.caption}
+							</figcaption>
+						)}
+					</figure>
+				);
+			},
+			videoAsset: ({ value }: { value: VideoAssetValue }) => {
+				if (!value.externalUrl) {
+					return null;
+				}
+
+				return (
+					<figure className="my-8">
+						<div className="aspect-video rounded-lg overflow-hidden">
+							<VideoEmbed
+								url={value.externalUrl}
+								title={value.title}
+								className="rounded-lg"
+							/>
+						</div>
+						{value.title && (
+							<figcaption className="mt-2 text-center text-sm text-gray-500">
+								{value.title}
+							</figcaption>
+						)}
+					</figure>
 				);
 			},
 		},
