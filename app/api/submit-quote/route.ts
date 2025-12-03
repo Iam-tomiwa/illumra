@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
 		const companyEmail = "info@illumra.com";
 		const companyPhone = "(801) 349-1200";
 		const headquarters = "Lindon, UT";
-		const satelliteOffice = "Wayne, NJ";
 
 		// Parse color information from colorId (format: "ColorName-PartNumber")
 		let colorName = "";
@@ -200,9 +199,6 @@ export async function POST(req: NextRequest) {
                   <td style="text-align: center; padding-bottom: 15px;">
                     <p style="margin: 0 0 8px; font-size: 13px; color: #cccccc; line-height: 1.6;">
                       <strong style="color: #ffffff;">Headquarters:</strong> ${headquarters}
-                    </p>
-                    <p style="margin: 0 0 8px; font-size: 13px; color: #cccccc; line-height: 1.6;">
-                      <strong style="color: #ffffff;">Satellite Office:</strong> ${satelliteOffice}
                     </p>
                   </td>
                 </tr>

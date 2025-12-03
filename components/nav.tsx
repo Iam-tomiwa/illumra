@@ -19,20 +19,10 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 	const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
 	const toggleSubMenu = (name: string) =>
 		setIsSubMenuOpen(prev => (prev === name ? null : name));
-
+	
 	const navLinks = [
 		// { name: "Home", path: "/" },
-		{
-			name: "About Us",
-			submenu: [
-				{ name: "About ILLUMRA", path: "/about" },
-				{ name: "Become A Distributor", path: "/about#become-a-distributor" },
-				{ name: "Become A Rep", path: "/about#rep" },
-			],
-		},
-		{ name: "Where to Buy", path: "/distributors" },
 		{ name: "Products", path: "/products" },
-		{ name: "Blog", path: "/posts" },
 		{
 			name: "Resources",
 			submenu: [
@@ -43,6 +33,16 @@ const Navbar: React.FC<{ className?: string; isDraftMode?: boolean }> = ({
 				},
 				// { name: "Tutorials", path: "/tutorials" },
 				{ name: "FAQ", path: "/#faq" },
+			],
+		},
+		{ name: "Where to Buy", path: "/distributors" },
+		{ name: "Blog", path: "/posts" },
+		{
+			name: "About Us",
+			submenu: [
+				{ name: "About ILLUMRA", path: "/about" },
+				{ name: "Become A Distributor", path: "/about#become-a-distributor" },
+				{ name: "Become A Rep", path: "/about#rep" },
 			],
 		},
 	];

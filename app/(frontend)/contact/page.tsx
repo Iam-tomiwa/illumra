@@ -16,8 +16,6 @@ export default async function ContactUsPage() {
 	const phone = aboutPage?.companyInfo?.phone ?? companyInfo.phone;
 	const headquarters =
 		aboutPage?.companyInfo?.headquarters ?? companyInfo.headquarters;
-	const satelliteOffice =
-		aboutPage?.companyInfo?.satelliteOffice ?? companyInfo.satelliteOffice;
 
 	return (
 		<div className="bg-background">
@@ -71,18 +69,6 @@ export default async function ContactUsPage() {
 									<p className="text-foreground/90">{headquarters}</p>
 								</div>
 							</div>
-							{satelliteOffice && (
-								<div className="flex items-start gap-3">
-									<Icon
-										icon="lucide:building"
-										className="size-5 text-primary mt-1 shrink-0"
-									/>
-									<div>
-										<p className="font-medium">Satellite Office</p>
-										<p className="text-foreground/90">{satelliteOffice}</p>
-									</div>
-								</div>
-							)}
 						</div>
 					</div>
 				</div>
