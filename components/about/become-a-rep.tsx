@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function BecomeARep({ className }: { className?: string }) {
 	return (
@@ -17,11 +18,16 @@ export default function BecomeARep({ className }: { className?: string }) {
 							ILLUMRA is looking for qualified manufacturer representatives.
 						</p>
 						<p className="text-lg text-foreground/90 mb-8">
-							If you are interested please contact:
+							If you are interested please click the button below and indicate your interest in becoming a rep in the request field.
 						</p>
+						<Button asChild size="lg">
+							<Link href="/contact" >
+								Contact Us to Become a Rep <Icon icon="lucide:arrow-right" className="size-5" />
+							</Link>
+						</Button>
 					</div>
 
-					<Card className="border-2">
+					{/* <Card className="border-2">
 						<CardContent className="pt-6">
 							<div className="space-y-6">
 								<div>
@@ -71,7 +77,7 @@ export default function BecomeARep({ className }: { className?: string }) {
 								</div>
 							</div>
 						</CardContent>
-					</Card>
+					</Card> */}
 				</div>
 			</div>
 		</section>
