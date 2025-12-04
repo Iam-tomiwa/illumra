@@ -92,7 +92,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 										alt={logo.alt}
 										width={180}
 										height={90}
-										className="max-h-10 w-full object-contain md:h-20"
+										className="max-h-10 w-auto object-contain md:h-20"
 										unoptimized={logo.src.includes("cdn.sanity.io")}
 									/>
 								</Link>
@@ -102,7 +102,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 									alt={logo.alt}
 									width={180}
 									height={90}
-									className="max-h-10 w-max"
+									className="max-h-10 w-auto"
 									unoptimized={logo.src.includes("cdn.sanity.io")}
 								/>
 							)}
