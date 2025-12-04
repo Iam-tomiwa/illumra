@@ -59,8 +59,8 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 	return (
 		<footer className="py-12 bg-accent-foreground text-white border-t border-border">
 			<div className="container mx-auto px-4">
-				<div className="grid md:grid-cols-3 gap-12 mb-8">
-					<div>
+				<div className="flex flex-col md:flex-row justify-between gap-12 mb-8">
+					<div className="max-w-sm">
 						<Link href="/">
 							<Image
 								src="/logo-white.png"
@@ -77,7 +77,7 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 						</p>
 						<p className="text-sm text-inherit mb-4">Lindon, UT</p>
 					</div>
-					{linkGroups.map(group => (
+				{linkGroups.map(group => (
 						<div key={group.title}>
 							<h4 className="font-semibold mb-4">{group.title}</h4>
 							<ul className="space-y-2 text-sm text-inherit">
