@@ -1,7 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "predev": "npm run typegen",
     "dev": "next --turbo --port 3333",
     "prebuild": "npm run typegen",
     "build": "next build",

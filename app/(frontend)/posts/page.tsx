@@ -6,9 +6,7 @@ import CoverImage from "@/components/cover-image";
 import DateComponent from "@/components/date";
 import MoreStories from "@/components/more-stories";
 import Onboarding from "@/components/onboarding";
-
 import type { HeroQueryResult, MediaAsset } from "@/sanity.types";
-import * as demo from "@/sanity/lib/demo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { heroQuery, settingsQuery } from "@/sanity/lib/queries";
 function HeroPost({
@@ -24,12 +22,12 @@ function HeroPost({
 >) {
 	return (
 		<article>
-			<Link className="group mb-8 block md:mb-16" href={`/posts/${slug}`}>
+			<Link className="group mb-8 block md:mb-12" href={`/posts/${slug}`}>
 				<CoverImage image={coverImage} priority />
 			</Link>
 			<div className="mb-20 md:mb-28 md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8">
 				<div>
-					<h3 className="text-pretty mb-4 text-4xl leading-tight lg:text-6xl">
+					<h3 className="text-pretty mb-4 text-4xl leading-tight lg:text-5xl">
 						<Link href={`/posts/${slug}`} className="hover:underline">
 							{title}
 						</Link>

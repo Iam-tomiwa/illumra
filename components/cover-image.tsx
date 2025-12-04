@@ -11,7 +11,7 @@ export default function CoverImage(props: CoverImageProps) {
 	const { image: source, priority } = props;
 	const image = source?.asset?._ref ? (
 		<Image
-			className="w-full aspect-video max-h-[600px] object-cover"
+			className="w-full aspect-video max-h-[500px] object-cover"
 			width={2000}
 			height={1000}
 			alt={source?.alt || ""}

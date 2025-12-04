@@ -16,6 +16,7 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import { postQuery, settingsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import { MediaAsset } from "@/sanity.types";
+import ReadingTime from "@/components/blog/reading-time";
 
 type Props = {
 	params: Promise<{ slug: string }>;
@@ -68,7 +69,7 @@ export default async function PostPage({ params }: Props) {
 	return (
 		<div className="container mx-auto px-5 pt-24">
 			<article>
-				<h1 className="text-balance mb-12 text-6xl font-bold leading-tight tracking-tighter md:text-7xl md:leading-none lg:text-8xl">
+				<h1 className="text-balance mb-12 text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-7xl">
 					{post.title}
 				</h1>
 				<div className="hidden md:mb-12 md:block">
@@ -92,8 +93,9 @@ export default async function PostPage({ params }: Props) {
 						)}
 					</div>
 					<div className="mb-6 text-lg">
-						<div className="mb-4 text-lg">
-							<DateComponent dateString={post.date} />
+						<div className="mb-4 text-lg flex items-center gap-2">
+							<DateComponent dateString={post.date} /> - <ReadingTime className="text-accent-foreground italic"
+							 content={post.content as PortableTextBlock[]} />
 						</div>
 					</div>
 				</div>

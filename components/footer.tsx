@@ -20,15 +20,15 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 	);
 
 	const linkGroups: LinkGroup[] = [
-		{
-			title: "Solutions",
-			links: [
-				{ label: "Lighting Control", href: "#" },
-				{ label: "HVAC Control", href: "#" },
-				{ label: "Energy Analytics", href: "#" },
-				{ label: "Integration Services", href: "#" },
-			],
-		},
+		// {
+		// 	title: "Solutions",
+		// 	links: [
+		// 		{ label: "Lighting Control", href: "#" },
+		// 		{ label: "HVAC Control", href: "#" },
+		// 		{ label: "Energy Analytics", href: "#" },
+		// 		{ label: "Integration Services", href: "#" },
+		// 	],
+		// },
 		{
 			title: "Company",
 			links: [
@@ -59,7 +59,7 @@ export function Footer({ categories }: { categories?: CategoryType[] }) {
 	return (
 		<footer className="py-12 bg-accent-foreground text-white border-t border-border">
 			<div className="container mx-auto px-4">
-				<div className="grid md:grid-cols-4 gap-12 mb-8">
+				<div className="grid md:grid-cols-3 gap-12 mb-8">
 					<div>
 						<Link href="/">
 							<Image

@@ -51,7 +51,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
 	return (
 		<header
 			className={cn(
-				"relative flex min-h-[80vh] items-center bg-cover bg-center py-10 text-white"
+				"relative flex min-h-[80vh] items-center bg-cover bg-center py-20 text-white"
 			)}
 			style={
 				backgroundImageUrl
