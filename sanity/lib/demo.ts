@@ -336,7 +336,7 @@ export const companyInfo = {
 			],
 		},
 	],
-	email: "info@illumra.com",
+	email: "sales@illumra.com",
 	phone: "(801) 349-1200",
 	headquarters: "Lindon, UT",
 	satelliteOffice: "Wayne, NJ",

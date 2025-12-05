@@ -128,7 +128,7 @@ export default async function AboutPage() {
 						Why Choose ILLUMRA
 					</h2>
 					<div className="grid md:grid-cols-3 gap-8">
-						<Card className="border-2 hover:border-primary/50 transition-colors">
+						<Card className="border-2 transition-colors">
 							<CardContent className="pt-6">
 								<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
 									<Icon icon="lucide:headphones" className="size-6 text-primary" />
@@ -141,7 +141,7 @@ export default async function AboutPage() {
 							</CardContent>
 						</Card>
 
-						<Card className="border-2 hover:border-primary/50 transition-colors">
+						<Card className="border-2 transition-colors">
 							<CardContent className="pt-6">
 								<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
 									<Icon icon="lucide:leaf" className="size-6 text-primary" />
@@ -154,7 +154,7 @@ export default async function AboutPage() {
 							</CardContent>
 						</Card>
 
-						<Card className="border-2 hover:border-primary/50 transition-colors">
+						<Card className="border-2 transition-colors">
 							<CardContent className="pt-6">
 								<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
 									<Icon icon="lucide:settings" className="size-6 text-primary" />

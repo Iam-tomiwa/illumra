@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 		const origin = req.nextUrl.origin;
 		const siteUrl =
 			origin || process.env.NEXT_PUBLIC_SITE_URL || "https://illumra.com";
-		const companyEmail = "info@illumra.com";
+		const companyEmail = "sales@illumra.com";
 		const companyPhone = "(801) 349-1200";
 		const headquarters = "Lindon, UT";
 

@@ -46,7 +46,9 @@ export default async function WirelessControlSolutionsLandingPage() {
 				products={featuredProducts}
 			/>
 			<ProjectsSection projects={projects as ProjectsContent[]} />
-			<TestimonialsSection testimonials={testimonials} />
+			{testimonials && testimonials.length > 0 && (
+				<TestimonialsSection testimonials={testimonials} />
+			)}
 			<FaqSection faqs={faqs} />
 			<CTASection />
 		</div>

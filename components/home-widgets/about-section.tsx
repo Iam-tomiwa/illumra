@@ -174,7 +174,7 @@ export function AboutSection({ section }: AboutSectionProps) {
 						{features.map((feature, index) => (
 							<Card
 								key={`${feature.title}-${feature.icon}`}
-								className="border border-white/20 bg-white/5 transition hover:border-primary/60 hover:bg-white/10"
+								className="border border-white/20 bg-white/5 transition"
 							>
 								<AnimatedElement delay={0.1 + index * 0.1}>
 									<CardContent className="pt-6">
