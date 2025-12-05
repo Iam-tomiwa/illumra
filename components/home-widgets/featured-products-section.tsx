@@ -11,7 +11,6 @@ import {
 	FeaturedProductsQueryResult,
 } from "@/sanity.types";
 import { AnimatedElement } from "@/components/animated-element";
-import { AnimatedSection } from "../animated-section";
 
 export type ProductType = NonNullable<
 	NonNullable<FeaturedProductsQueryResult>[number]
@@ -81,7 +80,7 @@ export function FeaturedProductsSection({
 					</div>
 				</div>
 
-				<AnimatedSection>
+				<AnimatedElement>
 					<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-6">
 						{filteredProducts.map((product, index) => (
 							<ProductCard
@@ -93,7 +92,7 @@ export function FeaturedProductsSection({
 							/>
 						))}
 					</div>
-				</AnimatedSection>
+				</AnimatedElement>
 			</div>
 		</section>
 	);
