@@ -260,14 +260,14 @@ export const FILTERED_PRODUCTS_COUNT_QUERY = defineQuery(`
         count((categories[]->slug.current)[@ == $category]) > 0
       ) &&
       (
-        !defined($voltage) ||
-        $voltage == "" ||
-        voltage->value == $voltage
+        !defined($voltages) ||
+        count($voltages) == 0 ||
+        voltage->value in $voltages
       ) &&
       (
-        !defined($frequency) ||
-        $frequency == "" ||
-        frequency->value == $frequency
+        !defined($frequencies) ||
+        count($frequencies) == 0 ||
+        frequency->value in $frequencies
       ) &&
       (
         !defined($protocols) ||

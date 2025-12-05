@@ -36,11 +36,11 @@ const getParam = (value: string | string[] | undefined): string => {
 	return value ?? "";
 };
 
-const getProtocolsParam = (value: string | string[] | undefined): string[] => {
+const getArrayParam = (value: string | string[] | undefined): string[] => {
 	if (Array.isArray(value)) {
 		return value
-			.map(protocol => cleanString(protocol))
-			.filter((protocol): protocol is string => protocol !== "");
+			.map(v => cleanString(v))
+			.filter((v): v is string => v !== "");
 	}
 
 	if (value === undefined || value === null) {
@@ -65,13 +65,10 @@ export default async function ProductsPage(props: ProductsPageProps) {
 
 	const searchParam = cleanString(getParam(searchParams.search));
 	const categoryParam = cleanString(getParam(searchParams.category));
-	const voltageParam = cleanString(getParam(searchParams.voltage));
-	const frequencyParam = cleanString(getParam(searchParams.frequency));
+	const voltagesParam = getArrayParam(searchParams.voltages);
+	const frequenciesParam = getArrayParam(searchParams.frequencies);
 	const sortParam = cleanString(getParam(searchParams.sort));
-	const protocolsParam = getProtocolsParam(searchParams.protocol);
-	// Debug: uncomment to see what's being parsed
-	// console.log("Raw protocol param:", searchParams.protocol);
-	// console.log("Parsed protocols:", protocolsParam);
+	const protocolsParam = getArrayParam(searchParams.protocols);
 	const sort = SORT_VALUES.has(sortParam) ? sortParam : DEFAULT_SORT;
 
 	const pageParam = cleanString(getParam(searchParams.page));
@@ -88,8 +85,8 @@ export default async function ProductsPage(props: ProductsPageProps) {
 		search,
 		searchWildcard,
 		category: categoryParam,
-		voltage: voltageParam,
-		frequency: frequencyParam,
+		voltages: voltagesParam,
+		frequencies: frequenciesParam,
 		protocols: protocolsParam,
 	};
 
@@ -107,8 +104,8 @@ export default async function ProductsPage(props: ProductsPageProps) {
 			_type == "product" &&
 			(!defined($search) || $search == "" || coalesce(title, "") match $searchWildcard || coalesce(sku, "") match $searchWildcard) &&
 			(!defined($category) || $category == "" || count((categories[]->slug.current)[@ == $category]) > 0) &&
-			(!defined($voltage) || $voltage == "" || voltage->value == $voltage) &&
-			(!defined($frequency) || $frequency == "" || frequency->value == $frequency) &&
+			(!defined($voltages) || count($voltages) == 0 || voltage->value in $voltages) &&
+			(!defined($frequencies) || count($frequencies) == 0 || frequency->value in $frequencies) &&
 			(!defined($protocols) || count($protocols) == 0 || count((protocols[]->value)[@ in $protocols]) > 0)
 		]
 		[$offset...$end]
@@ -163,8 +160,8 @@ export default async function ProductsPage(props: ProductsPageProps) {
 
 	const initialFilters: FilterState = {
 		category: categoryParam,
-		voltage: voltageParam,
-		frequency: frequencyParam,
+		voltages: voltagesParam,
+		frequencies: frequenciesParam,
 		protocols: protocolsParam,
 	};
 

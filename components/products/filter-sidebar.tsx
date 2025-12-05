@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import ComboBox from "@/components/ui/combo-box-2";
 import { CategoryType } from "../home-widgets/featured-products-section";
 import {
 	ProductFrequency,
@@ -10,8 +9,8 @@ import { cleanString } from "@/sanity/lib/utils";
 
 export type FilterState = {
 	category: string;
-	voltage: string;
-	frequency: string;
+	voltages: string[];
+	frequencies: string[];
 	protocols: string[];
 };
 
@@ -33,17 +32,19 @@ export default function FilterSidebar({
 	voltages: ProductVoltage[];
 	onFiltersChange: (next: FilterState) => void;
 }) {
-	const toggleProtocol = (protocol: string) => {
-		if (!protocol) {
-			return;
-		}
+	const toggleFilter = (
+		filterKey: "voltages" | "frequencies" | "protocols",
+		value: string
+	) => {
+		if (!value) return;
 
-		const cleanProtocol = cleanString(protocol);
-		const nextProtocols = filters.protocols.includes(cleanProtocol)
-			? filters.protocols.filter(p => p !== cleanProtocol)
-			: [...filters.protocols, cleanProtocol];
+		const cleanValue = cleanString(value);
+		const currentValues = filters[filterKey];
+		const nextValues = currentValues.includes(cleanValue)
+			? currentValues.filter(v => v !== cleanValue)
+			: [...currentValues, cleanValue];
 
-		onFiltersChange({ ...filters, protocols: nextProtocols });
+		onFiltersChange({ ...filters, [filterKey]: nextValues });
 	};
 
 	const categoryOptions = [
@@ -55,23 +56,17 @@ export default function FilterSidebar({
 		})),
 	];
 
-	const voltageOptions = [
-		{ _id: "all-voltages", value: "", label: "All Voltages" },
-		...voltages.map(voltage => ({
-			...voltage,
-			value: cleanString(voltage.value),
-			label: cleanString(voltage.label) || voltage.label,
-		})),
-	];
+	const voltageOptions = voltages.map(voltage => ({
+		...voltage,
+		value: cleanString(voltage.value),
+		label: cleanString(voltage.label) || voltage.label,
+	}));
 
-	const frequencyOptions = [
-		{ _id: "all-frequencies", value: "", label: "All Frequencies" },
-		...frequencies.map(frequency => ({
-			...frequency,
-			value: cleanString(frequency.value),
-			label: cleanString(frequency.label) || frequency.label,
-		})),
-	];
+	const frequencyOptions = frequencies.map(frequency => ({
+		...frequency,
+		value: cleanString(frequency.value),
+		label: cleanString(frequency.label) || frequency.label,
+	}));
 
 	const protocolOptions = protocols.map(protocol => ({
 		...protocol,
@@ -113,37 +108,49 @@ export default function FilterSidebar({
 			{/* Voltage Filter */}
 			<div>
 				<label className="block text-sm font-medium mb-2">Voltage</label>
-				<ComboBox
-					options={voltageOptions.map((voltage, index) => ({
-						label: cleanString(voltage.label),
-						value: cleanString(voltage.value),
-						id: voltage._id ?? `voltage-${index}`,
-					}))}
-					showSearch={false}
-					className="w-full h-10"
-					value={filters.voltage}
-					onValueChange={value =>
-						onFiltersChange({ ...filters, voltage: cleanString(value) })
-					}
-				/>
+				<div className="space-y-2">
+					{voltageOptions.map((voltage, index) => {
+						const value = cleanString(voltage.value);
+						return (
+							<label
+								key={voltage._id ?? `voltage-${index}`}
+								className="flex items-center gap-2 cursor-pointer hover:bg-accent/50 p-2 rounded-md"
+							>
+								<input
+									type="checkbox"
+									checked={value !== "" && filters.voltages.includes(value)}
+									onChange={() => toggleFilter("voltages", value)}
+									className="w-4 h-4 rounded border-gray-300"
+								/>
+								<span className="text-sm">{cleanString(voltage.label) || ""}</span>
+							</label>
+						);
+					})}
+				</div>
 			</div>
 
 			{/* Frequency Filter */}
 			<div>
 				<label className="block text-sm font-medium mb-2">Frequency</label>
-				<ComboBox
-					options={frequencyOptions.map((frequency, index) => ({
-						label: cleanString(frequency.label),
-						value: cleanString(frequency.value),
-						id: frequency._id ?? `frequency-${index}`,
-					}))}
-					showSearch={false}
-					className="w-full h-10"
-					value={filters.frequency}
-					onValueChange={value =>
-						onFiltersChange({ ...filters, frequency: cleanString(value) })
-					}
-				/>
+				<div className="space-y-2">
+					{frequencyOptions.map((frequency, index) => {
+						const value = cleanString(frequency.value);
+						return (
+							<label
+								key={frequency._id ?? `frequency-${index}`}
+								className="flex items-center gap-2 cursor-pointer hover:bg-accent/50 p-2 rounded-md"
+							>
+								<input
+									type="checkbox"
+									checked={value !== "" && filters.frequencies.includes(value)}
+									onChange={() => toggleFilter("frequencies", value)}
+									className="w-4 h-4 rounded border-gray-300"
+								/>
+								<span className="text-sm">{cleanString(frequency.label) || ""}</span>
+							</label>
+						);
+					})}
+				</div>
 			</div>
 
 			{/* Protocol Checkboxes */}
@@ -160,7 +167,7 @@ export default function FilterSidebar({
 								<input
 									type="checkbox"
 									checked={value !== "" && filters.protocols.includes(value)}
-									onChange={() => toggleProtocol(value)}
+									onChange={() => toggleFilter("protocols", value)}
 									className="w-4 h-4 rounded border-gray-300"
 								/>
 								<span className="text-sm">{cleanString(protocol.label) || ""}</span>

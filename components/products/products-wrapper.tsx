@@ -53,10 +53,10 @@ const sortOptions = [
 	{ label: "SKU (Z-A)", value: "sku-desc" },
 ];
 
-const emptyFilters = {
+const emptyFilters: FilterState = {
 	category: "",
-	voltage: "",
-	frequency: "",
+	voltages: [],
+	frequencies: [],
 	protocols: [],
 };
 
@@ -100,6 +100,8 @@ export default function ProductsWrapper(props: ProductsWrapperProps) {
 		() =>
 			JSON.stringify({
 				...initialFilters,
+				voltages: [...initialFilters.voltages].sort(),
+				frequencies: [...initialFilters.frequencies].sort(),
 				protocols: [...initialFilters.protocols].sort(),
 			}),
 		[initialFilters]
@@ -210,7 +212,7 @@ export default function ProductsWrapper(props: ProductsWrapperProps) {
 
 			<div className="container mx-auto px-4 pt-10 flex gap-8">
 				<aside className="hidden lg:block w-64 shrink-0">
-					<div className="sticky top-32">
+					<div className="sticky top-32 max-h-[calc(100vh-10rem)] overflow-auto">
 						<FilterSidebar
 							filters={filters}
 							categories={categories}
