@@ -117,7 +117,7 @@ export default defineConfig({
 					}),
 					aboutPage: defineLocations({
 						locations: [aboutLocation],
-						message: "This document powers the about page content.",
+						message: "This document powers the about page and contact information content.",
 						tone: "positive",
 					}),
 					post: defineLocations({
