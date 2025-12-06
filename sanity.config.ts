@@ -23,6 +23,7 @@ import productCategory from "@/sanity/schemas/documents/productCategory";
 import productVoltage from "@/sanity/schemas/documents/productVoltage";
 import productFrequency from "@/sanity/schemas/documents/productFrequency";
 import productProtocol from "@/sanity/schemas/documents/productProtocol";
+import store from "@/sanity/schemas/documents/store";
 import { homePage } from "@/sanity/schemas/singletons/homePage";
 import { aboutPage } from "@/sanity/schemas/singletons/aboutPage";
 import { heroSection } from "@/sanity/schemas/objects/heroSection";
@@ -71,6 +72,7 @@ export default defineConfig({
 			productVoltage,
 			productFrequency,
 			productProtocol,
+			store,
 			author,
 			// Objects
 			heroSection,

@@ -401,3 +401,20 @@ export const PRODUCTS_WITH_VIDEOS_QUERY = defineQuery(`
     }
   } | order(_createdAt desc)
 `);
+
+export const STORES_QUERY = defineQuery(`
+  *[_type == "store"] | order(name asc) {
+    _id,
+    name,
+    storeType,
+    address,
+    city,
+    state,
+    zipCode,
+    country,
+    phone,
+    email,
+    website,
+    location
+  }
+`);
