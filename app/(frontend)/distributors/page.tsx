@@ -10,12 +10,33 @@ export default async function DistributorsPage() {
 	const stores = await sanityFetch({ query: STORES_QUERY });
 
 	const storesList: StoreInput[] = Array.isArray(stores)
-		? stores.filter(
-				(store): store is StoreInput =>
-					store !== null &&
-					typeof store === "object" &&
-					"_id" in store
-			)
+		? stores
+				.filter(
+					(store) =>
+						store !== null &&
+						typeof store.name === "string" &&
+						typeof store.storeType === "string" &&
+						["distributor", "rep", "retailer"].includes(store.storeType) &&
+						typeof store.address === "string" &&
+						typeof store.city === "string" &&
+						typeof store.country === "string"
+				)
+				.map((store) => ({
+					_id: store._id,
+					name: store.name!,
+					storeType: store.storeType as "distributor" | "rep" | "retailer",
+					address: store.address!,
+					city: store.city!,
+					state: store.state,
+					zipCode: store.zipCode,
+					country: store.country!,
+					phone: store.phone,
+					email: store.email,
+					website: store.website,
+					location: store.location
+						? { lat: store.location.lat!, lng: store.location.lng! }
+						: null,
+				}))
 		: [];
 
 	return (
