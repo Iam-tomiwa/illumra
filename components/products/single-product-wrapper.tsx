@@ -134,7 +134,7 @@ export default function SingleProductWrapper({
 			<div className="container mx-auto px-4 py-12">
 				<div className="flex flex-col lg:flex-row gap-12 mb-16">
 					{/* Image Slider */}
-					<div className="relative">
+					<div className="relative md:max-w-[45%]">
 						<ProductImageSlider
 							images={resolvedImages}
 							video={normalizedProduct.video || undefined}
