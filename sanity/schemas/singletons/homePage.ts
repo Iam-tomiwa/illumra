@@ -121,7 +121,6 @@ export const homePage = defineType({
 			of: [defineArrayMember({ type: "testimonials" })],
 			validation: rule => [
 				rule
-					.required()
 					.min(1)
 					.error("Add at least one testimonial to the homepage."),
 				rule.unique().warning("Duplicate testimonial items were removed."),
