@@ -76,7 +76,7 @@ function haversineDistance(
 	return R * c;
 }
 
-// Geocode an address using OpenStreetMap Nominatim (free, no API key needed)
+// Geocode an address using our API route (uses LocationIQ with Nominatim fallback)
 async function geocodeAddress(
 	address: string,
 	city: string,
@@ -84,31 +84,29 @@ async function geocodeAddress(
 	zipCode: string | null,
 	country: string
 ): Promise<{ lat: number; lng: number } | null> {
-	const fullAddress = [address, city, state, zipCode, country]
-		.filter(Boolean)
-		.join(", ");
-
 	try {
-		const response = await fetch(
-			`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`,
-			{
-				headers: {
-					"User-Agent": "StoreLocator/1.0",
-				},
-			}
-		);
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+		const response = await fetch("/api/geocode", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ address, city, state, zipCode, country }),
+			signal: controller.signal,
+		});
+
+		clearTimeout(timeoutId);
 
 		if (!response.ok) return null;
 
 		const data = await response.json();
-		if (data && data.length > 0) {
-			return {
-				lat: parseFloat(data[0].lat),
-				lng: parseFloat(data[0].lon),
-			};
+		if (data?.lat && data?.lng) {
+			return { lat: data.lat, lng: data.lng };
 		}
 	} catch (error) {
-		console.error("Geocoding error:", error);
+		if (error instanceof Error && error.name === "AbortError") {
+			console.warn("Geocoding request timed out");
+		}
 	}
 
 	return null;
@@ -131,37 +129,66 @@ export default function StoreLocator({ stores }: StoreLocatorProps) {
 
 	// Geocode stores without coordinates on mount
 	useEffect(() => {
+		let isCancelled = false;
+
 		const geocodeStores = async () => {
 			setIsGeocoding(true);
 
-			const results: StoreWithCoords[] = await Promise.all(
-				stores.map(async (rawStore, index) => {
-					// Sanitize the store data to remove hidden Unicode characters
-					const store = sanitizeSanityStrings(rawStore);
+			const results: StoreWithCoords[] = [];
+			let needsGeocoding = 0;
 
-					// If store already has location, use it
-					if (store.location?.lat && store.location?.lng) {
-						return { ...store, coords: store.location };
-					}
+			// First pass: use existing coordinates and count stores needing geocoding
+			for (const rawStore of stores) {
+				const store = sanitizeSanityStrings(rawStore);
 
-					// Add a small delay between requests to respect rate limits
-					await new Promise(resolve => setTimeout(resolve, index * 200));
+				if (store.location?.lat && store.location?.lng) {
+					results.push({ ...store, coords: store.location });
+				} else {
+					results.push({ ...store, coords: null });
+					needsGeocoding++;
+				}
+			}
 
-					// Geocode the address (data is already sanitized)
-					const coords = await geocodeAddress(
-						store.address,
-						store.city,
-						store.state,
-						store.zipCode,
-						store.country
-					);
+			// Update state immediately with stores that have coordinates
+			if (!isCancelled) {
+				setGeocodedStores([...results]);
+			}
 
-					return { ...store, coords };
-				})
-			);
+			// If no stores need geocoding, we're done
+			if (needsGeocoding === 0) {
+				setIsGeocoding(false);
+				return;
+			}
 
-			setGeocodedStores(results);
-			setIsGeocoding(false);
+			// Second pass: geocode stores without coordinates sequentially
+			for (let i = 0; i < results.length; i++) {
+				if (isCancelled) break;
+
+				const store = results[i];
+				if (store.coords) continue; // Already has coordinates
+
+				// Wait 1.1 seconds between requests to respect Nominatim rate limits
+				await new Promise(resolve => setTimeout(resolve, 1100));
+
+				if (isCancelled) break;
+
+				const coords = await geocodeAddress(
+					store.address,
+					store.city,
+					store.state,
+					store.zipCode,
+					store.country
+				);
+
+				if (!isCancelled && coords) {
+					results[i] = { ...store, coords };
+					setGeocodedStores([...results]);
+				}
+			}
+
+			if (!isCancelled) {
+				setIsGeocoding(false);
+			}
 		};
 
 		if (stores.length > 0) {
@@ -169,6 +196,10 @@ export default function StoreLocator({ stores }: StoreLocatorProps) {
 		} else {
 			setIsGeocoding(false);
 		}
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [stores]);
 
 	const filteredStores = useMemo(() => {

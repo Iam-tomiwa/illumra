@@ -49,12 +49,9 @@ export default function StoreMap({
 		const query = encodeURIComponent(
 			`${store.address}, ${store.city}, ${store.state || ""} ${store.zipCode || ""}, ${store.country}`
 		);
-		window.open(
-			`https://www.google.com/maps/search/?query=${query}`,
-			"_blank"
-		);
+		window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
 	};
-
+	
 	return (
 		<div className="relative w-full h-full">
 			<Map
