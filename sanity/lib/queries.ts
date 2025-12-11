@@ -5,6 +5,7 @@ export const settingsQuery = defineQuery(`*[_type == "settings"][0]`);
 export const homePageQuery = defineQuery(`
   *[_type == "homePage"][0]{
     hero{
+      visible,
       attentionLabel,
       attentionIcon,
       headline,
@@ -31,6 +32,7 @@ export const homePageQuery = defineQuery(`
       }
     },
     controlSolutions{
+      visible,
       title,
       subtitle,
       features[]{
@@ -41,6 +43,7 @@ export const homePageQuery = defineQuery(`
       }
     },
     trustedBy{
+      visible,
       heading,
       logos[]{
         name,
@@ -58,6 +61,7 @@ export const homePageQuery = defineQuery(`
       }
     },
     about{
+      visible,
       title,
       body[]{
         ...,
@@ -86,11 +90,8 @@ export const homePageQuery = defineQuery(`
         description
       }
     },
-    faq[]{
-      group,
-      question,
-      answer
-    },
+    featuredProductsVisible,
+    testimonialsVisible,
     testimonials[]{
       author->{
         "name": coalesce(name, "Anonymous"),
@@ -108,6 +109,9 @@ export const homePageQuery = defineQuery(`
       },
       testimony,     
     },
+    projectsVisible,
+    projectsHeading,
+    projectsSubheading,
     projects[]{
       picture{
         source,
@@ -122,6 +126,16 @@ export const homePageQuery = defineQuery(`
       title,
       projectCategory,
       url
+    },
+    cta{
+      visible,
+      title,
+      description,
+      action{
+        label,
+        href,
+        icon
+      }
     }
   }
 `);
@@ -320,7 +334,7 @@ export const PRODUCT_QUERY = defineQuery(`
           hotspot
         }
       },
-      video{
+      videos[]{
         title,
         externalUrl
       },
@@ -366,15 +380,44 @@ export const PRODUCT_QUERY = defineQuery(`
 export const aboutPageQuery = defineQuery(`
   *[_type == "aboutPage"][0]{
     content{
-      heroDescription,
-      paragraphs[]{
-        ...,
-        children[]{
-          ...
+      backgroundImage{
+        source,
+        altText,
+        externalUrl,
+        image{
+          asset,
+          crop,
+          hotspot
+        }
+      },
+      featuresTitle,
+      features[]{
+        icon,
+        title,
+        description
+      },
+      enoceanVisible,
+      enoceanTitle,
+      enoceanDescription,
+      enoceanAction{
+        label,
+        href,
+        icon
+      },
+      enoceanImage{
+        source,
+        altText,
+        externalUrl,
+        image{
+          asset,
+          crop,
+          hotspot
         }
       }
     },
     companyInfo{
+      visible,
+      overviewTitle,
       overview[]{
         ...,
         children[]{
@@ -390,12 +433,12 @@ export const aboutPageQuery = defineQuery(`
 `);
 
 export const PRODUCTS_WITH_VIDEOS_QUERY = defineQuery(`
-  *[_type == "product" && defined(video.externalUrl)]{
+  *[_type == "product" && count(videos[defined(externalUrl)]) > 0]{
     _id,
     title,
     "slug": slug.current,
     "productUrl": "/products/" + slug.current,
-    video{
+    videos[]{
       title,
       externalUrl
     }
@@ -416,5 +459,18 @@ export const STORES_QUERY = defineQuery(`
     email,
     website,
     location
+  }
+`);
+
+export const FAQ_QUERY = defineQuery(`
+  *[_type == "faq"][0]{
+    visible,
+    title,
+    description,
+    items[]{
+      group,
+      question,
+      answer
+    }
   }
 `);

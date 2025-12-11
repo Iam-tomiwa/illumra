@@ -20,7 +20,7 @@ import type {
 } from "@/sanity.types";
 import { cleanString } from "@/sanity/lib/utils";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 20;
 const DEFAULT_SORT = "name-asc";
 const SORT_VALUES = new Set(["name-asc", "name-desc", "sku-asc", "sku-desc"]);
 
@@ -174,10 +174,10 @@ export default async function ProductsPage(props: ProductsPageProps) {
 			initialFilters={initialFilters}
 			initialSearch={search}
 			initialSort={sort}
-			categories={categoryOptions}
-			frequencies={frequencyOptions}
-			protocols={protocolOptions}
-			voltages={voltageOptions}
+			categories={categoryOptions.sort((a, b) => a?.title?.localeCompare(b?.title ?? "") ?? 0)}
+			frequencies={frequencyOptions.sort((a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0)}
+			protocols={protocolOptions.sort((a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0)}
+			voltages={voltageOptions.sort((a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0)}
 		/>
 	);
 }

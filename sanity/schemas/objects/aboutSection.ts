@@ -1,4 +1,4 @@
-import { BookIcon, ComposeIcon, SparkleIcon } from "@sanity/icons";
+import { BookIcon, ComposeIcon, SparkleIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const aboutSection = defineType({
@@ -30,6 +30,24 @@ export const aboutSection = defineType({
 		},
 	],
 	fields: [
+		defineField({
+			name: "visible",
+			title: "Section Visibility",
+			type: "string",
+			group: "content",
+			description: "Choose whether to show or hide this section on the page.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
+			validation: rule => [
+				rule.required().error("Select whether to show or hide this section."),
+			],
+		}),
 		defineField({
 			name: "title",
 			type: "string",

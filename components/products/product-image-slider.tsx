@@ -16,12 +16,14 @@ import { Lens } from "../ui/lens";
 import { VideoAsset } from "@/sanity.types";
 import { VideoEmbed, getVideoThumbnail } from "./video-embed";
 
+type VideoItem = Omit<VideoAsset, "_type"> & { _key?: string };
+
 type ProductImageSliderProps = {
 	images: (ResolvedMediaAsset | undefined)[];
-	video: Omit<VideoAsset, "_type"> | undefined;
+	videos?: VideoItem[] | null;
 };
 
-export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
+export function ProductImageSlider({ images, videos }: ProductImageSliderProps) {
 	const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const mainSwiperRef = useRef<SwiperType | null>(null);
@@ -30,9 +32,13 @@ export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
 		(img): img is ResolvedMediaAsset => img !== undefined && img.url !== undefined
 	);
 
-	const hasVideo = video?.externalUrl;
+	const validVideos = (videos ?? []).filter(
+		(vid): vid is VideoItem => vid !== undefined && vid.externalUrl !== undefined
+	);
 
-	if (validImages.length === 0 && !hasVideo) {
+	const hasVideos = validVideos.length > 0;
+
+	if (validImages.length === 0 && !hasVideos) {
 		return (
 			<div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
 				<p className="text-muted-foreground">No images available</p>
@@ -40,8 +46,7 @@ export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
 		);
 	}
 
-	const totalSlides = validImages.length + (hasVideo ? 1 : 0);
-	const videoThumbnail = hasVideo ? getVideoThumbnail(video.externalUrl!) : null;
+	const totalSlides = validImages.length + validVideos.length;
 
 	return (
 		<div className="space-y-4 aspect-square min-w-[30%]">
@@ -64,17 +69,17 @@ export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
 						prevEl: ".swiper-button-prev-main",
 					}}
 				>
-					{hasVideo && (
-						<SwiperSlide className="relative h-full w-full" key="video">
+					{validVideos.map((vid, index) => (
+						<SwiperSlide className="relative h-full w-full" key={`video-${vid._key || index}`}>
 							<VideoEmbed
-								url={video.externalUrl!}
-								title={video.title || undefined}
+								url={vid.externalUrl!}
+								title={vid.title || undefined}
 								className="h-full w-full"
 							/>
 						</SwiperSlide>
-					)}
+					))}
 					{validImages.map((image, index) => (
-						<SwiperSlide className="relative h-full w-full" key={index}>
+						<SwiperSlide className="relative h-full w-full" key={`image-${index}`}>
 							<Lens
 								zoomFactor={3}
 								lensSize={200}
@@ -112,53 +117,56 @@ export function ProductImageSlider({ images, video }: ProductImageSliderProps) {
 							prevEl: ".swiper-button-prev-thumbs",
 						}}
 					>
-						{hasVideo && (
-							<SwiperSlide key="video-thumb" className="size-20! cursor-pointer">
-								<div
-									className={`relative w-full h-full rounded-lg overflow-hidden border-2 transition-all ${
-										activeIndex === 0
-											? "border-primary"
-											: "border-transparent hover:border-muted-foreground/50"
-									}`}
-									onClick={() => {
-										mainSwiperRef.current?.slideTo(0);
-									}}
-								>
-									{videoThumbnail ? (
-										<>
-											<Image
-												src={videoThumbnail}
-												alt={video.title || "Video thumbnail"}
-												fill
-												className="object-cover"
-												sizes="80px"
-												unoptimized
-											/>
-											<div className="absolute inset-0 flex items-center justify-center bg-black/20">
-												<Icon
-													icon="lucide:play"
-													className="size-6 text-white drop-shadow-lg"
+						{validVideos.map((vid, index) => {
+							const videoThumbnail = getVideoThumbnail(vid.externalUrl!);
+							return (
+								<SwiperSlide key={`video-thumb-${vid._key || index}`} className="size-20! cursor-pointer">
+									<div
+										className={`relative w-full h-full rounded-lg overflow-hidden border-2 transition-all ${
+											activeIndex === index
+												? "border-primary"
+												: "border-transparent hover:border-muted-foreground/50"
+										}`}
+										onClick={() => {
+											mainSwiperRef.current?.slideTo(index);
+										}}
+									>
+										{videoThumbnail ? (
+											<>
+												<Image
+													src={videoThumbnail}
+													alt={vid.title || `Video ${index + 1} thumbnail`}
+													fill
+													className="object-cover"
+													sizes="80px"
+													unoptimized
 												/>
+												<div className="absolute inset-0 flex items-center justify-center bg-black/20">
+													<Icon
+														icon="lucide:play"
+														className="size-6 text-white drop-shadow-lg"
+													/>
+												</div>
+											</>
+										) : (
+											<div className="relative w-full h-full flex items-center justify-center bg-muted">
+												<Icon icon="lucide:play" className="size-8 text-foreground/70" />
 											</div>
-										</>
-									) : (
-										<div className="relative w-full h-full flex items-center justify-center bg-muted">
-											<Icon icon="lucide:play" className="size-8 text-foreground/70" />
-										</div>
-									)}
-								</div>
-							</SwiperSlide>
-						)}
+										)}
+									</div>
+								</SwiperSlide>
+							);
+						})}
 						{validImages.map((image, index) => (
-							<SwiperSlide key={index} className="size-20! cursor-pointer">
+							<SwiperSlide key={`image-thumb-${index}`} className="size-20! cursor-pointer">
 								<div
 									className={`relative w-full h-full rounded-lg overflow-hidden border-2 transition-all ${
-										activeIndex === (hasVideo ? index + 1 : index)
+										activeIndex === (validVideos.length + index)
 											? "border-primary"
 											: "border-transparent hover:border-muted-foreground/50"
 									}`}
 									onClick={() => {
-										mainSwiperRef.current?.slideTo(hasVideo ? index + 1 : index);
+										mainSwiperRef.current?.slideTo(validVideos.length + index);
 									}}
 								>
 									<Image

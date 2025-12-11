@@ -137,7 +137,7 @@ export default function SingleProductWrapper({
 					<div className="relative md:max-w-[45%]">
 						<ProductImageSlider
 							images={resolvedImages}
-							video={normalizedProduct.video || undefined}
+							videos={normalizedProduct.videos}
 						/>
 						<Button
 							variant="outline"

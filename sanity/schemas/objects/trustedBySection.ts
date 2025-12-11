@@ -8,6 +8,23 @@ export const trustedBySection = defineType({
 	icon: UsersIcon,
 	fields: [
 		defineField({
+			name: "visible",
+			title: "Section Visibility",
+			type: "string",
+			description: "Choose whether to show or hide this section on the page.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
+			validation: rule => [
+				rule.required().error("Select whether to show or hide this section."),
+			],
+		}),
+		defineField({
 			name: "heading",
 			type: "string",
 			description: "Short label displayed above the marquee of partner logos.",

@@ -25,12 +25,12 @@ import productFrequency from "@/sanity/schemas/documents/productFrequency";
 import productProtocol from "@/sanity/schemas/documents/productProtocol";
 import store from "@/sanity/schemas/documents/store";
 import { homePage } from "@/sanity/schemas/singletons/homePage";
+import { faq } from "@/sanity/schemas/singletons/faq";
 import { aboutPage } from "@/sanity/schemas/singletons/aboutPage";
 import { heroSection } from "@/sanity/schemas/objects/heroSection";
 import { controlSolutionsSection } from "@/sanity/schemas/objects/controlSolutionsSection";
 import { trustedBySection } from "@/sanity/schemas/objects/trustedBySection";
 import { aboutSection } from "@/sanity/schemas/objects/aboutSection";
-import { aboutPageContent } from "@/sanity/schemas/objects/aboutPageContent";
 import { companyInfo } from "@/sanity/schemas/objects/companyInfo";
 import { mediaAsset } from "@/sanity/schemas/objects/mediaAsset";
 import { iconFeature } from "@/sanity/schemas/objects/iconFeature";
@@ -40,6 +40,7 @@ import { specificationEntry } from "@/sanity/schemas/objects/specificationEntry"
 import { resourceLink } from "@/sanity/schemas/objects/resourceLink";
 import { productColor } from "@/sanity/schemas/objects/productColor";
 import { videoAsset } from "@/sanity/schemas/objects/videoAsset";
+import { ctaSection } from "@/sanity/schemas/objects/ctaSection";
 import { resolveHref } from "@/sanity/lib/utils";
 import { faqContent } from "./sanity/schemas/objects/faqContent";
 import { testimonials } from "./sanity/schemas/objects/testimonials";
@@ -65,6 +66,7 @@ export default defineConfig({
 			// settings,
 			homePage,
 			aboutPage,
+			faq,
 			// Documents
 			post,
 			product,
@@ -79,7 +81,6 @@ export default defineConfig({
 			controlSolutionsSection,
 			trustedBySection,
 			aboutSection,
-			aboutPageContent,
 			companyInfo,
 			mediaAsset,
 			iconFeature,
@@ -89,6 +90,7 @@ export default defineConfig({
 			resourceLink,
 			productColor,
 			videoAsset,
+			ctaSection,
 			faqContent,
 			testimonials,
 			projectsContent,
@@ -141,9 +143,9 @@ export default defineConfig({
 			},
 			previewUrl: { previewMode: { enable: "/api/draft-mode/enable" } },
 		}),
-		structureTool({ structure: pageStructure([homePage, aboutPage]) }),
+		structureTool({ structure: pageStructure([homePage, aboutPage, faq]) }),
 		// Configures the global "new document" button, and document actions, to suit the Settings document singleton
-		singletonPlugin([homePage.name, aboutPage.name]),
+		singletonPlugin([homePage.name, aboutPage.name, faq.name]),
 		// Add an image asset source for Unsplash
 		unsplashImageAsset(),
 		// Sets up AI Assist with preset prompts

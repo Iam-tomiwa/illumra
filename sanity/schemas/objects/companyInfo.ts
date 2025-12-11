@@ -1,4 +1,4 @@
-import { DocumentTextIcon, ComposeIcon } from "@sanity/icons";
+import { DocumentTextIcon, ComposeIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 export const companyInfo = defineType({
@@ -20,6 +20,35 @@ export const companyInfo = defineType({
 		},
 	],
 	fields: [
+		defineField({
+			name: "visible",
+			title: "Section Visibility",
+			type: "string",
+			group: "overview",
+			description: "Choose whether to show or hide this section on the page.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
+			validation: rule => [
+				rule.required().error("Select whether to show or hide this section."),
+			],
+		}),
+		defineField({
+			name: "overviewTitle",
+			type: "string",
+			group: "overview",
+			title: "Overview Section Title",
+			description: "Title for the company overview section.",
+			initialValue: "Company Overview",
+			validation: rule => [
+				rule.required().error("Add an overview section title."),
+			],
+		}),
 		defineField({
 			name: "overview",
 			type: "array",

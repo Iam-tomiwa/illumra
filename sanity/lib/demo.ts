@@ -30,7 +30,9 @@ export const settings = {
 };
 
 export const heroSection = {
+	visible: "show",
 	attentionLabel: "Next-Gen Wireless Control",
+	attentionIcon: "solar:lightning-bold",
 	headline: "Smart Control for Industrial Environments",
 	summary:
 		"Revolutionary wireless control solutions for commercial and industrial lighting and HVAC systems. Reduce energy costs by up to 20% with intelligent automation.",
@@ -238,8 +240,16 @@ export const aboutSection = {
 };
 
 export const aboutPageContent = {
+	backgroundImage: {
+		source: "external",
+		externalUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80",
+		altText: "About ILLUMRA hero background",
+		image: null,
+	},
+	heroTitle: "About ILLUMRA",
 	heroDescription:
 		"Engineering exceptional wireless control solutions that foster trust and allow flexibility in configuration.",
+	overviewTitle: "Company Overview",
 	paragraphs: [
 		{
 			_key: "about-content-1",
@@ -287,6 +297,41 @@ export const aboutPageContent = {
 			],
 		},
 	],
+	featuresTitle: "Why Choose ILLUMRA",
+	features: [
+		{
+			_key: "feature-1",
+			icon: "lucide:headphones",
+			title: "Superior Support",
+			description: "We provide comprehensive support throughout the installation process and beyond, ensuring your wireless control system operates flawlessly.",
+		},
+		{
+			_key: "feature-2",
+			icon: "lucide:leaf",
+			title: "Energy Efficiency",
+			description: "Our systems support California Title 24 compliance and help transition to greener, energy-saving lighting control systems.",
+		},
+		{
+			_key: "feature-3",
+			icon: "lucide:settings",
+			title: "Flexible Solutions",
+			description: "Easy to install and adjust, our products make changes and updates to control systems simple and flexible.",
+		},
+	],
+	enoceanVisible: "show",
+	enoceanTitle: "The EnOcean Radio Standard",
+	enoceanDescription: "Learn about the EnOcean radio protocol that powers our wireless control solutions.",
+	enoceanAction: {
+		label: "Visit EnOcean Alliance",
+		href: "https://www.enocean-alliance.org",
+		icon: "lucide:external-link",
+	},
+	enoceanImage: {
+		source: "external",
+		externalUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+		altText: "Wireless control technology",
+		image: null,
+	},
 };
 
 export const companyInfo = {

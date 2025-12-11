@@ -61,7 +61,7 @@ export default function TrustedBy({ section }: TrustedByProps) {
 	const logos = getLogos(content.logos);
 
 	return (
-		<section className="bg-accent py-10 pb-20">
+		<section className="py-10 pb-20">
 			<div className="container mx-auto px-4 text-center">
 				<div className="mb-6 flex items-center justify-center gap-6">
 					<span className="h-px w-16 bg-primary/30" />

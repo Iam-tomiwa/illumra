@@ -13,7 +13,7 @@ type HeroSectionProps = {
 	hero?: HeroContent | null;
 };
 
-const resolveBackgroundUrl = (
+export const resolveBackgroundUrl = (
 	background?: HeroContent["backgroundImage"]
 ): { url: string; alt?: string | null } | undefined => {
 	return background
@@ -32,7 +32,7 @@ const resolveBackgroundUrl = (
 };
 
 export function HeroSection({ hero }: HeroSectionProps) {
-	const content = hero ?? (heroSection as HeroContent);
+	const content = hero ?? (heroSection as unknown as HeroContent);
 
 	const backgroundImage =
 		resolveBackgroundUrl(hero?.backgroundImage) ??
@@ -41,7 +41,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
 		);
 	const backgroundImageUrl = backgroundImage?.url;
 
-	const attentionLabel = content.attentionLabel ?? heroSection.attentionLabel;
+	const attentionLabel = null;
 	const attentionIcon = content.attentionIcon ?? null;
 	const headline = content.headline ?? heroSection.headline;
 	const summary = content.summary ?? heroSection.summary;

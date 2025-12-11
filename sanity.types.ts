@@ -39,6 +39,14 @@ export type FaqContent = {
   answer?: string;
 };
 
+export type CtaSection = {
+  _type: "ctaSection";
+  visible?: "show" | "hide";
+  title?: string;
+  description?: string;
+  action?: LinkAction;
+};
+
 export type VideoAsset = {
   _type: "videoAsset";
   title?: string;
@@ -117,6 +125,8 @@ export type MediaAsset = {
 
 export type CompanyInfo = {
   _type: "companyInfo";
+  visible?: "show" | "hide";
+  overviewTitle?: string;
   overview?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -141,31 +151,9 @@ export type CompanyInfo = {
   satelliteOffice?: string;
 };
 
-export type AboutPageContent = {
-  _type: "aboutPageContent";
-  heroDescription?: string;
-  paragraphs?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-};
-
 export type AboutSection = {
   _type: "aboutSection";
+  visible?: "show" | "hide";
   title?: string;
   body?: Array<{
     children?: Array<{
@@ -190,6 +178,7 @@ export type AboutSection = {
 
 export type TrustedBySection = {
   _type: "trustedBySection";
+  visible?: "show" | "hide";
   heading?: string;
   logos?: Array<{
     _key: string;
@@ -198,6 +187,7 @@ export type TrustedBySection = {
 
 export type ControlSolutionsSection = {
   _type: "controlSolutionsSection";
+  visible?: "show" | "hide";
   title?: string;
   subtitle?: string;
   features?: Array<{
@@ -207,8 +197,6 @@ export type ControlSolutionsSection = {
 
 export type HeroSection = {
   _type: "heroSection";
-  attentionLabel?: string;
-  attentionIcon?: string;
   headline?: string;
   summary?: string;
   primaryAction?: LinkAction;
@@ -336,7 +324,9 @@ export type Product = {
   images?: Array<{
     _key: string;
   } & MediaAsset>;
-  video?: VideoAsset;
+  videos?: Array<{
+    _key: string;
+  } & VideoAsset>;
   downloads?: Array<{
     _key: string;
   } & ResourceLink>;
@@ -456,14 +446,38 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
+export type Faq = {
+  _id: string;
+  _type: "faq";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  visible?: "show" | "hide";
+  title?: string;
+  description?: string;
+  items?: Array<{
+    _key: string;
+  } & FaqContent>;
+};
+
 export type AboutPage = {
   _id: string;
   _type: "aboutPage";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  content?: AboutPageContent;
+  backgroundImage?: MediaAsset;
+  pageTitle?: string;
   companyInfo?: CompanyInfo;
+  featuresTitle?: string;
+  features?: Array<{
+    _key: string;
+  } & IconFeature>;
+  enoceanVisible?: "show" | "hide";
+  enoceanTitle?: string;
+  enoceanDescription?: string;
+  enoceanAction?: LinkAction;
+  enoceanImage?: MediaAsset;
 };
 
 export type HomePage = {
@@ -476,15 +490,18 @@ export type HomePage = {
   controlSolutions?: ControlSolutionsSection;
   trustedBy?: TrustedBySection;
   about?: AboutSection;
-  faq?: Array<{
-    _key: string;
-  } & FaqContent>;
+  featuredProductsVisible?: "show" | "hide";
+  testimonialsVisible?: "show" | "hide";
   testimonials?: Array<{
     _key: string;
   } & Testimonials>;
+  projectsVisible?: "show" | "hide";
+  projectsHeading?: string;
+  projectsSubheading?: string;
   projects?: Array<{
     _key: string;
   } & ProjectsContent>;
+  cta?: CtaSection;
 };
 
 export type SanityAssistInstructionTask = {
@@ -697,7 +714,7 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type AllSanitySchemaTypes = ProjectsContent | Testimonials | FaqContent | VideoAsset | ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutPageContent | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | Store | Geopoint | ProductProtocol | ProductCategory | Slug | Product | ProductFrequency | ProductVoltage | Post | Author | SanityImageCrop | SanityImageHotspot | AboutPage | HomePage | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset;
+export type AllSanitySchemaTypes = ProjectsContent | Testimonials | FaqContent | CtaSection | VideoAsset | ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | Store | Geopoint | ProductProtocol | ProductCategory | Slug | Product | ProductFrequency | ProductVoltage | Post | Author | SanityImageCrop | SanityImageHotspot | Faq | AboutPage | HomePage | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/(frontend)/posts/[slug]/page.tsx
 // Variable: postSlugs
@@ -718,11 +735,12 @@ export type ProductSlugsResult = Array<{
 // Query: *[_type == "settings"][0]
 export type SettingsQueryResult = null;
 // Variable: homePageQuery
-// Query: *[_type == "homePage"][0]{    hero{      attentionLabel,      attentionIcon,      headline,      summary,      primaryAction{        label,        href,        icon      },      secondaryAction{        label,        href,        icon      },      backgroundImage{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      }    },    controlSolutions{      title,      subtitle,      features[]{        icon,        title,        description,        url      }    },    trustedBy{      heading,      logos[]{        name,        href,        logo{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        }      }    },    about{      title,      body[]{        ...,        children[]{          ...        }      },      cta{        label,        href,        icon      },      background{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      features[]{        icon,        title,        description      }    },    faq[]{      group,      question,      answer    },    testimonials[]{      author->{        "name": coalesce(name, "Anonymous"),        picture{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        role      },      testimony,         },    projects[]{      picture{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      title,      projectCategory,      url    }  }
+// Query: *[_type == "homePage"][0]{    hero{      visible,      attentionLabel,      attentionIcon,      headline,      summary,      primaryAction{        label,        href,        icon      },      secondaryAction{        label,        href,        icon      },      backgroundImage{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      }    },    controlSolutions{      visible,      title,      subtitle,      features[]{        icon,        title,        description,        url      }    },    trustedBy{      visible,      heading,      logos[]{        name,        href,        logo{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        }      }    },    about{      visible,      title,      body[]{        ...,        children[]{          ...        }      },      cta{        label,        href,        icon      },      background{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      features[]{        icon,        title,        description      }    },    featuredProductsVisible,    testimonialsVisible,    testimonials[]{      author->{        "name": coalesce(name, "Anonymous"),        picture{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        role      },      testimony,         },    projectsVisible,    projectsHeading,    projectsSubheading,    projects[]{      picture{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      title,      projectCategory,      url    },    cta{      visible,      title,      description,      action{        label,        href,        icon      }    }  }
 export type HomePageQueryResult = {
   hero: {
-    attentionLabel: string | null;
-    attentionIcon: string | null;
+    visible: null;
+    attentionLabel: null;
+    attentionIcon: null;
     headline: string | null;
     summary: string | null;
     primaryAction: {
@@ -752,6 +770,7 @@ export type HomePageQueryResult = {
     } | null;
   } | null;
   controlSolutions: {
+    visible: "hide" | "show" | null;
     title: string | null;
     subtitle: string | null;
     features: Array<{
@@ -762,6 +781,7 @@ export type HomePageQueryResult = {
     }> | null;
   } | null;
   trustedBy: {
+    visible: "hide" | "show" | null;
     heading: string | null;
     logos: Array<{
       name: string | null;
@@ -784,6 +804,7 @@ export type HomePageQueryResult = {
     }> | null;
   } | null;
   about: {
+    visible: "hide" | "show" | null;
     title: string | null;
     body: Array<{
       children: Array<{
@@ -825,11 +846,8 @@ export type HomePageQueryResult = {
       description: string | null;
     }> | null;
   } | null;
-  faq: Array<{
-    group: "faq" | "gettingStarted" | null;
-    question: string | null;
-    answer: string | null;
-  }> | null;
+  featuredProductsVisible: "hide" | "show" | null;
+  testimonialsVisible: "hide" | "show" | null;
   testimonials: Array<{
     author: {
       name: string | "Anonymous";
@@ -852,6 +870,9 @@ export type HomePageQueryResult = {
     } | null;
     testimony: string | null;
   }> | null;
+  projectsVisible: "hide" | "show" | null;
+  projectsHeading: string | null;
+  projectsSubheading: string | null;
   projects: Array<{
     picture: {
       source: "external" | "upload" | null;
@@ -872,6 +893,16 @@ export type HomePageQueryResult = {
     projectCategory: string | null;
     url: string | null;
   }> | null;
+  cta: {
+    visible: "hide" | "show" | null;
+    title: string | null;
+    description: string | null;
+    action: {
+      label: string | null;
+      href: string | null;
+      icon: string | null;
+    } | null;
+  } | null;
 } | null;
 // Variable: categoryQuery
 // Query: *[_type == "productCategory"] {    _id,    "slug": slug.current,    title,    description  } | order(_createdAt desc)
@@ -1175,7 +1206,7 @@ export type AllProductsQueryResult = Array<{
 // Query: count(    *[      _type == "product" &&      (        !defined($search) ||        $search == "" ||        coalesce(title, "") match $searchWildcard ||        coalesce(sku.current, "") match $searchWildcard      ) &&      (        !defined($category) ||        $category == "" ||        count((categories[]->slug.current)[@ == $category]) > 0      ) &&      (        !defined($voltages) ||        count($voltages) == 0 ||        voltage->value in $voltages      ) &&      (        !defined($frequencies) ||        count($frequencies) == 0 ||        frequency->value in $frequencies      ) &&      (        !defined($protocols) ||        count($protocols) == 0 ||        count((protocols[]->value)[@ in $protocols]) > 0      )    ]  )
 export type FILTERED_PRODUCTS_COUNT_QUERYResult = number;
 // Variable: PRODUCT_QUERY
-// Query: *[_type == "product" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      sku,      shortDescription,      body[]{        ...,        children[]{          ...        }      },      "categories": categories[]->{        _id,        title,        "slug": slug.current      },      "category": categories[0]->{        _id,        title,        "slug": slug.current      },      "voltage": voltage->{ _id, label, value },      "frequency": frequency->{ _id, label, value },      "protocols": protocols[]->{ _id, label, value },      featureTag,      colors[]{        name,        partNumber,        hex      },      images[]{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      video{        title,        externalUrl      },      specifications[defined(label) && defined(value)]{        _type,        label,        value      },      downloads[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      applications[defined(url)]{        _type,        title,        url      },      wiringDiagrams[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      }    }
+// Query: *[_type == "product" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      sku,      shortDescription,      body[]{        ...,        children[]{          ...        }      },      "categories": categories[]->{        _id,        title,        "slug": slug.current      },      "category": categories[0]->{        _id,        title,        "slug": slug.current      },      "voltage": voltage->{ _id, label, value },      "frequency": frequency->{ _id, label, value },      "protocols": protocols[]->{ _id, label, value },      featureTag,      colors[]{        name,        partNumber,        hex      },      images[]{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      videos[]{        title,        externalUrl      },      specifications[defined(label) && defined(value)]{        _type,        label,        value      },      downloads[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      applications[defined(url)]{        _type,        title,        url      },      wiringDiagrams[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      }    }
 export type PRODUCT_QUERYResult = {
   _id: string;
   title: string | null;
@@ -1246,10 +1277,10 @@ export type PRODUCT_QUERYResult = {
       hotspot: SanityImageHotspot | null;
     } | null;
   }> | null;
-  video: {
+  videos: Array<{
     title: string | null;
     externalUrl: string | null;
-  } | null;
+  }> | null;
   specifications: Array<{
     _type: "specificationEntry";
     label: string | null;
@@ -1288,30 +1319,12 @@ export type PRODUCT_QUERYResult = {
   }> | null;
 } | null;
 // Variable: aboutPageQuery
-// Query: *[_type == "aboutPage"][0]{    content{      heroDescription,      paragraphs[]{        ...,        children[]{          ...        }      }    },    companyInfo{      overview[]{        ...,        children[]{          ...        }      },      email,      phone,      headquarters,      satelliteOffice    }  }
+// Query: *[_type == "aboutPage"][0]{    content{      backgroundImage{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      featuresTitle,      features[]{        icon,        title,        description      },      enoceanVisible,      enoceanTitle,      enoceanDescription,      enoceanAction{        label,        href,        icon      },      enoceanImage{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      }    },    companyInfo{      visible,      overviewTitle,      overview[]{        ...,        children[]{          ...        }      },      email,      phone,      headquarters,      satelliteOffice    }  }
 export type AboutPageQueryResult = {
-  content: {
-    heroDescription: string | null;
-    paragraphs: Array<{
-      children: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }> | null;
-      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }> | null;
-  } | null;
+  content: null;
   companyInfo: {
+    visible: "hide" | "show" | null;
+    overviewTitle: string | null;
     overview: Array<{
       children: Array<{
         marks?: Array<string>;
@@ -1337,16 +1350,16 @@ export type AboutPageQueryResult = {
   } | null;
 } | null;
 // Variable: PRODUCTS_WITH_VIDEOS_QUERY
-// Query: *[_type == "product" && defined(video.externalUrl)]{    _id,    title,    "slug": slug.current,    "productUrl": "/products/" + slug.current,    video{      title,      externalUrl    }  } | order(_createdAt desc)
+// Query: *[_type == "product" && count(videos[defined(externalUrl)]) > 0]{    _id,    title,    "slug": slug.current,    "productUrl": "/products/" + slug.current,    videos[]{      title,      externalUrl    }  } | order(_createdAt desc)
 export type PRODUCTS_WITH_VIDEOS_QUERYResult = Array<{
   _id: string;
   title: string | null;
   slug: string | null;
   productUrl: string | null;
-  video: {
+  videos: Array<{
     title: string | null;
     externalUrl: string | null;
-  } | null;
+  }> | null;
 }>;
 // Variable: STORES_QUERY
 // Query: *[_type == "store"] | order(name asc) {    _id,    name,    storeType,    address,    city,    state,    zipCode,    country,    phone,    email,    website,    location  }
@@ -1364,6 +1377,18 @@ export type STORES_QUERYResult = Array<{
   website: string | null;
   location: Geopoint | null;
 }>;
+// Variable: FAQ_QUERY
+// Query: *[_type == "faq"][0]{    visible,    title,    description,    items[]{      group,      question,      answer    }  }
+export type FAQ_QUERYResult = {
+  visible: "hide" | "show" | null;
+  title: string | null;
+  description: string | null;
+  items: Array<{
+    group: "faq" | "gettingStarted" | null;
+    question: string | null;
+    answer: string | null;
+  }> | null;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
@@ -1372,7 +1397,7 @@ declare module "@sanity/client" {
     "*[_type == \"post\" && defined(slug.current)]{\"slug\": slug.current}": PostSlugsResult;
     "*[_type == \"product\" && defined(slug.current)]{\"slug\": slug.current}": ProductSlugsResult;
     "*[_type == \"settings\"][0]": SettingsQueryResult;
-    "\n  *[_type == \"homePage\"][0]{\n    hero{\n      attentionLabel,\n      attentionIcon,\n      headline,\n      summary,\n      primaryAction{\n        label,\n        href,\n        icon\n      },\n      secondaryAction{\n        label,\n        href,\n        icon\n      },\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      }\n    },\n    controlSolutions{\n      title,\n      subtitle,\n      features[]{\n        icon,\n        title,\n        description,\n        url\n      }\n    },\n    trustedBy{\n      heading,\n      logos[]{\n        name,\n        href,\n        logo{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        }\n      }\n    },\n    about{\n      title,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      cta{\n        label,\n        href,\n        icon\n      },\n      background{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      features[]{\n        icon,\n        title,\n        description\n      }\n    },\n    faq[]{\n      group,\n      question,\n      answer\n    },\n    testimonials[]{\n      author->{\n        \"name\": coalesce(name, \"Anonymous\"),\n        picture{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        role\n      },\n      testimony,     \n    },\n    projects[]{\n      picture{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      title,\n      projectCategory,\n      url\n    }\n  }\n": HomePageQueryResult;
+    "\n  *[_type == \"homePage\"][0]{\n    hero{\n      visible,\n      attentionLabel,\n      attentionIcon,\n      headline,\n      summary,\n      primaryAction{\n        label,\n        href,\n        icon\n      },\n      secondaryAction{\n        label,\n        href,\n        icon\n      },\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      }\n    },\n    controlSolutions{\n      visible,\n      title,\n      subtitle,\n      features[]{\n        icon,\n        title,\n        description,\n        url\n      }\n    },\n    trustedBy{\n      visible,\n      heading,\n      logos[]{\n        name,\n        href,\n        logo{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        }\n      }\n    },\n    about{\n      visible,\n      title,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      cta{\n        label,\n        href,\n        icon\n      },\n      background{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      features[]{\n        icon,\n        title,\n        description\n      }\n    },\n    featuredProductsVisible,\n    testimonialsVisible,\n    testimonials[]{\n      author->{\n        \"name\": coalesce(name, \"Anonymous\"),\n        picture{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        role\n      },\n      testimony,     \n    },\n    projectsVisible,\n    projectsHeading,\n    projectsSubheading,\n    projects[]{\n      picture{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      title,\n      projectCategory,\n      url\n    },\n    cta{\n      visible,\n      title,\n      description,\n      action{\n        label,\n        href,\n        icon\n      }\n    }\n  }\n": HomePageQueryResult;
     "\n  *[_type == \"productCategory\"] {\n    _id,\n    \"slug\": slug.current,\n    title,\n    description\n  } | order(_createdAt desc)  \n": CategoryQueryResult;
     "\n  *[_type == \"productFrequency\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)  \n": ProductFrequencyQueryResult;
     "\n  *[_type == \"productProtocol\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)\n": ProductProtocolQueryResult;
@@ -1384,9 +1409,10 @@ declare module "@sanity/client" {
     "\n  *[_type == \"product\" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)[0...4]\n": RelevantProductsQueryResult;
     "\n  *[_type == \"product\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)\n": AllProductsQueryResult;
     "\n  count(\n    *[\n      _type == \"product\" &&\n      (\n        !defined($search) ||\n        $search == \"\" ||\n        coalesce(title, \"\") match $searchWildcard ||\n        coalesce(sku.current, \"\") match $searchWildcard\n      ) &&\n      (\n        !defined($category) ||\n        $category == \"\" ||\n        count((categories[]->slug.current)[@ == $category]) > 0\n      ) &&\n      (\n        !defined($voltages) ||\n        count($voltages) == 0 ||\n        voltage->value in $voltages\n      ) &&\n      (\n        !defined($frequencies) ||\n        count($frequencies) == 0 ||\n        frequency->value in $frequencies\n      ) &&\n      (\n        !defined($protocols) ||\n        count($protocols) == 0 ||\n        count((protocols[]->value)[@ in $protocols]) > 0\n      )\n    ]\n  )\n  ": FILTERED_PRODUCTS_COUNT_QUERYResult;
-    "\n    *[_type == \"product\" && slug.current == $slug][0]{\n      _id,\n      title,\n      \"slug\": slug.current,\n      sku,\n      shortDescription,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      \"categories\": categories[]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"category\": categories[0]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"voltage\": voltage->{ _id, label, value },\n      \"frequency\": frequency->{ _id, label, value },\n      \"protocols\": protocols[]->{ _id, label, value },\n      featureTag,\n      colors[]{\n        name,\n        partNumber,\n        hex\n      },\n      images[]{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      video{\n        title,\n        externalUrl\n      },\n      specifications[defined(label) && defined(value)]{\n        _type,\n        label,\n        value\n      },\n      downloads[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      applications[defined(url)]{\n        _type,\n        title,\n        url\n      },\n      wiringDiagrams[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      }\n    }\n    ": PRODUCT_QUERYResult;
-    "\n  *[_type == \"aboutPage\"][0]{\n    content{\n      heroDescription,\n      paragraphs[]{\n        ...,\n        children[]{\n          ...\n        }\n      }\n    },\n    companyInfo{\n      overview[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      email,\n      phone,\n      headquarters,\n      satelliteOffice\n    }\n  }\n": AboutPageQueryResult;
-    "\n  *[_type == \"product\" && defined(video.externalUrl)]{\n    _id,\n    title,\n    \"slug\": slug.current,\n    \"productUrl\": \"/products/\" + slug.current,\n    video{\n      title,\n      externalUrl\n    }\n  } | order(_createdAt desc)\n": PRODUCTS_WITH_VIDEOS_QUERYResult;
+    "\n    *[_type == \"product\" && slug.current == $slug][0]{\n      _id,\n      title,\n      \"slug\": slug.current,\n      sku,\n      shortDescription,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      \"categories\": categories[]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"category\": categories[0]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"voltage\": voltage->{ _id, label, value },\n      \"frequency\": frequency->{ _id, label, value },\n      \"protocols\": protocols[]->{ _id, label, value },\n      featureTag,\n      colors[]{\n        name,\n        partNumber,\n        hex\n      },\n      images[]{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      videos[]{\n        title,\n        externalUrl\n      },\n      specifications[defined(label) && defined(value)]{\n        _type,\n        label,\n        value\n      },\n      downloads[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      applications[defined(url)]{\n        _type,\n        title,\n        url\n      },\n      wiringDiagrams[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      }\n    }\n    ": PRODUCT_QUERYResult;
+    "\n  *[_type == \"aboutPage\"][0]{\n    content{\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      featuresTitle,\n      features[]{\n        icon,\n        title,\n        description\n      },\n      enoceanVisible,\n      enoceanTitle,\n      enoceanDescription,\n      enoceanAction{\n        label,\n        href,\n        icon\n      },\n      enoceanImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      }\n    },\n    companyInfo{\n      visible,\n      overviewTitle,\n      overview[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      email,\n      phone,\n      headquarters,\n      satelliteOffice\n    }\n  }\n": AboutPageQueryResult;
+    "\n  *[_type == \"product\" && count(videos[defined(externalUrl)]) > 0]{\n    _id,\n    title,\n    \"slug\": slug.current,\n    \"productUrl\": \"/products/\" + slug.current,\n    videos[]{\n      title,\n      externalUrl\n    }\n  } | order(_createdAt desc)\n": PRODUCTS_WITH_VIDEOS_QUERYResult;
     "\n  *[_type == \"store\"] | order(name asc) {\n    _id,\n    name,\n    storeType,\n    address,\n    city,\n    state,\n    zipCode,\n    country,\n    phone,\n    email,\n    website,\n    location\n  }\n": STORES_QUERYResult;
+    "\n  *[_type == \"faq\"][0]{\n    visible,\n    title,\n    description,\n    items[]{\n      group,\n      question,\n      answer\n    }\n  }\n": FAQ_QUERYResult;
   }
 }

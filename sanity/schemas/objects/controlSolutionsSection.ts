@@ -1,4 +1,4 @@
-import { ControlsIcon, SparkleIcon } from "@sanity/icons";
+import { ControlsIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const controlSolutionsSection = defineType({
@@ -6,24 +6,27 @@ export const controlSolutionsSection = defineType({
 	title: "Control Solutions Section",
 	type: "object",
 	icon: ControlsIcon,
-	groups: [
-		{
-			name: "content",
-			title: "Content",
-			icon: ControlsIcon,
-			default: true,
-		},
-		{
-			name: "features",
-			title: "Features",
-			icon: SparkleIcon,
-		},
-	],
 	fields: [
+		defineField({
+			name: "visible",
+			title: "Section Visibility",
+			type: "string",
+			description: "Choose whether to show or hide this section on the page.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
+			validation: rule => [
+				rule.required().error("Select whether to show or hide this section."),
+			],
+		}),
 		defineField({
 			name: "title",
 			type: "string",
-			group: "content",
 			description: "Heading presented above the feature list.",
 			validation: rule => [
 				rule
@@ -36,7 +39,6 @@ export const controlSolutionsSection = defineType({
 		defineField({
 			name: "subtitle",
 			type: "text",
-			group: "content",
 			rows: 3,
 			description: "Optional supporting copy that introduces the features.",
 			validation: rule => [
@@ -46,7 +48,6 @@ export const controlSolutionsSection = defineType({
 		defineField({
 			name: "features",
 			type: "array",
-			group: "features",
 			description: "Highlight up to four reasons teams choose this solution.",
 			of: [defineArrayMember({ type: "iconFeature" })],
 			validation: rule => [

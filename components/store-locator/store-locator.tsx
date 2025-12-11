@@ -140,7 +140,7 @@ export default function StoreLocator({ stores }: StoreLocatorProps) {
 			// First pass: use existing coordinates and count stores needing geocoding
 			for (const rawStore of stores) {
 				const store = sanitizeSanityStrings(rawStore);
-
+console.log(store)
 				if (store.location?.lat && store.location?.lng) {
 					results.push({ ...store, coords: store.location });
 				} else {

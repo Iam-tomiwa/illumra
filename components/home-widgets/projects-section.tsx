@@ -83,7 +83,7 @@ const demoProjects: Project[] = [
 	},
 ];
 
-export function ProjectsSection({ projects }: { projects: ProjectsContent[] }) {
+export function ProjectsSection({ projects, projectsHeading, projectsSubheading }: { projects: ProjectsContent[], projectsHeading?: string | null, projectsSubheading?: string | null }) {
 	const swiperRef = useRef<SwiperType | null>(null);
 	return (
 		<section id="projects" className="py-20 bg-background">
@@ -91,17 +91,14 @@ export function ProjectsSection({ projects }: { projects: ProjectsContent[] }) {
 				<div className="grid lg:grid-cols-2 gap-8 mb-12">
 					<div>
 						<h2 className="font-heading max-w-md text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-							Projects We&apos;ve Worked On So Far
+							{projectsHeading ?? "Projects We've Worked On So Far"}
 						</h2>
 					</div>
 					<div>
-						<p className="text-lg text-muted-foreground">
-							Explore our portfolio of successful installations across diverse
-							industries. Each project showcases our commitment to delivering
-							innovative wireless control solutions that enhance efficiency, and
-							improve environmental sustainability. <br />
-							<i>Click on any project card to view the detailed PDF.</i>
-						</p>
+						<p 
+							className="text-lg text-muted-foreground"
+							dangerouslySetInnerHTML={{ __html: projectsSubheading ?? "Explore our portfolio of successful installations across diverse industries. Each project showcases our commitment to delivering innovative wireless control solutions that enhance efficiency, and improve environmental sustainability." }}
+						/>
 					</div>
 				</div>
 

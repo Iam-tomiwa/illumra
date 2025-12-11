@@ -1,4 +1,4 @@
-import { ImageIcon, LinkIcon, DashboardIcon } from "@sanity/icons";
+import { ImageIcon, LinkIcon, DashboardIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 export const heroSection = defineType({
@@ -25,37 +25,6 @@ export const heroSection = defineType({
 		},
 	],
 	fields: [
-		defineField({
-			name: "attentionLabel",
-			type: "string",
-			group: "content",
-			description:
-				"Short phrase that highlights the primary benefit or announcement shown above the headline.",
-			validation: rule => [
-				rule
-					.required()
-					.min(3)
-					.max(80)
-					.error(
-						"Add an attention label between 3 and 80 characters to introduce the hero."
-					),
-				rule.max(48).warning("Keep the attention label concise for readability."),
-			],
-		}),
-		defineField({
-			name: "attentionIcon",
-			type: "string",
-			group: "content",
-			description:
-				"Optional Iconify icon name displayed next to the attention label (for example solar:lightning-bold).",
-			validation: rule => [
-				rule
-					.max(64)
-					.warning(
-						"Icon names are typically short; double-check the provider namespace."
-					),
-			],
-		}),
 		defineField({
 			name: "headline",
 			type: "string",

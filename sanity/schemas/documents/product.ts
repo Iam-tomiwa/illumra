@@ -201,11 +201,12 @@ export default defineType({
 			],
 		}),
 		defineField({
-			name: "video",
-			type: "videoAsset",
+			name: "videos",
+			type: "array",
 			group: "media",
-			title: "Video",
-			description: "Video to display in product detail page.",
+			title: "Videos",
+			description: "Videos to display in the product image slider.",
+			of: [defineArrayMember({ type: "videoAsset" })],
 		}),
 		defineField({
 			name: "downloads",

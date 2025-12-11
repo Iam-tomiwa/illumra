@@ -14,7 +14,9 @@ import {
 	categoryQuery,
 	featuredProductsQuery,
 	homePageQuery,
+	FAQ_QUERY,
 } from "@/sanity/lib/queries";
+import { sanitizeSanityStrings } from "@/sanity/lib/utils";
 
 export default async function WirelessControlSolutionsLandingPage() {
 	const homePage = (await sanityFetch({
@@ -24,7 +26,7 @@ export default async function WirelessControlSolutionsLandingPage() {
 	const controlSolutions = homePage?.controlSolutions ?? undefined;
 	const trustedBy = homePage?.trustedBy ?? undefined;
 	const about = homePage?.about ?? undefined;
-	const faqs = homePage?.faq ?? undefined;
+	const cta = homePage?.cta ?? undefined;
 	const testimonials = homePage?.testimonials ?? [];
 	const projects = homePage?.projects ?? [];
 	const featuredProducts = await sanityFetch({
@@ -33,24 +35,42 @@ export default async function WirelessControlSolutionsLandingPage() {
 	const categories = await sanityFetch({
 		query: categoryQuery,
 	});
+	const faq = await sanityFetch({
+		query: FAQ_QUERY,
+	});
+
+	const featuredProductsVisible = sanitizeSanityStrings(homePage?.featuredProductsVisible) !== "hide";
+	const faqVisible = sanitizeSanityStrings(faq?.visible) !== "hide";
+	const testimonialsVisible = sanitizeSanityStrings(homePage?.testimonialsVisible) !== "hide";
+	const projectsVisible = sanitizeSanityStrings(homePage?.projectsVisible) !== "hide";
+	const ctaVisible = sanitizeSanityStrings(cta?.visible) !== "hide";
+
 
 	return (
 		<div className="min-h-screen bg-background text-foreground">
 			<HeroSection hero={hero} />
-			<EnergyFeatures section={controlSolutions} />
-			{/* <WhyChooseSection /> */}
-			<TrustedBy section={trustedBy} />
-			<AboutSection section={about} />
-			<FeaturedProductsSection
-				categories={categories}
-				products={featuredProducts}
-			/>
-			<ProjectsSection projects={projects as ProjectsContent[]} />
-			{testimonials && testimonials.length > 0 && (
+			{featuredProductsVisible && featuredProducts && featuredProducts.length > 0 && (	
+				<FeaturedProductsSection
+					categories={categories}
+					products={featuredProducts}
+				/>
+			)}
+			{sanitizeSanityStrings(controlSolutions?.visible) === "show" && controlSolutions?.features && controlSolutions.features.length > 0 && (
+				<EnergyFeatures section={controlSolutions} />
+			)}
+			{sanitizeSanityStrings(trustedBy?.visible) === "show" && trustedBy?.logos && trustedBy.logos.length > 0 && (
+				<TrustedBy section={trustedBy} />
+			)}
+			{sanitizeSanityStrings(about?.visible) === "show" && <AboutSection section={about} />}
+		
+			{projectsVisible && projects && projects.length > 0 && (
+				<ProjectsSection projects={projects as ProjectsContent[]} projectsHeading={homePage?.projectsHeading} projectsSubheading={homePage?.projectsSubheading} />
+			)}
+			{testimonialsVisible && testimonials && testimonials.length > 0 && (
 				<TestimonialsSection testimonials={testimonials} />
 			)}
-			<FaqSection faqs={faqs} />
-			<CTASection />
+			{faqVisible && <FaqSection faq={faq} />}
+			{ctaVisible && <CTASection cta={cta} />}
 		</div>
 	);
 }

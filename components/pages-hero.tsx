@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 export default function PagesHero({
 	children,
 	className,
+	backgroundImageUrl,
 }: {
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	className?: string;
+	backgroundImageUrl?: string;
 }) {
 	return (
 		<div
@@ -18,7 +20,7 @@ export default function PagesHero({
 			<div
 				className="absolute inset-0 bg-cover bg-center"
 				style={{
-					backgroundImage:
+					backgroundImage: backgroundImageUrl ? `url(${backgroundImageUrl})` :
 						"url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80)",
 				}}
 			/>

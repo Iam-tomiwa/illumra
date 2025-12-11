@@ -41,8 +41,13 @@ export const homePage = defineType({
 			icon: HomeIcon,
 		},
 		{
-			name: "faq",
-			title: "FAQ",
+			name: "featuredProducts",
+			title: "Featured Products",
+			icon: HomeIcon,
+		},
+		{
+			name: "cta",
+			title: "Call To Action",
 			icon: HomeIcon,
 		},
 	],
@@ -99,16 +104,39 @@ export const homePage = defineType({
 			],
 		}),
 		defineField({
-			name: "faq",
-			type: "array",
-			group: "faq",
-			title: "FAQs",
-			description: "Add multiple FAQ items to the homepage.",
-			initialValue: demo.faqContent,
-			of: [defineArrayMember({ type: "faqContent" })],
+			name: "featuredProductsVisible",
+			title: "Featured Products Section Visibility",
+			type: "string",
+			group: "featuredProducts",
+			description: "Choose whether to show or hide the featured products section on the homepage.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
 			validation: rule => [
-				rule.required().min(1).error("Add at least one FAQ item to the homepage."),
-				rule.unique().warning("Duplicate FAQ items were removed."),
+				rule.required().error("Select whether to show or hide this section."),
+			],
+		}),
+		defineField({
+			name: "testimonialsVisible",
+			title: "Testimonials Section Visibility",
+			type: "string",
+			group: "testimonials",
+			description: "Choose whether to show or hide the testimonials section on the homepage.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
+			validation: rule => [
+				rule.required().error("Select whether to show or hide this section."),
 			],
 		}),
 		defineField({
@@ -127,6 +155,47 @@ export const homePage = defineType({
 			],
 		}),
 		defineField({
+			name: "projectsVisible",
+			title: "Projects Section Visibility",
+			type: "string",
+			group: "projects",
+			description: "Choose whether to show or hide the projects section on the homepage.",
+			initialValue: "show",
+			options: {
+				layout: "radio",
+				list: [
+					{ title: "Show", value: "show" },
+					{ title: "Hide", value: "hide" },
+				],
+			},
+			validation: rule => [
+				rule.required().error("Select whether to show or hide this section."),
+			],
+		}),
+		defineField({
+			name: "projectsHeading",
+			title: "Projects Heading",
+			type: "string",
+			group: "projects",
+			initialValue: "Projects We've Worked On So Far",
+			description: "Enter the heading for the projects section.",
+			validation: rule => [
+				rule.required().error("Enter the heading for the projects section."),
+			],
+		}),
+		defineField({
+			name: "projectsSubheading",
+			title: "Projects Description",
+			type: "text",
+			rows: 3,
+			group: "projects",
+			initialValue: "Explore our portfolio of successful installations across diverse industries. Each project showcases our commitment to delivering innovative wireless control solutions that enhance efficiency, and improve environmental sustainability. <br /> <i>Click on any project card to view the detailed PDF.</i>",
+			description: "Enter the description for the projects section.",
+			validation: rule => [
+				rule.required().error("Enter the description for the projects section."),
+			],
+		}),
+		defineField({
 			name: "projects",
 			type: "array",
 			group: "projects",
@@ -137,6 +206,25 @@ export const homePage = defineType({
 			validation: rule => [
 				rule.required().min(1).error("Add at least one project to the homepage."),
 				rule.unique().warning("Duplicate project items were removed."),
+			],
+		}),
+		defineField({
+			name: "cta",
+			type: "ctaSection",
+			group: "cta",
+			description: "Call-to-action section encouraging visitors to take the next step.",
+			initialValue: {
+				visible: "show",
+				title: "Ready to Get Started?",
+				description: "Request a quote for our wireless control solutions and receive pricing tailored to your project needs",
+				action: {
+					label: "Request a Quote",
+					href: "/contact",
+					icon: "solar:round-arrow-right-bold",
+				},
+			},
+			validation: rule => [
+				rule.required().error("Configure the CTA section to publish the homepage."),
 			],
 		}),
 	],
