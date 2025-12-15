@@ -53,6 +53,7 @@ export default async function CaseStudiesPage() {
               : undefined;
             return (
               <Link
+                key={project.url}
                 href={project.url ?? ""}
                 target="_blank"
                 rel="noopener noreferrer"
