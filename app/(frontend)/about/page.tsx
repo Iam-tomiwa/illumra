@@ -11,7 +11,7 @@ import PortableText from "@/components/portable-text";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { aboutPageQuery } from "@/sanity/lib/queries";
 import { resolveBackgroundUrl } from "@/components/home-widgets/hero-section";
-import type { AboutPage, AboutPageQueryResult, IconFeature } from "@/sanity.types";
+import type { AboutPage, AboutPageQueryResult } from "@/sanity.types";
 import { PortableTextBlock } from "next-sanity";
 
 export default async function AboutPage() {
