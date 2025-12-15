@@ -2,8 +2,8 @@ import { defineQuery } from "next-sanity";
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { PRODUCT_QUERY, relevantProductsQuery } from "@/sanity/lib/queries";
-import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import { PRODUCT_QUERY, relevantProductsQuery, settingsQuery } from "@/sanity/lib/queries";
+import { mergeSeo, resolveOpenGraphImage, seoToMetadata } from "@/sanity/lib/utils";
 import SingleProductWrapper from "@/components/products/single-product-wrapper";
 import type { PRODUCT_QUERYResult } from "@/sanity.types";
 
@@ -51,7 +51,7 @@ export async function generateMetadata(
 	// Override with product-specific data
 	return {
 		...metadata,
-		title: product?.seo?.title 
+		title: product?.seo?.title
 			? {
 				template: product.seo.titleTemplate || mergedSeo?.titleTemplate || "%s | Illumra",
 				default: product.seo.title,
