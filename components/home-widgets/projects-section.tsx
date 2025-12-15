@@ -95,7 +95,7 @@ export function ProjectsSection({ projects, projectsHeading, projectsSubheading 
 						</h2>
 					</div>
 					<div>
-						<p 
+						<p
 							className="text-lg text-muted-foreground"
 							dangerouslySetInnerHTML={{ __html: projectsSubheading ?? "Explore our portfolio of successful installations across diverse industries. Each project showcases our commitment to delivering innovative wireless control solutions that enhance efficiency, and improve environmental sustainability." }}
 						/>
@@ -143,9 +143,9 @@ export function ProjectsSection({ projects, projectsHeading, projectsSubheading 
 							const picture = project?.picture as MediaAsset | null | undefined;
 							const imageResolved = picture
 								? resolveMediaAsset({
-										...picture,
-										_type: "mediaAsset",
-									} as MediaAsset)
+									...picture,
+									_type: "mediaAsset",
+								} as MediaAsset)
 								: undefined;
 							return (
 								<SwiperSlide key={project.url} className={`w-full`}>
@@ -162,7 +162,7 @@ export function ProjectsSection({ projects, projectsHeading, projectsSubheading 
 											className={`object-cover`}
 										/>
 										<div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
-										<div className="relative z-50 text-white">
+										<div className="relative z-10 text-white">
 											<p className="text-xs uppercase text-yellow-400">
 												{project.projectCategory}
 											</p>
@@ -176,15 +176,15 @@ export function ProjectsSection({ projects, projectsHeading, projectsSubheading 
 
 					<div className="flex justify-between">
 						{/* View All Link */}
-						{/* <div className="text-center mt-8">
+						<div className="text-center mt-8">
 							<Link
-								href="/projects"
+								href="/case-studies"
 								className="inline-flex items-center gap-2 font-semibold transition-colors"
 							>
 								<span>View All Projects</span>
 								<Icon icon="solar:arrow-right-bold" className="size-5" />
 							</Link>
-						</div> */}
+						</div>
 
 						{/* Navigation Arrows */}
 						<div className="flex gap-4 pt-6 justify-end ml-auto">

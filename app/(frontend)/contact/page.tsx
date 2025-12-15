@@ -94,7 +94,7 @@ export default async function ContactUsPage() {
 				</div>
 
 				{/* Forms Section */}
-				<div className="max-w-6xl flex gap-8 mb-12">
+				<section id="request-a-quote" className="max-w-6xl flex gap-8 mb-12">
 					<div className="bg-primary/5 rounded-lg p-8">
 						<div className="mb-6">
 							<h2 className="font-heading text-2xl font-semibold tracking-tight mb-2">
@@ -129,7 +129,7 @@ export default async function ContactUsPage() {
 					<div className="border rounded-lg p-8 flex-grow h-max min-w-[60%]">
 						<GetQuoteModalForm />
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 	);

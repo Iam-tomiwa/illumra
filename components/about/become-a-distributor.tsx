@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { becomeADistributorQuery } from "@/sanity/lib/queries";
-import DistributorInquiryForm from "./distributor-inquiry-form";
 
 export default async function BecomeADistributor({
 	className,
@@ -15,7 +14,7 @@ export default async function BecomeADistributor({
 	const title = becomeADistributor?.title;
 	const description = becomeADistributor?.description;
 	const distributorEmail = becomeADistributor?.email || 'sales@illumra.com';
-	
+
 	// Replace {email} placeholder with actual email link if present, or replace the email in text with a link
 	let formattedDescription = description;
 	if (description) {
@@ -46,7 +45,7 @@ export default async function BecomeADistributor({
 							{title || "Become a Distributor"}
 						</h2>
 						{formattedDescription && (
-							<p 
+							<p
 								className="text-lg text-foreground/90 mb-6"
 								dangerouslySetInnerHTML={{ __html: formattedDescription }}
 							/>
