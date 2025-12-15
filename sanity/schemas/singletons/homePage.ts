@@ -1,4 +1,4 @@
-import { HomeIcon } from "@sanity/icons";
+import { HomeIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 import * as demo from "@/sanity/lib/demo";
@@ -49,6 +49,11 @@ export const homePage = defineType({
 			name: "cta",
 			title: "Call To Action",
 			icon: HomeIcon,
+		},
+		{
+			name: "seo",
+			title: "SEO & Meta Tags",
+			icon: EyeOpenIcon,
 		},
 	],
 	fields: [
@@ -226,6 +231,13 @@ export const homePage = defineType({
 			validation: rule => [
 				rule.required().error("Configure the CTA section to publish the homepage."),
 			],
+		}),
+		defineField({
+			name: "seo",
+			type: "seo",
+			title: "SEO & Meta Tags",
+			group: "seo",
+			description: "Override default SEO settings for this page (optional)",
 		}),
 	],
 	preview: {

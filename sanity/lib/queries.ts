@@ -1,6 +1,58 @@
 import { defineQuery, groq } from "next-sanity";
 
-export const settingsQuery = defineQuery(`*[_type == "settings"][0]`);
+// Reusable SEO query fragment to avoid duplication
+const seoFields = `
+	seo{
+		title,
+		titleTemplate,
+		description,
+		keywords,
+		siteUrl,
+		ogImage{
+			source,
+			altText,
+			externalUrl,
+			image{
+				asset,
+				crop,
+				hotspot
+			}
+		},
+		favicon{
+			source,
+			altText,
+			externalUrl,
+			image{
+				asset,
+				crop,
+				hotspot
+			}
+		},
+		twitterCard,
+		twitterSite,
+		twitterCreator,
+		locale
+	}
+`;
+
+export const settingsQuery = defineQuery(`*[_type == "settings"][0]{
+	logo{
+		source,
+		altText,
+		externalUrl,
+		image{
+			asset,
+			crop,
+			hotspot
+		}
+	},
+	ctaButton{
+		label,
+		href,
+		icon
+	},
+	${seoFields}
+}`);
 
 export const homePageQuery = defineQuery(`
   *[_type == "homePage"][0]{
@@ -136,9 +188,44 @@ export const homePageQuery = defineQuery(`
         href,
         icon
       }
-    }
+    },
+    ${seoFields}
   }
 `);
+
+
+export const projectsQuery = defineQuery(`
+  *[_type == "homePage"][0].projects[]{
+    picture{
+      source,
+      altText,
+      externalUrl,
+      image{
+        asset,
+        crop,
+        hotspot
+      }
+    },
+    title,
+    projectCategory,
+    url
+  }
+`);
+
+export const ctaSectionQuery = defineQuery(`
+  *[_type == "homePage"][0]{
+   cta{
+      visible,
+      title,
+      description,
+      action{
+        label,
+        href,
+        icon
+      }
+    }
+  }
+  `);
 
 export const categoryQuery = defineQuery(`
   *[_type == "productCategory"] {
@@ -194,6 +281,7 @@ const postFields = /* groq */ `
     },
     role
   },
+  ${seoFields},
 `;
 
 export const heroQuery = defineQuery(`
@@ -373,13 +461,42 @@ export const PRODUCT_QUERY = defineQuery(`
           }
         },
         externalUrl
+      },
+      seo{
+        title,
+        titleTemplate,
+        description,
+        keywords,
+        siteUrl,
+        ogImage{
+          source,
+          altText,
+          externalUrl,
+          image{
+            asset,
+            crop,
+            hotspot
+          }
+        },
+        favicon{
+          source,
+          altText,
+          externalUrl,
+          image{
+            asset,
+            crop,
+            hotspot
+          }
+        },
+        twitterCard,
+        twitterSite,
+        twitterCreator,
+        locale
       }
     }
     `);
 
-export const aboutPageQuery = defineQuery(`
-  *[_type == "aboutPage"][0]{
-    content{
+export const aboutPageQuery = defineQuery(`*[_type == "aboutPage"][0]{
       backgroundImage{
         source,
         altText,
@@ -387,7 +504,6 @@ export const aboutPageQuery = defineQuery(`
         image{
           asset,
           crop,
-          hotspot
         }
       },
       featuresTitle,
@@ -395,6 +511,25 @@ export const aboutPageQuery = defineQuery(`
         icon,
         title,
         description
+      },
+      becomeADistributor{
+        title,
+        description,
+        email
+      },
+      becomeARep{
+        title,
+        description[]{
+          ...,
+          children[]{
+            ...
+          }
+        },
+        button{
+          label,
+          href,
+          icon
+        }
       },
       enoceanVisible,
       enoceanTitle,
@@ -413,8 +548,7 @@ export const aboutPageQuery = defineQuery(`
           crop,
           hotspot
         }
-      }
-    },
+      },
     companyInfo{
       visible,
       overviewTitle,
@@ -428,9 +562,39 @@ export const aboutPageQuery = defineQuery(`
       phone,
       headquarters,
       satelliteOffice
+    },
+    seo{
+      title,
+      titleTemplate,
+      description,
+      keywords,
+      siteUrl,
+      ogImage{
+        source,
+        altText,
+        externalUrl,
+        image{
+          asset,
+          crop,
+          hotspot
+        }
+      },
+      favicon{
+        source,
+        altText,
+        externalUrl,
+        image{
+          asset,
+          crop,
+          hotspot
+        }
+      },
+      twitterCard,
+      twitterSite,
+      twitterCreator,
+      locale
     }
-  }
-`);
+  }`);
 
 export const PRODUCTS_WITH_VIDEOS_QUERY = defineQuery(`
   *[_type == "product" && count(videos[defined(externalUrl)]) > 0]{
@@ -471,6 +635,64 @@ export const FAQ_QUERY = defineQuery(`
       group,
       question,
       answer
+    },
+    ${seoFields}
+  }
+`);
+
+export const becomeARepQuery = defineQuery(`
+  *[_type == "aboutPage"][0].becomeARep{
+    title,
+    description[]{
+      ...,
+      children[]{
+        ...
+      }
+    },
+    button{
+      label,
+      href,
+      icon
     }
   }
 `);
+
+export const becomeADistributorQuery = defineQuery(`
+  *[_type == "aboutPage"][0].becomeADistributor{
+    title,
+    description,
+    email
+  }
+`);
+
+export const caseStudiesPageQuery = defineQuery(`*[_type == "caseStudiesPage"][0]{
+	backgroundImage{
+		source,
+		altText,
+		externalUrl,
+		image{
+			asset,
+			crop,
+			hotspot
+		}
+	},
+	pageTitle,
+	description,
+	${seoFields}
+}`);
+
+export const distributorsPageQuery = defineQuery(`*[_type == "distributorsPage"][0]{
+	backgroundImage{
+		source,
+		altText,
+		externalUrl,
+		image{
+			asset,
+			crop,
+			hotspot
+		}
+	},
+	pageTitle,
+	description,
+	${seoFields}
+}`);

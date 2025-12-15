@@ -12,11 +12,11 @@ type CTASectionProps = {
 };
 
 export function CTASection({ cta }: CTASectionProps) {
-	const title = cta?.title ?? "Ready to Get Started?";
-	const description = cta?.description ?? "Request a quote for our wireless control solutions and receive pricing tailored to your project needs";
-	const actionLabel = cta?.action?.label ?? "Request a Quote";
+	const title = cta?.title;
+	const description = cta?.description;
+	const actionLabel = cta?.action?.label;
 	const actionHref = cta?.action?.href ?? "/contact";
-	const actionIcon = cta?.action?.icon ?? "solar:round-arrow-right-bold";
+	const actionIcon = cta?.action?.icon;
 
 	return (
 		<section className="py-20 bg-card/50">
@@ -35,7 +35,7 @@ export function CTASection({ cta }: CTASectionProps) {
 						</AnimatedElement>
 						<AnimatedElement delay={0.3}>
 							<Button size="lg" asChild>
-								<Link href={actionHref}>
+								<Link href={actionHref }>
 									{actionLabel}{" "}
 									{actionIcon && <Icon icon={actionIcon} className="size-7" />}
 								</Link>

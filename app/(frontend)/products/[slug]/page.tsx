@@ -27,20 +27,39 @@ export async function generateMetadata(
 	{ params }: Props,
 	parent: ResolvingMetadata
 ): Promise<Metadata> {
-	const product = await sanityFetch({
-		query: PRODUCT_QUERY,
-		params,
-		stega: false,
-	});
+	const [product, settings] = await Promise.all([
+		sanityFetch({
+			query: PRODUCT_QUERY,
+			params,
+			stega: false,
+		}),
+		sanityFetch({
+			query: settingsQuery,
+			revalidate: 3600,
+		}),
+	]);
+
+	// Merge product SEO with settings SEO
+	const mergedSeo = mergeSeo(product?.seo, settings?.seo);
+	const metadata = seoToMetadata(mergedSeo);
+
 	const previousImages = (await parent).openGraph?.images || [];
 	const ogImage = product?.images?.[0]
 		? resolveOpenGraphImage(product.images[0].image)
 		: undefined;
 
+	// Override with product-specific data
 	return {
-		title: `Illumra - ${product?.title}`,
-		description: product?.shortDescription,
+		...metadata,
+		title: product?.seo?.title 
+			? {
+				template: product.seo.titleTemplate || mergedSeo?.titleTemplate || "%s | Illumra",
+				default: product.seo.title,
+			}
+			: `Illumra - ${product?.title}`,
+		description: product?.seo?.description || product?.shortDescription || metadata.description,
 		openGraph: {
+			...metadata.openGraph,
 			images: ogImage ? [ogImage, ...previousImages] : previousImages,
 		},
 	} satisfies Metadata;

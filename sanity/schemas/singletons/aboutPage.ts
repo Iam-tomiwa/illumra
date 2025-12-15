@@ -1,7 +1,5 @@
-import { TextIcon, BookIcon, ImageIcon, SparkleIcon } from "@sanity/icons";
+import { TextIcon, BookIcon, ImageIcon, SparkleIcon, UsersIcon, CaseIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
-
-import * as demo from "@/sanity/lib/demo";
 
 export const aboutPage = defineType({
 	name: "aboutPage",
@@ -21,9 +19,24 @@ export const aboutPage = defineType({
 			icon: SparkleIcon,
 		},
 		{
+			name: "distributor",
+			title: "Become a Distributor",
+			icon: CaseIcon,
+		},
+		{
+			name: "rep",
+			title: "Become a Rep",
+			icon: UsersIcon,
+		},
+		{
 			name: "enocean",
 			title: "EnOcean Section",
 			icon: BookIcon,
+		},
+		{
+			name: "seo",
+			title: "SEO & Meta Tags",
+			icon: EyeOpenIcon,
 		},
 	],
 	fields: [
@@ -133,6 +146,27 @@ export const aboutPage = defineType({
 			group: "enocean",
 			title: "EnOcean Image",
 			description: "Image displayed alongside the EnOcean content.",
+		}),
+		// Become a Distributor Section
+		defineField({
+			name: "becomeADistributor",
+			type: "becomeADistributor",
+			group: "distributor",
+			description: "Become a Distributor section configuration.",
+		}),
+		// Become a Rep Section
+		defineField({
+			name: "becomeARep",
+			type: "becomeARep",
+			group: "rep",
+			description: "Become a Rep section configuration.",
+		}),
+		defineField({
+			name: "seo",
+			type: "seo",
+			title: "SEO & Meta Tags",
+			group: "seo",
+			description: "Override default SEO settings for this page (optional)",
 		}),
 	],
 	preview: {

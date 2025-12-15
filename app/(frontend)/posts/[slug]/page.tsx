@@ -14,7 +14,7 @@ import PortableText from "@/components/portable-text";
 import * as demo from "@/sanity/lib/demo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { postQuery, settingsQuery } from "@/sanity/lib/queries";
-import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import { resolveOpenGraphImage, seoToMetadata, mergeSeo } from "@/sanity/lib/utils";
 import { MediaAsset } from "@/sanity.types";
 import ReadingTime from "@/components/blog/reading-time";
 
@@ -38,19 +38,38 @@ export async function generateMetadata(
 	{ params }: Props,
 	parent: ResolvingMetadata
 ): Promise<Metadata> {
-	const post = await sanityFetch({
-		query: postQuery,
-		params,
-		stega: false,
-	});
+	const [post, settings] = await Promise.all([
+		sanityFetch({
+			query: postQuery,
+			params,
+			stega: false,
+		}),
+		sanityFetch({
+			query: settingsQuery,
+			revalidate: 3600,
+		}),
+	]);
+
+	// Merge post SEO with settings SEO
+	const mergedSeo = mergeSeo(post?.seo, settings?.seo);
+	const metadata = seoToMetadata(mergedSeo);
+
 	const previousImages = (await parent).openGraph?.images || [];
 	const ogImage = resolveOpenGraphImage(post?.coverImage);
 
+	// Override with post-specific data
 	return {
+		...metadata,
 		authors: post?.author?.name ? [{ name: post?.author?.name }] : [],
-		title: post?.title,
-		description: post?.excerpt,
+		title: post?.seo?.title
+			? {
+				template: post.seo.titleTemplate || mergedSeo?.titleTemplate || "%s | Illumra",
+				default: post.seo.title,
+			}
+			: post?.title || metadata.title,
+		description: post?.seo?.description || post?.excerpt || metadata.description,
 		openGraph: {
+			...metadata.openGraph,
 			images: ogImage ? [ogImage, ...previousImages] : previousImages,
 		},
 	} satisfies Metadata;

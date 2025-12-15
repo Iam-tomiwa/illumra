@@ -132,6 +132,167 @@ export function resolveMediaAsset(
 }
 
 /**
+ * Converts SEO data from Sanity to Next.js Metadata format
+ */
+export function seoToMetadata(seo: {
+	title?: string | null;
+	titleTemplate?: string | null;
+	description?: string | null;
+	keywords?: Array<string | null> | string[] | null;
+	siteUrl?: string | null;
+	ogImage?: {
+		source?: "external" | "upload" | string | null;
+		altText?: string | null;
+		externalUrl?: string | null;
+		image?: {
+			asset?: {
+				_ref?: string;
+				_type?: string;
+				_weak?: boolean;
+				[key: string]: unknown;
+			} | null;
+			crop?: unknown | null;
+			hotspot?: unknown | null;
+		} | null;
+	} | null;
+	favicon?: {
+		source?: "external" | "upload" | string | null;
+		altText?: string | null;
+		externalUrl?: string | null;
+		image?: {
+			asset?: {
+				_ref?: string;
+				_type?: string;
+				_weak?: boolean;
+				[key: string]: unknown;
+			} | null;
+			crop?: unknown | null;
+			hotspot?: unknown | null;
+		} | null;
+	} | null;
+	twitterCard?: "app" | "player" | "summary_large_image" | "summary" | string | null;
+	twitterSite?: string | null;
+	twitterCreator?: string | null;
+	locale?: string | null;
+} | {
+	title: string | null;
+	titleTemplate: string | null;
+	description: string | null;
+	keywords: Array<string> | null;
+	siteUrl: string | null;
+	ogImage: {
+		source: "external" | "upload" | null;
+		altText: string | null;
+		externalUrl: string | null;
+		image: {
+			asset: {
+				_ref: string;
+				_type: "reference";
+				_weak?: boolean;
+				[key: string]: unknown;
+			} | null;
+			crop: unknown | null;
+			hotspot: unknown | null;
+		} | null;
+	} | null;
+	favicon: {
+		source: "external" | "upload" | null;
+		altText: string | null;
+		externalUrl: string | null;
+		image: {
+			asset: {
+				_ref: string;
+				_type: "reference";
+				_weak?: boolean;
+				[key: string]: unknown;
+			} | null;
+			crop: unknown | null;
+			hotspot: unknown | null;
+		} | null;
+	} | null;
+	twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
+	twitterSite: string | null;
+	twitterCreator: string | null;
+	locale: string | null;
+} | null | undefined): import("next").Metadata {
+	if (!seo) {
+		return {};
+	}
+
+	const metadataBase = seo.siteUrl ? new URL(seo.siteUrl) : undefined;
+	const ogImage = resolveMediaAsset(seo.ogImage as any, { width: 1200, height: 627 });
+	const favicon = resolveMediaAsset(seo.favicon as any);
+
+	const keywordsString = seo.keywords
+		?.filter((k): k is string => typeof k === "string" && k.length > 0)
+		.join(", ");
+
+	const metadata: import("next").Metadata = {
+		...(metadataBase && { metadataBase }),
+		...(seo.title && {
+			title: {
+				template: seo.titleTemplate || `%s | ${seo.title}`,
+				default: seo.title,
+			},
+		}),
+		...(seo.description && { description: seo.description }),
+		...(keywordsString && { keywords: keywordsString }),
+		...(favicon?.url && {
+			icons: {
+				icon: favicon.url,
+				apple: favicon.url,
+			},
+		}),
+		openGraph: {
+			type: "website",
+			...(seo.locale && { locale: seo.locale }),
+			...(metadataBase && { url: metadataBase }),
+			...(seo.title && { siteName: seo.title, title: seo.title }),
+			...(seo.description && { description: seo.description }),
+			...(ogImage?.url && {
+				images: [
+					{
+						url: ogImage.url,
+						width: 1200,
+						height: 627,
+						alt: ogImage.alt || "Social sharing image",
+					},
+				],
+			}),
+		},
+		twitter: {
+			...(seo.twitterCard && { card: seo.twitterCard as "summary" | "summary_large_image" | "app" | "player" }),
+			...(seo.title && { title: seo.title }),
+			...(seo.description && { description: seo.description }),
+			...(ogImage?.url && { images: [ogImage.url] }),
+			...(seo.twitterSite && { site: seo.twitterSite }),
+			...(seo.twitterCreator && { creator: seo.twitterCreator }),
+		},
+	};
+
+	return metadata;
+}
+
+/**
+ * Merges page-specific SEO with settings SEO (page SEO takes precedence)
+ */
+export function mergeSeo(pageSeo: any, settingsSeo: any): any {
+	if (!pageSeo && !settingsSeo) return null;
+	if (!pageSeo) return settingsSeo;
+	if (!settingsSeo) return pageSeo;
+
+	// Page SEO takes precedence, but we merge fields that might be missing
+	return {
+		...settingsSeo,
+		...pageSeo,
+		// Only override ogImage if page has one, otherwise use settings
+		ogImage: pageSeo.ogImage || settingsSeo.ogImage,
+		// Only override favicon if page has one, otherwise use settings
+		favicon: pageSeo.favicon || settingsSeo.favicon,
+	};
+}
+
+/**
  * Recursively converts all `null` values in an object or array to `undefined`.
  */
 type NullToUndefined<T> = T extends null

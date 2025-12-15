@@ -9,13 +9,13 @@ interface QuoteFormValues {
 	productSlug: string;
 	colorId?: string;
 	productName: string;
-	quantity: number;
+	quantity?: number;
 	phone: string;
 	name: string;
 	company?: string;
 	email: string;
-	state: string;
-	inquiryType: string;
+	state?: string;
+	inquiryType?: string;
 	message?: string;
 }
 
@@ -102,12 +102,14 @@ export async function POST(req: NextRequest) {
                       </a>
                     </td>
                   </tr>
+                  ${values.quantity && values.quantity > 0 ? `
                   <tr>
                     <td style="padding: 8px 0; font-size: 15px; color: #333333;">
                       <strong style="color: #1a1a1a; min-width: 120px; display: inline-block;">Quantity:</strong>
                       ${values.quantity}
                     </td>
                   </tr>
+                  ` : ""}
                   ${
 																			values.colorId
 																				? `

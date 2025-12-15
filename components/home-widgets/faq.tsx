@@ -13,12 +13,13 @@ import { sanitizeSanityData } from "@/sanity/lib/utils";
 
 type FaqSectionProps = {
 	faq?: FAQ_QUERYResult;
+	showHeading?: boolean;
 };
 
-export default function FaqSection({ faq }: FaqSectionProps) {
-	const title = faq?.title ?? "Need Help?";
-	const description = faq?.description ?? "Find quick answers to common questions or learn how to get started with Illumra's wireless control solutions.";
-	const items = faq?.items ?? faqContent;
+export default function FaqSection({ showHeading = true, faq }: FaqSectionProps) {
+	const title = faq?.title;
+	const description = faq?.description;
+	const items = faq?.items;
 
 	const gettingStartedFaqs =
 		items?.filter(
@@ -38,10 +39,12 @@ export default function FaqSection({ faq }: FaqSectionProps) {
 	return (
 		<section id="faq" className="pt-16 pb-8 bg-background">
 			<div className="container mx-auto px-4 max-w-3xl text-center">
-				<h2 className="text-5xl font-bold mb-4">{title}</h2>
-				<p className="text-muted-foreground mb-8">
-					{description}
-				</p>
+				{showHeading && <>
+					<h2 className="text-5xl font-bold mb-4">{title}</h2>
+					<p className="text-muted-foreground mb-8">
+						{description}
+					</p>
+				</>}
 
 				<Tabs
 					defaultValue={hasGettingStarted ? "getting-started" : "faq"}

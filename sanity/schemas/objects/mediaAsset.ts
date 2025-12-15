@@ -50,12 +50,26 @@ export const mediaAsset = defineType({
 			description: "Publicly accessible HTTPS image URL.",
 			hidden: ({ parent }) => parent?.source !== "external",
 			validation: rule => [
-				rule.uri({ scheme: ["https"] }),
 				rule.custom((value, context) => {
 					const source = (context.parent as { source?: string } | undefined)?.source;
 
-					if (source === "external" && !value) {
-						return "Provide the external image URL or switch to Upload.";
+					if (source === "external") {
+						if (!value) {
+							return "Provide the external image URL or switch to Upload.";
+						}
+						// Validate HTTPS scheme only when value is provided
+						if (value && !value.startsWith("https://")) {
+							return "External URL must use HTTPS protocol.";
+						}
+						// Validate URI format
+						try {
+							const url = new URL(value);
+							if (url.protocol !== "https:") {
+								return "External URL must use HTTPS protocol.";
+							}
+						} catch {
+							return "Please provide a valid URL.";
+						}
 					}
 
 					return true;

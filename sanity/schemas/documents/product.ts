@@ -1,4 +1,4 @@
-import { CubeIcon } from "@sanity/icons";
+import { CubeIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { specificationEntry } from "@/sanity/schemas/objects/specificationEntry";
@@ -20,6 +20,7 @@ export default defineType({
 		{ name: "specifications", title: "Specifications", icon: CubeIcon },
 		{ name: "media", title: "Media", icon: CubeIcon },
 		{ name: "resources", title: "Resources", icon: CubeIcon },
+		{ name: "seo", title: "SEO & Meta Tags", icon: EyeOpenIcon },
 	],
 	fields: [
 		defineField({
@@ -250,6 +251,13 @@ export default defineType({
 			group: "resources",
 			description: "Wiring diagrams associated with the product.",
 			of: [defineArrayMember({ type: resourceLink.name })],
+		}),
+		defineField({
+			name: "seo",
+			type: "seo",
+			title: "SEO & Meta Tags",
+			group: "seo",
+			description: "Override default SEO settings for this product page (optional)",
 		}),
 	],
 	preview: {

@@ -24,9 +24,12 @@ import productVoltage from "@/sanity/schemas/documents/productVoltage";
 import productFrequency from "@/sanity/schemas/documents/productFrequency";
 import productProtocol from "@/sanity/schemas/documents/productProtocol";
 import store from "@/sanity/schemas/documents/store";
+import { settings } from "@/sanity/schemas/singletons/settings";
 import { homePage } from "@/sanity/schemas/singletons/homePage";
 import { faq } from "@/sanity/schemas/singletons/faq";
 import { aboutPage } from "@/sanity/schemas/singletons/aboutPage";
+import { caseStudiesPage } from "@/sanity/schemas/singletons/caseStudiesPage";
+import { distributorsPage } from "@/sanity/schemas/singletons/distributorsPage";
 import { heroSection } from "@/sanity/schemas/objects/heroSection";
 import { controlSolutionsSection } from "@/sanity/schemas/objects/controlSolutionsSection";
 import { trustedBySection } from "@/sanity/schemas/objects/trustedBySection";
@@ -45,6 +48,13 @@ import { resolveHref } from "@/sanity/lib/utils";
 import { faqContent } from "./sanity/schemas/objects/faqContent";
 import { testimonials } from "./sanity/schemas/objects/testimonials";
 import { projectsContent } from "./sanity/schemas/objects/projectsContent";
+import { becomeARep } from "./sanity/schemas/objects/becomeARep";
+import { becomeADistributor } from "./sanity/schemas/objects/becomeADistributor";
+import { formFieldConfig } from "./sanity/schemas/objects/formFieldConfig";
+import { selectOption } from "./sanity/schemas/objects/selectOption";
+import { quoteFormField } from "./sanity/schemas/objects/quoteFormField";
+import { seo } from "./sanity/schemas/objects/seo";
+import { contactPage } from "./sanity/schemas/singletons/contactPage";
 
 const homeLocation = {
 	title: "Home",
@@ -56,17 +66,35 @@ const aboutLocation = {
 	href: "/about",
 } satisfies DocumentLocation;
 
+const contactLocation = {
+	title: "Contact",
+	href: "/contact",
+} satisfies DocumentLocation;
+
+const caseStudiesLocation = {
+	title: "Case Studies",
+	href: "/case-studies",
+} satisfies DocumentLocation;
+
+const distributorsLocation = {
+	title: "Distributors",
+	href: "/distributors",
+} satisfies DocumentLocation;
+
 export default defineConfig({
 	basePath: studioUrl,
 	projectId,
 	dataset,
-	schema: {
+		schema: {
 		types: [
-			// Singletons
-			// settings,
-			homePage,
-			aboutPage,
-			faq,
+		// Singletons
+		settings,
+		homePage,
+		aboutPage,
+		faq,
+		contactPage,
+		caseStudiesPage,
+		distributorsPage,
 			// Documents
 			post,
 			product,
@@ -94,6 +122,12 @@ export default defineConfig({
 			faqContent,
 			testimonials,
 			projectsContent,
+			becomeARep,
+			becomeADistributor,
+			formFieldConfig,
+			selectOption,
+			quoteFormField,
+			seo,
 		],
 	},
 	plugins: [
@@ -109,6 +143,18 @@ export default defineConfig({
 						filter: `_type == "aboutPage"`,
 					},
 					{
+						route: "/contact",
+						filter: `_type == "contactPage"`,
+					},
+					{
+						route: "/case-studies",
+						filter: `_type == "caseStudiesPage"`,
+					},
+					{
+						route: "/distributors",
+						filter: `_type == "distributorsPage"`,
+					},
+					{
 						route: "/posts/:slug",
 						filter: `_type == "post" && slug.current == $slug`,
 					},
@@ -122,6 +168,21 @@ export default defineConfig({
 					aboutPage: defineLocations({
 						locations: [aboutLocation],
 						message: "This document powers the about page and contact information content.",
+						tone: "positive",
+					}),
+					contactPage: defineLocations({
+						locations: [contactLocation],
+						message: "This document powers the contact page form configurations.",
+						tone: "positive",
+					}),
+					caseStudiesPage: defineLocations({
+						locations: [caseStudiesLocation],
+						message: "This document powers the case studies page.",
+						tone: "positive",
+					}),
+					distributorsPage: defineLocations({
+						locations: [distributorsLocation],
+						message: "This document powers the distributors page.",
 						tone: "positive",
 					}),
 					post: defineLocations({
@@ -143,9 +204,9 @@ export default defineConfig({
 			},
 			previewUrl: { previewMode: { enable: "/api/draft-mode/enable" } },
 		}),
-		structureTool({ structure: pageStructure([homePage, aboutPage, faq]) }),
+		structureTool({ structure: pageStructure([settings, homePage, aboutPage, faq, contactPage, caseStudiesPage, distributorsPage]) }),
 		// Configures the global "new document" button, and document actions, to suit the Settings document singleton
-		singletonPlugin([homePage.name, aboutPage.name, faq.name]),
+		singletonPlugin([settings.name, homePage.name, aboutPage.name, faq.name, contactPage.name, caseStudiesPage.name, distributorsPage.name]),
 		// Add an image asset source for Unsplash
 		unsplashImageAsset(),
 		// Sets up AI Assist with preset prompts

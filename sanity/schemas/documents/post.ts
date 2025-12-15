@@ -1,4 +1,4 @@
-import { DocumentTextIcon, ImageIcon } from "@sanity/icons";
+import { DocumentTextIcon, ImageIcon, EyeOpenIcon } from "@sanity/icons";
 import { format, parseISO } from "date-fns";
 import { defineField, defineType } from "sanity";
 
@@ -128,6 +128,12 @@ export default defineType({
       title: "Author",
       type: "reference",
       to: [{ type: authorType.name }],
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO & Meta Tags",
+      type: "seo",
+      description: "Override default SEO settings for this post (optional)",
     }),
   ],
   preview: {

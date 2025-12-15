@@ -1,5 +1,5 @@
 import { faqContent } from "@/sanity/lib/demo";
-import { HelpCircleIcon } from "@sanity/icons";
+import { HelpCircleIcon, EyeOpenIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const faq = defineType({
@@ -7,6 +7,19 @@ export const faq = defineType({
 	title: "FAQ",
 	type: "document",
 	icon: HelpCircleIcon,
+	groups: [
+		{
+			name: "content",
+			title: "Content",
+			icon: HelpCircleIcon,
+			default: true,
+		},
+		{
+			name: "seo",
+			title: "SEO & Meta Tags",
+			icon: EyeOpenIcon,
+		},
+	],
 	initialValue: {
 		visible: "show",
 		title: "Need Help?",
@@ -18,6 +31,7 @@ export const faq = defineType({
 			name: "visible",
 			title: "Section Visibility",
 			type: "string",
+			group: "content",
 			description: "Choose whether to show or hide the FAQ section on the page.",
 			initialValue: "show",
 			options: {
@@ -34,6 +48,7 @@ export const faq = defineType({
 		defineField({
 			name: "title",
 			type: "string",
+			group: "content",
 			description: "Heading displayed above the FAQ section.",
 			initialValue: "Need Help?",
 			validation: rule => [
@@ -47,6 +62,7 @@ export const faq = defineType({
 		defineField({
 			name: "description",
 			type: "text",
+			group: "content",
 			rows: 3,
 			description: "Supporting text displayed below the title.",
 			initialValue:
@@ -59,12 +75,20 @@ export const faq = defineType({
 			name: "items",
 			title: "FAQ Items",
 			type: "array",
+			group: "content",
 			description: "Add frequently asked questions and their answers.",
 			of: [defineArrayMember({ type: "faqContent" })],
 			validation: rule => [
 				rule.required().min(1).error("Add at least one FAQ item."),
 				rule.unique().warning("Duplicate FAQ items were removed."),
 			],
+		}),
+		defineField({
+			name: "seo",
+			type: "seo",
+			title: "SEO & Meta Tags",
+			group: "seo",
+			description: "Override default SEO settings for this page (optional)",
 		}),
 	],
 	preview: {

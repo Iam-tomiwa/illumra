@@ -9,10 +9,8 @@ import { toast } from "sonner";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -114,18 +112,14 @@ const inquiryTypes = [
 ];
 
 const quoteSchema = z.object({
-	productSlug: z.string().min(1, "Select a product"),
+	productSlug: z.string().optional(),
 	colorId: z.string().optional(),
-	quantity: z
-		.number()
-		.int("Quantity must be a whole number")
-		.min(1, "Quantity must be at least 1"),
 	phone: z.string().min(7, "Enter a valid phone number"),
 	name: z.string().min(2, "Name is required"),
 	company: z.string().optional(),
 	email: z.string().email("Enter a valid email"),
-	state: z.string().min(2, "Select a state"),
-	inquiryType: z.string().min(1, "Select an inquiry type"),
+	state: z.string().optional(),
+	inquiryType: z.string().optional(),
 	message: z.string().max(1000, "Message is too long").optional(),
 });
 
@@ -158,7 +152,6 @@ export function GetQuoteModalForm({
 			colorId: selectedColor?.name
 				? selectedColor.name + "-" + selectedColor.partNumber
 				: "",
-			quantity: 1,
 			phone: "",
 			name: "",
 			company: "",
@@ -263,7 +256,7 @@ export function GetQuoteModalForm({
 			// Get product details from selected product or props
 			const finalProductSlug =
 				productSlug || selectedProduct?.value || values.productSlug || "";
-			const finalProductName = currentProductTitle || "";
+			const finalProductName = currentProductTitle || "Not specified";
 
 			// Format product name: "Product Name - Color - SKU"
 			let productOfInterest = finalProductName;
@@ -293,9 +286,10 @@ export function GetQuoteModalForm({
 				body: JSON.stringify(
 					sanitizeSanityData({
 						...values,
-						productSlug: finalProductSlug,
+						productSlug: finalProductSlug || "not-specified",
 						productName: finalProductName,
 						productOfInterest,
+						quantity: 0, // Keep for API compatibility but not required from form
 					})
 				),
 			});
@@ -318,7 +312,7 @@ export function GetQuoteModalForm({
 				<FieldSet className="">
 					<Field>
 						<FieldLabel htmlFor="productSlug">
-							Product of Interest<span className="text-destructive">*</span>
+							Product of Interest
 						</FieldLabel>
 						<FieldContent>
 							<Controller
@@ -368,32 +362,15 @@ export function GetQuoteModalForm({
 						</Field>
 					)}
 
-					<FieldGroup className="grid gap-4 md:grid-cols-2">
-						<Field>
-							<FieldLabel htmlFor="quantity">
-								Quantity<span className="text-destructive">*</span>
-							</FieldLabel>
-							<FieldContent>
-								<Input
-									id="quantity"
-									type="number"
-									min={1}
-									placeholder="Quantity"
-									{...register("quantity", { valueAsNumber: true })}
-								/>
-								<FieldError errors={errors.quantity ? [errors.quantity] : undefined} />
-							</FieldContent>
-						</Field>
-						<Field>
-							<FieldLabel htmlFor="phone">
-								Phone Number <span className="text-destructive">*</span>
-							</FieldLabel>
-							<FieldContent>
-								<Input id="phone" placeholder="Phone Number" {...register("phone")} />
-								<FieldError errors={errors.phone ? [errors.phone] : undefined} />
-							</FieldContent>
-						</Field>
-					</FieldGroup>
+					<Field>
+						<FieldLabel htmlFor="phone">
+							Phone Number <span className="text-destructive">*</span>
+						</FieldLabel>
+						<FieldContent>
+							<Input id="phone" placeholder="Phone Number" {...register("phone")} />
+							<FieldError errors={errors.phone ? [errors.phone] : undefined} />
+						</FieldContent>
+					</Field>
 
 					<FieldGroup className="grid gap-4 md:grid-cols-2">
 						<Field>
@@ -430,9 +407,7 @@ export function GetQuoteModalForm({
 
 					<FieldGroup className="grid gap-4 md:grid-cols-2">
 						<Field>
-							<FieldLabel htmlFor="state">
-								State <span className="text-destructive">*</span>
-							</FieldLabel>
+							<FieldLabel htmlFor="state">State</FieldLabel>
 							<FieldContent>
 								<Controller
 									name="state"
@@ -445,19 +420,16 @@ export function GetQuoteModalForm({
 												value: state.label,
 												label: state.label,
 											}))}
-											placeholder="Select a state"
+											placeholder="Select a state (optional)"
 											className="w-full"
 											contentClassname="max-h-64"
 										/>
 									)}
 								/>
-								<FieldError errors={errors.state ? [errors.state] : undefined} />
 							</FieldContent>
 						</Field>
 						<Field>
-							<FieldLabel htmlFor="inquiryType">
-								Inquiry Type <span className="text-destructive">*</span>
-							</FieldLabel>
+							<FieldLabel htmlFor="inquiryType">Inquiry Type</FieldLabel>
 							<FieldContent>
 								<Controller
 									name="inquiryType"
@@ -468,14 +440,11 @@ export function GetQuoteModalForm({
 											value={field.value}
 											onValueChange={value => field.onChange(value)}
 											options={inquiryTypes}
-											placeholder="Select an inquiry type"
+											placeholder="Select an inquiry type (optional)"
 											className="w-full"
 											contentClassname="max-h-64"
 										/>
 									)}
-								/>
-								<FieldError
-									errors={errors.inquiryType ? [errors.inquiryType] : undefined}
 								/>
 							</FieldContent>
 						</Field>

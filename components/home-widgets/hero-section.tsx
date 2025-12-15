@@ -43,10 +43,10 @@ export function HeroSection({ hero }: HeroSectionProps) {
 
 	const attentionLabel = null;
 	const attentionIcon = content.attentionIcon ?? null;
-	const headline = content.headline ?? heroSection.headline;
-	const summary = content.summary ?? heroSection.summary;
-	const primaryAction = content.primaryAction ?? heroSection.primaryAction;
-	const secondaryAction = content.secondaryAction ?? heroSection.secondaryAction;
+	const headline = content.headline;
+	const summary = content.summary;
+	const primaryAction = content.primaryAction;
+	const secondaryAction = content.secondaryAction;
 
 	return (
 		<header

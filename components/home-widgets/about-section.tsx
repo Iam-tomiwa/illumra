@@ -125,7 +125,7 @@ export function AboutSection({ section }: AboutSectionProps) {
 	const features = getFeatures(section?.features);
 	const cta = getCta(section?.cta);
 	const paragraphs = getParagraphs(section?.body);
-	const heading = content.title ?? aboutSection.title;
+	const heading = content.title;
 	return (
 		<section
 			className="relative bg-cover bg-center py-20 text-white"

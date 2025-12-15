@@ -4,10 +4,19 @@ import { AnimatedElement } from "@/components/animated-element";
 import PagesHero from "@/components/pages-hero";
 import StoreLocator, { StoreInput } from "@/components/store-locator/store-locator";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { STORES_QUERY } from "@/sanity/lib/queries";
+import { STORES_QUERY, distributorsPageQuery } from "@/sanity/lib/queries";
+import { resolveBackgroundUrl } from "@/components/home-widgets/hero-section";
 
 export default async function DistributorsPage() {
-	const stores = await sanityFetch({ query: STORES_QUERY });
+	const [stores, distributorsPage] = await Promise.all([
+		sanityFetch({ query: STORES_QUERY }),
+		sanityFetch({ query: distributorsPageQuery }),
+	]);
+
+	// Resolve background image
+	const backgroundImage = resolveBackgroundUrl(
+		distributorsPage?.backgroundImage as Parameters<typeof resolveBackgroundUrl>[0]
+	)?.url;
 
 	const storesList: StoreInput[] = Array.isArray(stores)
 		? stores
@@ -41,22 +50,26 @@ export default async function DistributorsPage() {
 
 	return (
 		<div className="bg-accent">
-			<PagesHero>
+			<PagesHero backgroundImageUrl={backgroundImage}>
 				<div className="max-w-3xl">
-					<AnimatedElement>
-						<p className="text-primary mb-4">Find a Rep/Distributor</p>
-					</AnimatedElement>
 					<AnimatedElement delay={0.1}>
-						<h1 className="page-title">Where to Buy</h1>
+						<h1 className="page-title">{distributorsPage?.pageTitle || "Where to Buy"}</h1>
 					</AnimatedElement>
-					<AnimatedElement delay={0.2}>
-						<p className="mb-6">
-							Discover local distributors with ease! Simply search by city, state,
-							or ZIP code, or use the &quot;Near Me&quot; button to find the
-							closest distributors to your location. We&apos;re here to help you
-							connect with the best options available.
-						</p>
-					</AnimatedElement>
+					{distributorsPage?.description && (
+						<AnimatedElement delay={0.2}>
+							<p className="mb-6 text-white">{distributorsPage.description}</p>
+						</AnimatedElement>
+					)}
+					{!distributorsPage?.description && (
+						<AnimatedElement delay={0.2}>
+							<p className="mb-6">
+								Discover local distributors with ease! Simply search by city, state,
+								or ZIP code, or use the &quot;Near Me&quot; button to find the
+								closest distributors to your location. We&apos;re here to help you
+								connect with the best options available.
+							</p>
+						</AnimatedElement>
+					)}
 				</div>
 			</PagesHero>
 

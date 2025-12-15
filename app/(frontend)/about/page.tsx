@@ -10,17 +10,14 @@ import BecomeARep from "@/components/about/become-a-rep";
 import PortableText from "@/components/portable-text";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { aboutPageQuery } from "@/sanity/lib/queries";
-import { aboutPageContent, companyInfo } from "@/sanity/lib/demo";
-import type { PortableTextBlock } from "next-sanity";
 import { resolveBackgroundUrl } from "@/components/home-widgets/hero-section";
-import type { AboutPage, IconFeature } from "@/sanity.types";
-import { AnimatedElement } from "@/components/animated-element";
+import type { AboutPage, AboutPageQueryResult, IconFeature } from "@/sanity.types";
+import { PortableTextBlock } from "next-sanity";
 
 export default async function AboutPage() {
 	const aboutPage = (await sanityFetch({
 		query: aboutPageQuery,
-	})) as unknown as any | null;
-
+	})) as AboutPageQueryResult | null;
 	// Hero content
 	const backgroundImage = resolveBackgroundUrl(
 		aboutPage?.backgroundImage as Parameters<typeof resolveBackgroundUrl>[0]
@@ -28,26 +25,28 @@ export default async function AboutPage() {
 
 
 	// Overview content
-	const overviewTitle = aboutPage?.content?.overviewTitle ?? aboutPageContent.overviewTitle;
-	const paragraphs = (aboutPage?.content?.paragraphs ?? aboutPageContent.paragraphs) as PortableTextBlock[];
+	const overviewTitle = aboutPage?.companyInfo?.overviewTitle;
+	const paragraphs = aboutPage?.companyInfo?.overview;
 
 	// Company info
-	const email = aboutPage?.companyInfo?.email ?? companyInfo.email;
-	const phone = aboutPage?.companyInfo?.phone ?? companyInfo.phone;
-	const headquarters = aboutPage?.companyInfo?.headquarters ?? companyInfo.headquarters;
+	const email = aboutPage?.companyInfo?.email;
+	const phone = aboutPage?.companyInfo?.phone;
+	const headquarters = aboutPage?.companyInfo?.headquarters;
 
 	// Features content
-	const featuresTitle = aboutPage?.content?.featuresTitle ?? aboutPageContent.featuresTitle;
-	const features = aboutPage?.features ?? aboutPageContent.features;
+	const featuresTitle = aboutPage?.featuresTitle;
+	const features = aboutPage?.features;
+
+
 
 	// EnOcean content
-	const enoceanVisible = aboutPage?.content?.enoceanVisible !== "hide";
-	const enoceanTitle = aboutPage?.content?.enoceanTitle ?? aboutPageContent.enoceanTitle;
-	const enoceanDescription = aboutPage?.content?.enoceanDescription ?? aboutPageContent.enoceanDescription;
-	const enoceanAction = aboutPage?.content?.enoceanAction ?? aboutPageContent.enoceanAction;
+	const enoceanVisible = aboutPage?.enoceanVisible !== "hide";
+	const enoceanTitle = aboutPage?.enoceanTitle;
+	const enoceanDescription = aboutPage?.enoceanDescription;
+	const enoceanAction = aboutPage?.enoceanAction;
 	const enoceanImage = resolveBackgroundUrl(
-		aboutPage?.content?.enoceanImage as Parameters<typeof resolveBackgroundUrl>[0]
-	)?.url ?? aboutPageContent.enoceanImage.externalUrl;
+		aboutPage?.enoceanImage as Parameters<typeof resolveBackgroundUrl>[0]
+	)?.url;
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -65,7 +64,9 @@ export default async function AboutPage() {
 								{overviewTitle}
 							</h2>
 							<div className="space-y-4 text-foreground/90">
-								<PortableText value={paragraphs} />
+								{paragraphs && paragraphs.length > 0 && (
+									<PortableText value={paragraphs as PortableTextBlock[]} />
+								)}
 							</div>
 						</div>
 
@@ -125,18 +126,27 @@ export default async function AboutPage() {
 							{featuresTitle}
 						</h2>
 						<div className="grid md:grid-cols-3 gap-8">
-							{features.map((feature: IconFeature, index: number) => (
-								<Card key={index} className="border-2 transition-colors">
-									<CardContent className="pt-6">
-										{feature.icon && (
-											<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
-												<Icon icon={feature.icon} className="size-6 text-primary" />
-											</div>
-										)}
-										<h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-										<p className="text-foreground/80">{feature.description}</p>
-									</CardContent>
-								</Card>
+							{features.map((feature) => (
+								<div
+									key={feature.title}
+									className="flip-card-container h-[280px] border rounded-lg cursor-pointer!"
+								>
+									<div className="flip-card-inner">
+										{/* Front Side - Icon and Title */}
+										<div className="flip-card-front">
+											{feature.icon && (
+												<div className="mb-4 flex size-16 items-center justify-center rounded-full bg-primary/10">
+													<Icon icon={feature.icon} className="size-8 text-primary" />
+												</div>
+											)}
+											<h3 className="text-xl font-semibold">{feature.title}</h3>
+										</div>
+										{/* Back Side - Description */}
+										<div className="flip-card-back">
+											<p className="text-foreground/80">{feature.description}</p>
+										</div>
+									</div>
+								</div>
 							))}
 						</div>
 					</div>

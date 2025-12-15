@@ -32,9 +32,6 @@ export default async function WirelessControlSolutionsLandingPage() {
 	const featuredProducts = await sanityFetch({
 		query: featuredProductsQuery,
 	});
-	const categories = await sanityFetch({
-		query: categoryQuery,
-	});
 	const faq = await sanityFetch({
 		query: FAQ_QUERY,
 	});
@@ -51,7 +48,6 @@ export default async function WirelessControlSolutionsLandingPage() {
 			<HeroSection hero={hero} />
 			{featuredProductsVisible && featuredProducts && featuredProducts.length > 0 && (	
 				<FeaturedProductsSection
-					categories={categories}
 					products={featuredProducts}
 				/>
 			)}

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
-import { cn } from "@/lib/utils";
 import {
 	CategoryQueryResult,
 	FeaturedProductsQueryResult,
@@ -22,10 +21,8 @@ export type CategoryType = NonNullable<
 
 export function FeaturedProductsSection({
 	products = [],
-	categories = [],
 }: {
 	products: ProductType[];
-	categories: CategoryType[];
 }) {
 	const [selectedCategory, setSelectedCategory] = useState("all-products");
 
@@ -61,7 +58,7 @@ export function FeaturedProductsSection({
 
 				<AnimatedElement>
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6">
-						{filteredProducts.map((product, index) => (
+						{filteredProducts.map((product) => (
 							<ProductCard
 								key={product.slug}
 								id={product.slug ?? ""}
