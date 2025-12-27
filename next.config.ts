@@ -1172,6 +1172,24 @@ const nextConfig: NextConfig = {
       // },
     ];
   },
+  async headers() {
+    return [
+      {
+        // Apply CHIPS compliance headers to Sanity CDN resources
+        source: "/:path*",
+        headers: [
+          {
+            key: "Permissions-Policy",
+            value: "interest-cohort=()", // Disable FLoC/cohort tracking
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

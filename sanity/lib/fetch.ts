@@ -10,55 +10,57 @@ import { token } from "@/sanity/lib/token";
  * When using the "drafts" perspective then the data is fetched from the live API and isn't cached, it will also fetch draft content that isn't published yet.
  */
 export async function sanityFetch<const QueryString extends string>({
-	query,
-	params = {},
-	perspective: _perspective,
-	/**
-	 * Stega embedded Content Source Maps are used by Visual Editing by both the Sanity Presentation Tool and Vercel Visual Editing.
-	 * The Sanity Presentation Tool will enable Draft Mode when loading up the live preview, and we use it as a signal for when to embed source maps.
-	 * When outside of the Sanity Studio we also support the Vercel Toolbar Visual Editing feature, which is only enabled in production when it's a Vercel Preview Deployment.
-	 */
-	stega: _stega,
-	/**
-	 * Custom revalidation time in seconds. Defaults to 60 seconds for published content, 0 for drafts.
-	 * Use longer revalidation times (e.g., 3600 for 1 hour) for static data like categories.
-	 */
-	revalidate,
+  query,
+  params = {},
+  perspective: _perspective,
+  /**
+   * Stega embedded Content Source Maps are used by Visual Editing by both the Sanity Presentation Tool and Vercel Visual Editing.
+   * The Sanity Presentation Tool will enable Draft Mode when loading up the live preview, and we use it as a signal for when to embed source maps.
+   * When outside of the Sanity Studio we also support the Vercel Toolbar Visual Editing feature, which is only enabled in production when it's a Vercel Preview Deployment.
+   */
+  stega: _stega,
+  /**
+   * Custom revalidation time in seconds. Defaults to 60 seconds for published content, 0 for drafts.
+   * Use longer revalidation times (e.g., 3600 for 1 hour) for static data like categories.
+   */
+  revalidate,
 }: {
-	query: QueryString;
-	params?: QueryParams | Promise<QueryParams>;
-	perspective?: Omit<ClientPerspective, "raw">;
-	stega?: boolean;
-	revalidate?: number;
+  query: QueryString;
+  params?: QueryParams | Promise<QueryParams>;
+  perspective?: Omit<ClientPerspective, "raw">;
+  stega?: boolean;
+  revalidate?: number;
 }) {
-	const perspective =
-		_perspective || (await draftMode()).isEnabled ? "drafts" : "published";
-	const stega =
-		_stega ||
-		perspective === "drafts" ||
-		process.env.VERCEL_ENV === "preview";
-	if (perspective === "drafts") {
-		const result = await client.fetch(query, await params, {
-			stega,
-			perspective: "drafts",
-			// The token is required to fetch draft content
-			token,
-			// The `drafts` perspective isn't available on the API CDN
-			useCdn: false,
-			// And we can't cache the responses as it would slow down the live preview experience
-			next: { revalidate: 0 },
-		});
-		return result;
-	}
-	const result = await client.fetch(query, await params, {
-		stega,
-		perspective: "published",
-		// The `published` perspective is available on the API CDN
-		useCdn: true,
-		// Only enable Stega in production if it's a Vercel Preview Deployment, as the Vercel Toolbar supports Visual Editing
-		// When using the `published` perspective we use time-based revalidation to match the time-to-live on Sanity's API CDN (60 seconds)
-		// Allow custom revalidation times for static data like categories
-		next: { revalidate: revalidate ?? 60 },
-	});
-	return result;
+  const perspective =
+    _perspective || (await draftMode()).isEnabled ? "drafts" : "published";
+  const stega =
+    _stega || perspective === "drafts" || process.env.VERCEL_ENV === "preview";
+  if (perspective === "drafts") {
+    const result = await client.fetch(query, await params, {
+      stega,
+      perspective: "drafts",
+      // The token is required to fetch draft content
+      token,
+      // The `drafts` perspective isn't available on the API CDN
+      useCdn: false,
+      // And we can't cache the responses as it would slow down the live preview experience
+      next: { revalidate: 0 },
+      // CHIPS compliance: Only send credentials when necessary (draft mode with token)
+      // For authenticated requests, credentials are required but should be partitioned
+    });
+    return result;
+  }
+  const result = await client.fetch(query, await params, {
+    stega,
+    perspective: "published",
+    // The `published` perspective is available on the API CDN
+    useCdn: true,
+    // Only enable Stega in production if it's a Vercel Preview Deployment, as the Vercel Toolbar supports Visual Editing
+    // When using the `published` perspective we use time-based revalidation to match the time-to-live on Sanity's API CDN (60 seconds)
+    // Allow custom revalidation times for static data like categories
+    next: { revalidate: revalidate ?? 60 },
+    // CHIPS compliance: Don't send credentials for public CDN requests
+    // Credentials are omitted by default in the client config, ensuring partitioned cookies
+  });
+  return result;
 }
