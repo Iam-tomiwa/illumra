@@ -21,52 +21,113 @@ import type {
 } from "@/sanity.types";
 import { cleanString, seoToMetadata } from "@/sanity/lib/utils";
 import { Metadata } from "next";
-import { buildFilterParams, PAGE_SIZE } from "./_utils";
+import { notFound } from "next/navigation";
+import { buildFilterParams, PAGE_SIZE } from "../../_utils";
 
-type ProductsPageProps = {
+type CategoryPageProps = {
+  params: Promise<{ category: string }>;
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const [settings] = await Promise.all([
+export async function generateStaticParams() {
+  const categories = await sanityFetch({
+    query: categoryQuery,
+    perspective: "published",
+    stega: false,
+  });
+
+  if (!Array.isArray(categories)) {
+    return [];
+  }
+
+  return categories
+    .filter((cat) => cat?.slug)
+    .map((cat) => ({
+      category: cleanString(cat.slug) || "",
+    }))
+    .filter((p) => p.category);
+}
+
+export async function generateMetadata({
+  params,
+}: CategoryPageProps): Promise<Metadata> {
+  const { category: categorySlug } = await params;
+  const [categories, settings] = await Promise.all([
+    sanityFetch({
+      query: categoryQuery,
+      revalidate: 3600,
+    }),
     sanityFetch({
       query: settingsQuery,
       revalidate: 3600,
     }),
   ]);
 
+  const category = Array.isArray(categories)
+    ? categories.find(
+        (cat) => cleanString(cat?.slug) === cleanString(categorySlug)
+      )
+    : null;
+
+  if (!category) {
+    return {};
+  }
+
   const metadata = seoToMetadata(settings?.seo);
+
+  const categoryTitle = category.title || "Products";
+  const categoryDescription =
+    category.description ||
+    `Browse ${categoryTitle} products from ILLUMRA. Wireless lighting control solutions.`;
 
   return {
     ...metadata,
-    title:
-      "Wireless Lighting Control Products | Switches, Sensors, Controllers",
-    description:
-      "Browse ILLUMRA's complete line of self-powered wireless switches, occupancy sensors, and controllers. EnOcean, ZigBee & Bluetooth compatible.",
-    keywords: [
-      "wireless controllers",
-      "self-powered switches",
-      "wireless controllers",
-      "occupancy sensors,",
-    ],
+    title: `${categoryTitle} | ILLUMRA Products`,
+    description: categoryDescription,
+    openGraph: {
+      ...metadata.openGraph,
+      title: `${categoryTitle} | ILLUMRA Products`,
+      description: categoryDescription,
+    },
+    twitter: {
+      ...metadata.twitter,
+      title: `${categoryTitle} | ILLUMRA Products`,
+      description: categoryDescription,
+    },
   } satisfies Metadata;
 }
 
-export default async function ProductsPage(props: ProductsPageProps) {
+export default async function CategoryProductsPage(props: CategoryPageProps) {
+  const { category: categorySlug } = await props.params;
   const searchParams = (await props.searchParams) ?? {};
 
   const {
     search,
     searchWildcard,
     category,
-    voltages,
-    frequencies,
-    protocols,
+    voltages: voltagesFilter,
+    frequencies: frequenciesFilter,
+    protocols: protocolsFilter,
     sort,
     page,
     offset,
     end,
-  } = buildFilterParams(searchParams);
+  } = buildFilterParams(searchParams, categorySlug);
+
+  // Verify category exists
+  const [categories] = await Promise.all([
+    sanityFetch({ query: categoryQuery, revalidate: 3600 }),
+  ]);
+
+  const categoryData = Array.isArray(categories)
+    ? categories.find(
+        (cat) => cleanString(cat?.slug) === cleanString(categorySlug)
+      )
+    : null;
+
+  if (!categoryData) {
+    return notFound();
+  }
 
   const sortMap: Record<string, string> = {
     "name-asc": "title asc",
@@ -96,7 +157,7 @@ export default async function ProductsPage(props: ProductsPageProps) {
   const [
     products,
     total,
-    categories,
+    allCategories,
     frequencyOptions,
     protocolOptions,
     voltageOptions,
@@ -107,9 +168,9 @@ export default async function ProductsPage(props: ProductsPageProps) {
         search,
         searchWildcard,
         category,
-        voltages,
-        frequencies,
-        protocols,
+        voltages: voltagesFilter,
+        frequencies: frequenciesFilter,
+        protocols: protocolsFilter,
         offset,
         end,
       },
@@ -120,9 +181,9 @@ export default async function ProductsPage(props: ProductsPageProps) {
         search,
         searchWildcard,
         category,
-        voltages,
-        frequencies,
-        protocols,
+        voltages: voltagesFilter,
+        frequencies: frequenciesFilter,
+        protocols: protocolsFilter,
       },
     }),
     sanityFetch({ query: categoryQuery }),
@@ -137,8 +198,8 @@ export default async function ProductsPage(props: ProductsPageProps) {
 
   const totalCount = typeof total === "number" ? total : 0;
 
-  const categoryOptions = Array.isArray(categories)
-    ? (categories.filter(Boolean) as CategoryType[])
+  const categoryOptions = Array.isArray(allCategories)
+    ? (allCategories.filter(Boolean) as CategoryType[])
     : [];
 
   const frequencyOptionsList = Array.isArray(frequencyOptions)
@@ -154,10 +215,10 @@ export default async function ProductsPage(props: ProductsPageProps) {
     : [];
 
   const initialFilters: FilterState = {
-    category: "",
-    voltages,
-    frequencies,
-    protocols,
+    category,
+    voltages: voltagesFilter,
+    frequencies: frequenciesFilter,
+    protocols: protocolsFilter,
   };
 
   return (

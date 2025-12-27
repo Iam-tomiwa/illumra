@@ -118,7 +118,7 @@ export default function SingleProductWrapper({
 							<>
 								<Icon icon="lucide:chevron-right" className="size-4" />
 								<Link
-									href={`/products?category=${normalizedProduct.category.slug}`}
+									href={`/products/category/${normalizedProduct.category.slug}`}
 									className="hover:text-foreground transition-colors"
 								>
 									{normalizedProduct.category.title}

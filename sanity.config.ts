@@ -6,10 +6,10 @@ import { visionTool } from "@sanity/vision";
 import { PluginOptions, defineConfig } from "sanity";
 import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash";
 import {
-	presentationTool,
-	defineDocuments,
-	defineLocations,
-	type DocumentLocation,
+  presentationTool,
+  defineDocuments,
+  defineLocations,
+  type DocumentLocation,
 } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 
@@ -55,166 +55,209 @@ import { selectOption } from "./sanity/schemas/objects/selectOption";
 import { quoteFormField } from "./sanity/schemas/objects/quoteFormField";
 import { seo } from "./sanity/schemas/objects/seo";
 import { contactPage } from "./sanity/schemas/singletons/contactPage";
+import { legal } from "./sanity/schemas/documents/legal";
 
 const homeLocation = {
-	title: "Home",
-	href: "/",
+  title: "Home",
+  href: "/",
 } satisfies DocumentLocation;
 
 const aboutLocation = {
-	title: "About",
-	href: "/about",
+  title: "About",
+  href: "/about",
 } satisfies DocumentLocation;
 
 const contactLocation = {
-	title: "Contact",
-	href: "/contact",
+  title: "Contact",
+  href: "/contact",
 } satisfies DocumentLocation;
 
 const caseStudiesLocation = {
-	title: "Case Studies",
-	href: "/case-studies",
+  title: "Case Studies",
+  href: "/case-studies",
 } satisfies DocumentLocation;
 
 const distributorsLocation = {
-	title: "Distributors",
-	href: "/distributors",
+  title: "Distributors",
+  href: "/distributors",
 } satisfies DocumentLocation;
 
 export default defineConfig({
-	basePath: studioUrl,
-	projectId,
-	dataset,
-		schema: {
-		types: [
-		// Singletons
-		settings,
-		homePage,
-		aboutPage,
-		faq,
-		contactPage,
-		caseStudiesPage,
-		distributorsPage,
-			// Documents
-			post,
-			product,
-			productCategory,
-			productVoltage,
-			productFrequency,
-			productProtocol,
-			store,
-			author,
-			// Objects
-			heroSection,
-			controlSolutionsSection,
-			trustedBySection,
-			aboutSection,
-			companyInfo,
-			mediaAsset,
-			iconFeature,
-			brandLogo,
-			linkAction,
-			specificationEntry,
-			resourceLink,
-			productColor,
-			videoAsset,
-			ctaSection,
-			faqContent,
-			testimonials,
-			projectsContent,
-			becomeARep,
-			becomeADistributor,
-			formFieldConfig,
-			selectOption,
-			quoteFormField,
-			seo,
-		],
-	},
-	plugins: [
-		presentationTool({
-			resolve: {
-				mainDocuments: defineDocuments([
-					{
-						route: "/",
-						filter: `_type == "homePage"`,
-					},
-					{
-						route: "/about",
-						filter: `_type == "aboutPage"`,
-					},
-					{
-						route: "/contact",
-						filter: `_type == "contactPage"`,
-					},
-					{
-						route: "/case-studies",
-						filter: `_type == "caseStudiesPage"`,
-					},
-					{
-						route: "/distributors",
-						filter: `_type == "distributorsPage"`,
-					},
-					{
-						route: "/posts/:slug",
-						filter: `_type == "post" && slug.current == $slug`,
-					},
-				]),
-				locations: {
-					homePage: defineLocations({
-						locations: [homeLocation],
-						message: "This document powers the homepage hero content.",
-						tone: "positive",
-					}),
-					aboutPage: defineLocations({
-						locations: [aboutLocation],
-						message: "This document powers the about page and contact information content.",
-						tone: "positive",
-					}),
-					contactPage: defineLocations({
-						locations: [contactLocation],
-						message: "This document powers the contact page form configurations.",
-						tone: "positive",
-					}),
-					caseStudiesPage: defineLocations({
-						locations: [caseStudiesLocation],
-						message: "This document powers the case studies page.",
-						tone: "positive",
-					}),
-					distributorsPage: defineLocations({
-						locations: [distributorsLocation],
-						message: "This document powers the distributors page.",
-						tone: "positive",
-					}),
-					post: defineLocations({
-						select: {
-							title: "title",
-							slug: "slug.current",
-						},
-						resolve: doc => ({
-							locations: [
-								{
-									title: doc?.title || "Untitled",
-									href: resolveHref("post", doc?.slug)!,
-								},
-								homeLocation,
-							],
-						}),
-					}),
-				},
-			},
-			previewUrl: { previewMode: { enable: "/api/draft-mode/enable" } },
-		}),
-		structureTool({ structure: pageStructure([settings, homePage, aboutPage, faq, contactPage, caseStudiesPage, distributorsPage]) }),
-		// Configures the global "new document" button, and document actions, to suit the Settings document singleton
-		singletonPlugin([settings.name, homePage.name, aboutPage.name, faq.name, contactPage.name, caseStudiesPage.name, distributorsPage.name]),
-		// Add an image asset source for Unsplash
-		unsplashImageAsset(),
-		// Sets up AI Assist with preset prompts
-		// https://www.sanity.io/docs/ai-assist
-		assistWithPresets(),
-		// Vision lets you query your content with GROQ in the studio
-		// https://www.sanity.io/docs/the-vision-plugin
-		process.env.NODE_ENV === "development" &&
-			visionTool({ defaultApiVersion: apiVersion }),
-	].filter(Boolean) as PluginOptions[],
+  basePath: studioUrl,
+  projectId,
+  dataset,
+  schema: {
+    types: [
+      // Singletons
+      settings,
+      homePage,
+      aboutPage,
+      faq,
+      contactPage,
+      caseStudiesPage,
+      distributorsPage,
+      // Documents
+      post,
+      product,
+      productCategory,
+      productVoltage,
+      productFrequency,
+      productProtocol,
+      store,
+      author,
+      legal,
+      // Objects
+      heroSection,
+      controlSolutionsSection,
+      trustedBySection,
+      aboutSection,
+      companyInfo,
+      mediaAsset,
+      iconFeature,
+      brandLogo,
+      linkAction,
+      specificationEntry,
+      resourceLink,
+      productColor,
+      videoAsset,
+      ctaSection,
+      faqContent,
+      testimonials,
+      projectsContent,
+      becomeARep,
+      becomeADistributor,
+      formFieldConfig,
+      selectOption,
+      quoteFormField,
+      seo,
+    ],
+  },
+  plugins: [
+    presentationTool({
+      resolve: {
+        mainDocuments: defineDocuments([
+          {
+            route: "/",
+            filter: `_type == "homePage"`,
+          },
+          {
+            route: "/about",
+            filter: `_type == "aboutPage"`,
+          },
+          {
+            route: "/contact",
+            filter: `_type == "contactPage"`,
+          },
+          {
+            route: "/case-studies",
+            filter: `_type == "caseStudiesPage"`,
+          },
+          {
+            route: "/distributors",
+            filter: `_type == "distributorsPage"`,
+          },
+          {
+            route: "/posts/:slug",
+            filter: `_type == "post" && slug.current == $slug`,
+          },
+          {
+            route: "/legal/:slug",
+            filter: `_type == "legal" && slug.current == $slug`,
+          },
+        ]),
+        locations: {
+          homePage: defineLocations({
+            locations: [homeLocation],
+            message: "This document powers the homepage hero content.",
+            tone: "positive",
+          }),
+          aboutPage: defineLocations({
+            locations: [aboutLocation],
+            message:
+              "This document powers the about page and contact information content.",
+            tone: "positive",
+          }),
+          contactPage: defineLocations({
+            locations: [contactLocation],
+            message:
+              "This document powers the contact page form configurations.",
+            tone: "positive",
+          }),
+          caseStudiesPage: defineLocations({
+            locations: [caseStudiesLocation],
+            message: "This document powers the case studies page.",
+            tone: "positive",
+          }),
+          distributorsPage: defineLocations({
+            locations: [distributorsLocation],
+            message: "This document powers the distributors page.",
+            tone: "positive",
+          }),
+          post: defineLocations({
+            select: {
+              title: "title",
+              slug: "slug.current",
+            },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title || "Untitled",
+                  href: resolveHref("post", doc?.slug)!,
+                },
+                homeLocation,
+              ],
+            }),
+          }),
+          legal: defineLocations({
+            select: {
+              title: "title",
+              slug: "slug.current",
+            },
+            resolve: (doc) => ({
+              locations: doc?.slug
+                ? [
+                    {
+                      title: doc.title || "Untitled",
+                      href: `/legal/${doc.slug}`,
+                    },
+                    homeLocation,
+                  ]
+                : [homeLocation],
+            }),
+          }),
+        },
+      },
+      previewUrl: { previewMode: { enable: "/api/draft-mode/enable" } },
+    }),
+    structureTool({
+      structure: pageStructure([
+        settings,
+        homePage,
+        aboutPage,
+        faq,
+        contactPage,
+        caseStudiesPage,
+        distributorsPage,
+      ]),
+    }),
+    // Configures the global "new document" button, and document actions, to suit the Settings document singleton
+    singletonPlugin([
+      settings.name,
+      homePage.name,
+      aboutPage.name,
+      faq.name,
+      contactPage.name,
+      caseStudiesPage.name,
+      distributorsPage.name,
+    ]),
+    // Add an image asset source for Unsplash
+    unsplashImageAsset(),
+    // Sets up AI Assist with preset prompts
+    // https://www.sanity.io/docs/ai-assist
+    assistWithPresets(),
+    // Vision lets you query your content with GROQ in the studio
+    // https://www.sanity.io/docs/the-vision-plugin
+    process.env.NODE_ENV === "development" &&
+      visionTool({ defaultApiVersion: apiVersion }),
+  ].filter(Boolean) as PluginOptions[],
 });

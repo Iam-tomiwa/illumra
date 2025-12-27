@@ -1,4 +1,4 @@
-import { DocumentTextIcon, ImageIcon, EyeOpenIcon } from "@sanity/icons";
+import { DocumentTextIcon, ImageIcon } from "@sanity/icons";
 import { format, parseISO } from "date-fns";
 import { defineField, defineType } from "sanity";
 

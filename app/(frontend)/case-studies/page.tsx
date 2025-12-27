@@ -2,38 +2,69 @@ import { AnimatedElement } from "@/components/animated-element";
 import PagesHero from "@/components/pages-hero";
 import { ProjectsSection } from "@/components/home-widgets/projects-section";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { projectsQuery, caseStudiesPageQuery, ctaSectionQuery } from "@/sanity/lib/queries";
+import {
+  projectsQuery,
+  caseStudiesPageQuery,
+  ctaSectionQuery,
+  settingsQuery,
+} from "@/sanity/lib/queries";
 import { CTASection } from "@/components/home-widgets/cta-section";
-import { HomePageQueryResult, MediaAsset, ProjectsContent } from "@/sanity.types";
+import {
+  HomePageQueryResult,
+  MediaAsset,
+  ProjectsContent,
+} from "@/sanity.types";
 import { resolveBackgroundUrl } from "@/components/home-widgets/hero-section";
 import Link from "next/link";
 import { resolveMediaAsset } from "@/sanity/lib/utils";
 import Image from "next/image";
+import { mergeSeo, seoToMetadata } from "@/sanity/lib/utils";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [caseStudiesPage, settings] = await Promise.all([
+    sanityFetch({ query: caseStudiesPageQuery }),
+    sanityFetch({ query: settingsQuery, revalidate: 3600 }),
+  ]);
+
+  const mergedSeo = mergeSeo(caseStudiesPage?.seo, settings?.seo);
+  const metadata = seoToMetadata(mergedSeo);
+
+  return {
+    ...metadata,
+  } satisfies Metadata;
+}
 
 export default async function CaseStudiesPage() {
-  const [caseStudiesPage, projects, homePage] = await Promise.all([
+  const [caseStudiesPage, projects, homePage] = (await Promise.all([
     sanityFetch({ query: caseStudiesPageQuery }),
     sanityFetch({ query: projectsQuery }),
     sanityFetch({ query: ctaSectionQuery }),
-  ]) as [
-      Awaited<ReturnType<typeof sanityFetch<typeof caseStudiesPageQuery>>>,
-      ProjectsContent[] | null,
-      HomePageQueryResult,
-    ];
+  ])) as [
+    Awaited<ReturnType<typeof sanityFetch<typeof caseStudiesPageQuery>>>,
+    ProjectsContent[] | null,
+    HomePageQueryResult,
+  ];
 
   // Resolve background image
   const backgroundImage = resolveBackgroundUrl(
-    caseStudiesPage?.backgroundImage as Parameters<typeof resolveBackgroundUrl>[0]
+    caseStudiesPage?.backgroundImage as Parameters<
+      typeof resolveBackgroundUrl
+    >[0]
   )?.url;
 
-  const projectsList = (Array.isArray(projects) ? projects : []) as ProjectsContent[];
+  const projectsList = (
+    Array.isArray(projects) ? projects : []
+  ) as ProjectsContent[];
 
   return (
     <div className="bg-white">
       <PagesHero backgroundImageUrl={backgroundImage}>
         <div className="max-w-3xl">
           <AnimatedElement delay={0.1}>
-            <h1 className="page-title">{caseStudiesPage?.pageTitle || "Case Studies"}</h1>
+            <h1 className="page-title">
+              {caseStudiesPage?.pageTitle || "Case Studies"}
+            </h1>
             {caseStudiesPage?.description && (
               <p className="text-white mt-4">{caseStudiesPage.description}</p>
             )}
@@ -43,13 +74,13 @@ export default async function CaseStudiesPage() {
 
       {projectsList.length > 0 && (
         <div className="container mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {projectsList.map(project => {
+          {projectsList.map((project) => {
             const picture = project?.picture as MediaAsset | null | undefined;
             const imageResolved = picture
               ? resolveMediaAsset({
-                ...picture,
-                _type: "mediaAsset",
-              } as MediaAsset)
+                  ...picture,
+                  _type: "mediaAsset",
+                } as MediaAsset)
               : undefined;
             return (
               <Link
@@ -75,8 +106,6 @@ export default async function CaseStudiesPage() {
               </Link>
             );
           })}
-
-
         </div>
       )}
 

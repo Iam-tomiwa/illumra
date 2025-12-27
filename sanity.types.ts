@@ -21,7 +21,6 @@ export type Seo = {
   keywords?: Array<string>;
   siteUrl?: string;
   ogImage?: MediaAsset;
-  favicon?: MediaAsset;
   twitterCard?: "summary" | "summary_large_image" | "app" | "player";
   twitterSite?: string;
   twitterCreator?: string;
@@ -273,6 +272,46 @@ export type HeroSection = {
   backgroundImage?: MediaAsset;
 };
 
+export type Legal = {
+  _id: string;
+  _type: "legal";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    media?: MediaAsset;
+    caption?: string;
+    _type: "contentImage";
+    _key: string;
+  }>;
+  seo?: Seo;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type Store = {
   _id: string;
   _type: "store";
@@ -321,12 +360,6 @@ export type ProductCategory = {
   slug?: Slug;
   description?: string;
   order?: number;
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
 };
 
 export type Product = {
@@ -844,7 +877,7 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type AllSanitySchemaTypes = Seo | QuoteFormField | SelectOption | FormFieldConfig | BecomeADistributor | BecomeARep | ProjectsContent | Testimonials | FaqContent | CtaSection | VideoAsset | ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | Store | Geopoint | ProductProtocol | ProductCategory | Slug | Product | ProductFrequency | ProductVoltage | Post | Author | SanityImageCrop | SanityImageHotspot | DistributorsPage | CaseStudiesPage | ContactPage | Faq | AboutPage | HomePage | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset;
+export type AllSanitySchemaTypes = Seo | QuoteFormField | SelectOption | FormFieldConfig | BecomeADistributor | BecomeARep | ProjectsContent | Testimonials | FaqContent | CtaSection | VideoAsset | ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | Legal | Slug | Store | Geopoint | ProductProtocol | ProductCategory | Product | ProductFrequency | ProductVoltage | Post | Author | SanityImageCrop | SanityImageHotspot | DistributorsPage | CaseStudiesPage | ContactPage | Faq | AboutPage | HomePage | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/(frontend)/posts/[slug]/page.tsx
 // Variable: postSlugs
@@ -905,21 +938,7 @@ export type SettingsQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1116,21 +1135,7 @@ export type HomePageQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1289,21 +1294,7 @@ export type HeroQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1372,21 +1363,7 @@ export type MoreStoriesQueryResult = Array<{
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1480,21 +1457,7 @@ export type PostQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1730,21 +1693,7 @@ export type PRODUCT_QUERYResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1871,21 +1820,7 @@ export type AboutPageQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -1952,21 +1887,7 @@ export type FAQ_QUERYResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -2045,21 +1966,7 @@ export type CaseStudiesPageQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
-      source: "external" | "upload" | null;
-      altText: string | null;
-      externalUrl: string | null;
-      image: {
-        asset: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        } | null;
-        crop: SanityImageCrop | null;
-        hotspot: SanityImageHotspot | null;
-      } | null;
-    } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
@@ -2107,7 +2014,27 @@ export type DistributorsPageQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
-    favicon: {
+    favicon: null;
+    twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
+    twitterSite: string | null;
+    twitterCreator: string | null;
+    locale: string | null;
+  } | null;
+} | null;
+// Variable: contactPageQuery
+// Query: *[_type == "contactPage"][0]{	quoteFormTitle,	quoteFormDescription,	contactFormTitle,	contactFormDescription,		seo{		title,		titleTemplate,		description,		keywords,		siteUrl,		ogImage{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		favicon{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		twitterCard,		twitterSite,		twitterCreator,		locale	}}
+export type ContactPageQueryResult = {
+  quoteFormTitle: string | null;
+  quoteFormDescription: string | null;
+  contactFormTitle: string | null;
+  contactFormDescription: string | null;
+  seo: {
+    title: string | null;
+    titleTemplate: string | null;
+    description: string | null;
+    keywords: Array<string> | null;
+    siteUrl: string | null;
+    ogImage: {
       source: "external" | "upload" | null;
       altText: string | null;
       externalUrl: string | null;
@@ -2122,12 +2049,92 @@ export type DistributorsPageQueryResult = {
         hotspot: SanityImageHotspot | null;
       } | null;
     } | null;
+    favicon: null;
     twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
     twitterSite: string | null;
     twitterCreator: string | null;
     locale: string | null;
   } | null;
 } | null;
+// Variable: legalQuery
+// Query: *[_type == "legal" && slug.current == $slug][0]{	_id,	title,	"slug": slug.current,	_updatedAt,	content[]{		...,		children[]{			...		},		_type == "contentImage" => {			_type,			_key,			media{				source,				altText,				externalUrl,				image{					asset,					crop,					hotspot				}			},			caption		}	},		seo{		title,		titleTemplate,		description,		keywords,		siteUrl,		ogImage{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		favicon{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		twitterCard,		twitterSite,		twitterCreator,		locale	}}
+export type LegalQueryResult = {
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  _updatedAt: string;
+  content: Array<{
+    children: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }> | null;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    media: {
+      source: "external" | "upload" | null;
+      altText: string | null;
+      externalUrl: string | null;
+      image: {
+        asset: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        } | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+      } | null;
+    } | null;
+    caption: string | null;
+    _type: "contentImage";
+    _key: string;
+    children: null;
+  }> | null;
+  seo: {
+    title: string | null;
+    titleTemplate: string | null;
+    description: string | null;
+    keywords: Array<string> | null;
+    siteUrl: string | null;
+    ogImage: {
+      source: "external" | "upload" | null;
+      altText: string | null;
+      externalUrl: string | null;
+      image: {
+        asset: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        } | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+      } | null;
+    } | null;
+    favicon: null;
+    twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
+    twitterSite: string | null;
+    twitterCreator: string | null;
+    locale: string | null;
+  } | null;
+} | null;
+// Variable: legalSlugsQuery
+// Query: *[_type == "legal" && defined(slug.current)]{"slug": slug.current, title}
+export type LegalSlugsQueryResult = Array<{
+  slug: string | null;
+  title: string | null;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
@@ -2159,5 +2166,8 @@ declare module "@sanity/client" {
     "\n  *[_type == \"aboutPage\"][0].becomeADistributor{\n    title,\n    description,\n    email\n  }\n": BecomeADistributorQueryResult;
     "*[_type == \"caseStudiesPage\"][0]{\n\tbackgroundImage{\n\t\tsource,\n\t\taltText,\n\t\texternalUrl,\n\t\timage{\n\t\t\tasset,\n\t\t\tcrop,\n\t\t\thotspot\n\t\t}\n\t},\n\tpageTitle,\n\tdescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": CaseStudiesPageQueryResult;
     "*[_type == \"distributorsPage\"][0]{\n\tbackgroundImage{\n\t\tsource,\n\t\taltText,\n\t\texternalUrl,\n\t\timage{\n\t\t\tasset,\n\t\t\tcrop,\n\t\t\thotspot\n\t\t}\n\t},\n\tpageTitle,\n\tdescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": DistributorsPageQueryResult;
+    "*[_type == \"contactPage\"][0]{\n\tquoteFormTitle,\n\tquoteFormDescription,\n\tcontactFormTitle,\n\tcontactFormDescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": ContactPageQueryResult;
+    "*[_type == \"legal\" && slug.current == $slug][0]{\n\t_id,\n\ttitle,\n\t\"slug\": slug.current,\n\t_updatedAt,\n\tcontent[]{\n\t\t...,\n\t\tchildren[]{\n\t\t\t...\n\t\t},\n\t\t_type == \"contentImage\" => {\n\t\t\t_type,\n\t\t\t_key,\n\t\t\tmedia{\n\t\t\t\tsource,\n\t\t\t\taltText,\n\t\t\t\texternalUrl,\n\t\t\t\timage{\n\t\t\t\t\tasset,\n\t\t\t\t\tcrop,\n\t\t\t\t\thotspot\n\t\t\t\t}\n\t\t\t},\n\t\t\tcaption\n\t\t}\n\t},\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": LegalQueryResult;
+    "*[_type == \"legal\" && defined(slug.current)]{\"slug\": slug.current, title}": LegalSlugsQueryResult;
   }
 }

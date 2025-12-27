@@ -193,7 +193,6 @@ export const homePageQuery = defineQuery(`
   }
 `);
 
-
 export const projectsQuery = defineQuery(`
   *[_type == "homePage"][0].projects[]{
     picture{
@@ -665,7 +664,8 @@ export const becomeADistributorQuery = defineQuery(`
   }
 `);
 
-export const caseStudiesPageQuery = defineQuery(`*[_type == "caseStudiesPage"][0]{
+export const caseStudiesPageQuery =
+  defineQuery(`*[_type == "caseStudiesPage"][0]{
 	backgroundImage{
 		source,
 		altText,
@@ -681,7 +681,8 @@ export const caseStudiesPageQuery = defineQuery(`*[_type == "caseStudiesPage"][0
 	${seoFields}
 }`);
 
-export const distributorsPageQuery = defineQuery(`*[_type == "distributorsPage"][0]{
+export const distributorsPageQuery =
+  defineQuery(`*[_type == "distributorsPage"][0]{
 	backgroundImage{
 		source,
 		altText,
@@ -696,3 +697,45 @@ export const distributorsPageQuery = defineQuery(`*[_type == "distributorsPage"]
 	description,
 	${seoFields}
 }`);
+
+export const contactPageQuery = defineQuery(`*[_type == "contactPage"][0]{
+	quoteFormTitle,
+	quoteFormDescription,
+	contactFormTitle,
+	contactFormDescription,
+	${seoFields}
+}`);
+
+export const legalQuery =
+  defineQuery(`*[_type == "legal" && slug.current == $slug][0]{
+	_id,
+	title,
+	"slug": slug.current,
+	_updatedAt,
+	content[]{
+		...,
+		children[]{
+			...
+		},
+		_type == "contentImage" => {
+			_type,
+			_key,
+			media{
+				source,
+				altText,
+				externalUrl,
+				image{
+					asset,
+					crop,
+					hotspot
+				}
+			},
+			caption
+		}
+	},
+	${seoFields}
+}`);
+
+export const legalSlugsQuery = defineQuery(
+  `*[_type == "legal" && defined(slug.current)]{"slug": slug.current, title}`
+);
