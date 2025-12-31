@@ -17,7 +17,6 @@ import { seoToMetadata } from "@/sanity/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { CategoryType } from "@/components/home-widgets/featured-products-section";
 import { SettingsQueryResult } from "@/sanity.types";
-import { Head } from "next/document";
 
 export async function generateMetadata(): Promise<Metadata> {
   // Fetch settings to get SEO configuration
