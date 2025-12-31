@@ -16,7 +16,7 @@ export function useProductsParams() {
 	const applyParams = useCallback(
 		(updates: Record<string, any>) => {
 			const params = new URLSearchParams(searchParams.toString());
-			
+
 			// Handle category separately - it changes the path
 			let category = currentCategory || "";
 			if ("category" in updates) {

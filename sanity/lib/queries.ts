@@ -321,11 +321,13 @@ export const productsQuery = /* groq */ `
     "categories": categories[]->slug.current,
     "category": categories[0]->slug.current,
     "sku": sku,
+    topSelling,
      colors[]{
       name,
       partNumber,
       hex
     },
+    
 `;
 export const featuredProductsQuery = defineQuery(`
   *[_type == "product" && featureTag == "featured"]{
@@ -336,7 +338,7 @@ export const featuredProductsQuery = defineQuery(`
 export const relevantProductsQuery = defineQuery(`
   *[_type == "product" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{
    ${productsQuery}
-  } | order(_createdAt desc)[0...4]
+  } | order(select(topSelling == "yes" => 1, 0) desc, _createdAt desc)[0...4]
 `);
 
 export const allProductsQuery = defineQuery(`
@@ -406,6 +408,32 @@ export const PRODUCT_QUERY = defineQuery(`
       "frequency": frequency->{ _id, label, value },
       "protocols": protocols[]->{ _id, label, value },
       featureTag,
+      topSelling,
+      "relatedProducts": relatedProducts[]->{
+        _id,
+        title,
+        "slug": slug.current,
+        shortDescription,
+        "image": images[0]{ 
+          source,
+          altText,
+          externalUrl,
+          image{
+            asset,
+            crop,
+            hotspot
+          }
+        },
+        "categories": categories[]->slug.current,
+        "category": categories[0]->slug.current,
+        "sku": sku,
+        topSelling,
+        colors[]{
+          name,
+          partNumber,
+          hex
+        }
+      },
       colors[]{
         name,
         partNumber,
@@ -635,6 +663,16 @@ export const FAQ_QUERY = defineQuery(`
       question,
       answer
     },
+    backgroundImage{
+      source,
+      altText,
+      externalUrl,
+      image{
+        asset,
+        crop,
+        hotspot
+      }
+	  },
     ${seoFields}
   }
 `);
@@ -703,6 +741,22 @@ export const contactPageQuery = defineQuery(`*[_type == "contactPage"][0]{
 	quoteFormDescription,
 	contactFormTitle,
 	contactFormDescription,
+	${seoFields}
+}`);
+
+export const productsPageQuery = defineQuery(`*[_type == "productsPage"][0]{
+	backgroundImage{
+		source,
+		altText,
+		externalUrl,
+		image{
+			asset,
+			crop,
+			hotspot
+		}
+	},
+	title,
+	description,
 	${seoFields}
 }`);
 

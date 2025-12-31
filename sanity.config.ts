@@ -55,6 +55,7 @@ import { selectOption } from "./sanity/schemas/objects/selectOption";
 import { quoteFormField } from "./sanity/schemas/objects/quoteFormField";
 import { seo } from "./sanity/schemas/objects/seo";
 import { contactPage } from "./sanity/schemas/singletons/contactPage";
+import { productsPage } from "./sanity/schemas/singletons/productsPage";
 import { legal } from "./sanity/schemas/documents/legal";
 
 const homeLocation = {
@@ -96,6 +97,7 @@ export default defineConfig({
       contactPage,
       caseStudiesPage,
       distributorsPage,
+      productsPage,
       // Documents
       post,
       product,
@@ -238,6 +240,7 @@ export default defineConfig({
         contactPage,
         caseStudiesPage,
         distributorsPage,
+        productsPage,
       ]),
     }),
     // Configures the global "new document" button, and document actions, to suit the Settings document singleton
@@ -249,6 +252,7 @@ export default defineConfig({
       contactPage.name,
       caseStudiesPage.name,
       distributorsPage.name,
+      productsPage.name,
     ]),
     // Add an image asset source for Unsplash
     unsplashImageAsset(),

@@ -104,7 +104,31 @@ export type FaqContent = {
   _type: "faqContent";
   group?: "gettingStarted" | "faq";
   question?: string;
-  answer?: string;
+  answer?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    media?: MediaAsset;
+    caption?: string;
+    _type: "contentImage";
+    _key: string;
+  } | {
+    _key: string;
+  } & VideoAsset>;
 };
 
 export type CtaSection = {
@@ -401,6 +425,7 @@ export type Product = {
     [internalGroqTypeReferenceTo]?: "productProtocol";
   }>;
   featureTag?: "featured" | "standard";
+  topSelling?: "yes" | "no";
   shortDescription?: string;
   body?: Array<{
     children?: Array<{
@@ -419,6 +444,13 @@ export type Product = {
     level?: number;
     _type: "block";
     _key: string;
+  }>;
+  relatedProducts?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "product";
   }>;
   specifications?: Array<{
     _key: string;
@@ -550,6 +582,18 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
+export type ProductsPage = {
+  _id: string;
+  _type: "productsPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  backgroundImage?: MediaAsset;
+  title?: string;
+  description?: string;
+  seo?: Seo;
+};
+
 export type DistributorsPage = {
   _id: string;
   _type: "distributorsPage";
@@ -600,6 +644,7 @@ export type Faq = {
   _updatedAt: string;
   _rev: string;
   visible?: "show" | "hide";
+  backgroundImage?: MediaAsset;
   title?: string;
   description?: string;
   items?: Array<{
@@ -877,7 +922,7 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type AllSanitySchemaTypes = Seo | QuoteFormField | SelectOption | FormFieldConfig | BecomeADistributor | BecomeARep | ProjectsContent | Testimonials | FaqContent | CtaSection | VideoAsset | ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | Legal | Slug | Store | Geopoint | ProductProtocol | ProductCategory | Product | ProductFrequency | ProductVoltage | Post | Author | SanityImageCrop | SanityImageHotspot | DistributorsPage | CaseStudiesPage | ContactPage | Faq | AboutPage | HomePage | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset;
+export type AllSanitySchemaTypes = Seo | QuoteFormField | SelectOption | FormFieldConfig | BecomeADistributor | BecomeARep | ProjectsContent | Testimonials | FaqContent | CtaSection | VideoAsset | ProductColor | ResourceLink | SpecificationEntry | LinkAction | BrandLogo | IconFeature | MediaAsset | CompanyInfo | AboutSection | TrustedBySection | ControlSolutionsSection | HeroSection | Legal | Slug | Store | Geopoint | ProductProtocol | ProductCategory | Product | ProductFrequency | ProductVoltage | Post | Author | SanityImageCrop | SanityImageHotspot | ProductsPage | DistributorsPage | CaseStudiesPage | ContactPage | Faq | AboutPage | HomePage | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/(frontend)/posts/[slug]/page.tsx
 // Variable: postSlugs
@@ -1465,7 +1510,7 @@ export type PostQueryResult = {
   } | null;
 } | null;
 // Variable: featuredProductsQuery
-// Query: *[_type == "product" && featureTag == "featured"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "categories": categories[]->slug.current,    "category": categories[0]->slug.current,    "sku": sku,     colors[]{      name,      partNumber,      hex    },  } | order(_createdAt desc)[0...8]
+// Query: *[_type == "product" && featureTag == "featured"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "categories": categories[]->slug.current,    "category": categories[0]->slug.current,    "sku": sku,    topSelling,     colors[]{      name,      partNumber,      hex    },      } | order(_createdAt desc)[0...8]
 export type FeaturedProductsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -1489,6 +1534,7 @@ export type FeaturedProductsQueryResult = Array<{
   categories: Array<string | null> | null;
   category: string | null;
   sku: string | null;
+  topSelling: "no" | "yes" | null;
   colors: Array<{
     name: string | null;
     partNumber: string | null;
@@ -1496,7 +1542,7 @@ export type FeaturedProductsQueryResult = Array<{
   }> | null;
 }>;
 // Variable: relevantProductsQuery
-// Query: *[_type == "product" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "categories": categories[]->slug.current,    "category": categories[0]->slug.current,    "sku": sku,     colors[]{      name,      partNumber,      hex    },  } | order(_createdAt desc)[0...4]
+// Query: *[_type == "product" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "categories": categories[]->slug.current,    "category": categories[0]->slug.current,    "sku": sku,    topSelling,     colors[]{      name,      partNumber,      hex    },      } | order(select(topSelling == "yes" => 1, 0) desc, _createdAt desc)[0...4]
 export type RelevantProductsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -1520,6 +1566,7 @@ export type RelevantProductsQueryResult = Array<{
   categories: Array<string | null> | null;
   category: string | null;
   sku: string | null;
+  topSelling: "no" | "yes" | null;
   colors: Array<{
     name: string | null;
     partNumber: string | null;
@@ -1527,7 +1574,7 @@ export type RelevantProductsQueryResult = Array<{
   }> | null;
 }>;
 // Variable: allProductsQuery
-// Query: *[_type == "product"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "categories": categories[]->slug.current,    "category": categories[0]->slug.current,    "sku": sku,     colors[]{      name,      partNumber,      hex    },  } | order(_createdAt desc)
+// Query: *[_type == "product"]{      _id,    title,    "slug": slug.current,    shortDescription,    "image": images[0]{         source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }    },    "categories": categories[]->slug.current,    "category": categories[0]->slug.current,    "sku": sku,    topSelling,     colors[]{      name,      partNumber,      hex    },      } | order(_createdAt desc)
 export type AllProductsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -1551,6 +1598,7 @@ export type AllProductsQueryResult = Array<{
   categories: Array<string | null> | null;
   category: string | null;
   sku: string | null;
+  topSelling: "no" | "yes" | null;
   colors: Array<{
     name: string | null;
     partNumber: string | null;
@@ -1561,7 +1609,7 @@ export type AllProductsQueryResult = Array<{
 // Query: count(    *[      _type == "product" &&      (        !defined($search) ||        $search == "" ||        coalesce(title, "") match $searchWildcard ||        coalesce(sku.current, "") match $searchWildcard      ) &&      (        !defined($category) ||        $category == "" ||        count((categories[]->slug.current)[@ == $category]) > 0      ) &&      (        !defined($voltages) ||        count($voltages) == 0 ||        voltage->value in $voltages      ) &&      (        !defined($frequencies) ||        count($frequencies) == 0 ||        frequency->value in $frequencies      ) &&      (        !defined($protocols) ||        count($protocols) == 0 ||        count((protocols[]->value)[@ in $protocols]) > 0      )    ]  )
 export type FILTERED_PRODUCTS_COUNT_QUERYResult = number;
 // Variable: PRODUCT_QUERY
-// Query: *[_type == "product" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      sku,      shortDescription,      body[]{        ...,        children[]{          ...        }      },      "categories": categories[]->{        _id,        title,        "slug": slug.current      },      "category": categories[0]->{        _id,        title,        "slug": slug.current      },      "voltage": voltage->{ _id, label, value },      "frequency": frequency->{ _id, label, value },      "protocols": protocols[]->{ _id, label, value },      featureTag,      colors[]{        name,        partNumber,        hex      },      images[]{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      videos[]{        title,        externalUrl      },      specifications[defined(label) && defined(value)]{        _type,        label,        value      },      downloads[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      applications[defined(url)]{        _type,        title,        url      },      wiringDiagrams[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      seo{        title,        titleTemplate,        description,        keywords,        siteUrl,        ogImage{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        favicon{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        twitterCard,        twitterSite,        twitterCreator,        locale      }    }
+// Query: *[_type == "product" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      sku,      shortDescription,      body[]{        ...,        children[]{          ...        }      },      "categories": categories[]->{        _id,        title,        "slug": slug.current      },      "category": categories[0]->{        _id,        title,        "slug": slug.current      },      "voltage": voltage->{ _id, label, value },      "frequency": frequency->{ _id, label, value },      "protocols": protocols[]->{ _id, label, value },      featureTag,      topSelling,      "relatedProducts": relatedProducts[]->{        _id,        title,        "slug": slug.current,        shortDescription,        "image": images[0]{           source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        "categories": categories[]->slug.current,        "category": categories[0]->slug.current,        "sku": sku,        topSelling,        colors[]{          name,          partNumber,          hex        }      },      colors[]{        name,        partNumber,        hex      },      images[]{        source,        altText,        externalUrl,        image{          asset,          crop,          hotspot        }      },      videos[]{        title,        externalUrl      },      specifications[defined(label) && defined(value)]{        _type,        label,        value      },      downloads[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      applications[defined(url)]{        _type,        title,        url      },      wiringDiagrams[defined(title)]{        _type,        title,        file{          asset->{            _id,            url,            originalFilename,            size          }        },        externalUrl      },      seo{        title,        titleTemplate,        description,        keywords,        siteUrl,        ogImage{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        favicon{          source,          altText,          externalUrl,          image{            asset,            crop,            hotspot          }        },        twitterCard,        twitterSite,        twitterCreator,        locale      }    }
 export type PRODUCT_QUERYResult = {
   _id: string;
   title: string | null;
@@ -1612,6 +1660,37 @@ export type PRODUCT_QUERYResult = {
     value: string | null;
   }> | null;
   featureTag: "featured" | "standard" | null;
+  topSelling: "no" | "yes" | null;
+  relatedProducts: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+    shortDescription: string | null;
+    image: {
+      source: "external" | "upload" | null;
+      altText: string | null;
+      externalUrl: string | null;
+      image: {
+        asset: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        } | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+      } | null;
+    } | null;
+    categories: Array<string | null> | null;
+    category: string | null;
+    sku: string | null;
+    topSelling: "no" | "yes" | null;
+    colors: Array<{
+      name: string | null;
+      partNumber: string | null;
+      hex: string | null;
+    }> | null;
+  }> | null;
   colors: Array<{
     name: string | null;
     partNumber: string | null;
@@ -1856,7 +1935,7 @@ export type STORES_QUERYResult = Array<{
   location: Geopoint | null;
 }>;
 // Variable: FAQ_QUERY
-// Query: *[_type == "faq"][0]{    visible,    title,    description,    items[]{      group,      question,      answer    },    	seo{		title,		titleTemplate,		description,		keywords,		siteUrl,		ogImage{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		favicon{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		twitterCard,		twitterSite,		twitterCreator,		locale	}  }
+// Query: *[_type == "faq"][0]{    visible,    title,    description,    items[]{      group,      question,      answer    },    backgroundImage{      source,      altText,      externalUrl,      image{        asset,        crop,        hotspot      }	  },    	seo{		title,		titleTemplate,		description,		keywords,		siteUrl,		ogImage{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		favicon{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		twitterCard,		twitterSite,		twitterCreator,		locale	}  }
 export type FAQ_QUERYResult = {
   visible: "hide" | "show" | null;
   title: string | null;
@@ -1864,8 +1943,47 @@ export type FAQ_QUERYResult = {
   items: Array<{
     group: "faq" | "gettingStarted" | null;
     question: string | null;
-    answer: string | null;
+    answer: Array<{
+      _key: string;
+    } & VideoAsset | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    } | {
+      media?: MediaAsset;
+      caption?: string;
+      _type: "contentImage";
+      _key: string;
+    }> | null;
   }> | null;
+  backgroundImage: {
+    source: "external" | "upload" | null;
+    altText: string | null;
+    externalUrl: string | null;
+    image: {
+      asset: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      } | null;
+      crop: SanityImageCrop | null;
+      hotspot: SanityImageHotspot | null;
+    } | null;
+  } | null;
   seo: {
     title: string | null;
     titleTemplate: string | null;
@@ -2056,6 +2174,54 @@ export type ContactPageQueryResult = {
     locale: string | null;
   } | null;
 } | null;
+// Variable: productsPageQuery
+// Query: *[_type == "productsPage"][0]{	backgroundImage{		source,		altText,		externalUrl,		image{			asset,			crop,			hotspot		}	},	title,	description,		seo{		title,		titleTemplate,		description,		keywords,		siteUrl,		ogImage{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		favicon{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		twitterCard,		twitterSite,		twitterCreator,		locale	}}
+export type ProductsPageQueryResult = {
+  backgroundImage: {
+    source: "external" | "upload" | null;
+    altText: string | null;
+    externalUrl: string | null;
+    image: {
+      asset: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      } | null;
+      crop: SanityImageCrop | null;
+      hotspot: SanityImageHotspot | null;
+    } | null;
+  } | null;
+  title: string | null;
+  description: string | null;
+  seo: {
+    title: string | null;
+    titleTemplate: string | null;
+    description: string | null;
+    keywords: Array<string> | null;
+    siteUrl: string | null;
+    ogImage: {
+      source: "external" | "upload" | null;
+      altText: string | null;
+      externalUrl: string | null;
+      image: {
+        asset: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        } | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+      } | null;
+    } | null;
+    favicon: null;
+    twitterCard: "app" | "player" | "summary_large_image" | "summary" | null;
+    twitterSite: string | null;
+    twitterCreator: string | null;
+    locale: string | null;
+  } | null;
+} | null;
 // Variable: legalQuery
 // Query: *[_type == "legal" && slug.current == $slug][0]{	_id,	title,	"slug": slug.current,	_updatedAt,	content[]{		...,		children[]{			...		},		_type == "contentImage" => {			_type,			_key,			media{				source,				altText,				externalUrl,				image{					asset,					crop,					hotspot				}			},			caption		}	},		seo{		title,		titleTemplate,		description,		keywords,		siteUrl,		ogImage{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		favicon{			source,			altText,			externalUrl,			image{				asset,				crop,				hotspot			}		},		twitterCard,		twitterSite,		twitterCreator,		locale	}}
 export type LegalQueryResult = {
@@ -2153,20 +2319,21 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) [0] {\n    content,\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    \"name\": coalesce(name, \"Anonymous\"),\n    picture{\n      source,\n      altText,\n      externalUrl,\n      image{\n        asset,\n        crop,\n        hotspot\n      }\n    },\n    role\n  },\n  \n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n,\n\n  }\n": HeroQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    \"name\": coalesce(name, \"Anonymous\"),\n    picture{\n      source,\n      altText,\n      externalUrl,\n      image{\n        asset,\n        crop,\n        hotspot\n      }\n    },\n    role\n  },\n  \n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n,\n\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content,\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    \"name\": coalesce(name, \"Anonymous\"),\n    picture{\n      source,\n      altText,\n      externalUrl,\n      image{\n        asset,\n        crop,\n        hotspot\n      }\n    },\n    role\n  },\n  \n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n,\n\n  }\n": PostQueryResult;
-    "\n  *[_type == \"product\" && featureTag == \"featured\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)[0...8]\n": FeaturedProductsQueryResult;
-    "\n  *[_type == \"product\" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)[0...4]\n": RelevantProductsQueryResult;
-    "\n  *[_type == \"product\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n\n  } | order(_createdAt desc)\n": AllProductsQueryResult;
+    "\n  *[_type == \"product\" && featureTag == \"featured\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n    topSelling,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n    \n\n  } | order(_createdAt desc)[0...8]\n": FeaturedProductsQueryResult;
+    "\n  *[_type == \"product\" && count((categories[]->slug.current)[@ == $category]) > 0 && _id != $excludeId]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n    topSelling,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n    \n\n  } | order(select(topSelling == \"yes\" => 1, 0) desc, _createdAt desc)[0...4]\n": RelevantProductsQueryResult;
+    "\n  *[_type == \"product\"]{\n   \n   _id,\n    title,\n    \"slug\": slug.current,\n    shortDescription,\n    \"image\": images[0]{ \n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n    },\n    \"categories\": categories[]->slug.current,\n    \"category\": categories[0]->slug.current,\n    \"sku\": sku,\n    topSelling,\n     colors[]{\n      name,\n      partNumber,\n      hex\n    },\n    \n\n  } | order(_createdAt desc)\n": AllProductsQueryResult;
     "\n  count(\n    *[\n      _type == \"product\" &&\n      (\n        !defined($search) ||\n        $search == \"\" ||\n        coalesce(title, \"\") match $searchWildcard ||\n        coalesce(sku.current, \"\") match $searchWildcard\n      ) &&\n      (\n        !defined($category) ||\n        $category == \"\" ||\n        count((categories[]->slug.current)[@ == $category]) > 0\n      ) &&\n      (\n        !defined($voltages) ||\n        count($voltages) == 0 ||\n        voltage->value in $voltages\n      ) &&\n      (\n        !defined($frequencies) ||\n        count($frequencies) == 0 ||\n        frequency->value in $frequencies\n      ) &&\n      (\n        !defined($protocols) ||\n        count($protocols) == 0 ||\n        count((protocols[]->value)[@ in $protocols]) > 0\n      )\n    ]\n  )\n  ": FILTERED_PRODUCTS_COUNT_QUERYResult;
-    "\n    *[_type == \"product\" && slug.current == $slug][0]{\n      _id,\n      title,\n      \"slug\": slug.current,\n      sku,\n      shortDescription,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      \"categories\": categories[]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"category\": categories[0]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"voltage\": voltage->{ _id, label, value },\n      \"frequency\": frequency->{ _id, label, value },\n      \"protocols\": protocols[]->{ _id, label, value },\n      featureTag,\n      colors[]{\n        name,\n        partNumber,\n        hex\n      },\n      images[]{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      videos[]{\n        title,\n        externalUrl\n      },\n      specifications[defined(label) && defined(value)]{\n        _type,\n        label,\n        value\n      },\n      downloads[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      applications[defined(url)]{\n        _type,\n        title,\n        url\n      },\n      wiringDiagrams[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      seo{\n        title,\n        titleTemplate,\n        description,\n        keywords,\n        siteUrl,\n        ogImage{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        favicon{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        twitterCard,\n        twitterSite,\n        twitterCreator,\n        locale\n      }\n    }\n    ": PRODUCT_QUERYResult;
+    "\n    *[_type == \"product\" && slug.current == $slug][0]{\n      _id,\n      title,\n      \"slug\": slug.current,\n      sku,\n      shortDescription,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      \"categories\": categories[]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"category\": categories[0]->{\n        _id,\n        title,\n        \"slug\": slug.current\n      },\n      \"voltage\": voltage->{ _id, label, value },\n      \"frequency\": frequency->{ _id, label, value },\n      \"protocols\": protocols[]->{ _id, label, value },\n      featureTag,\n      topSelling,\n      \"relatedProducts\": relatedProducts[]->{\n        _id,\n        title,\n        \"slug\": slug.current,\n        shortDescription,\n        \"image\": images[0]{ \n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        \"categories\": categories[]->slug.current,\n        \"category\": categories[0]->slug.current,\n        \"sku\": sku,\n        topSelling,\n        colors[]{\n          name,\n          partNumber,\n          hex\n        }\n      },\n      colors[]{\n        name,\n        partNumber,\n        hex\n      },\n      images[]{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      videos[]{\n        title,\n        externalUrl\n      },\n      specifications[defined(label) && defined(value)]{\n        _type,\n        label,\n        value\n      },\n      downloads[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      applications[defined(url)]{\n        _type,\n        title,\n        url\n      },\n      wiringDiagrams[defined(title)]{\n        _type,\n        title,\n        file{\n          asset->{\n            _id,\n            url,\n            originalFilename,\n            size\n          }\n        },\n        externalUrl\n      },\n      seo{\n        title,\n        titleTemplate,\n        description,\n        keywords,\n        siteUrl,\n        ogImage{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        favicon{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        twitterCard,\n        twitterSite,\n        twitterCreator,\n        locale\n      }\n    }\n    ": PRODUCT_QUERYResult;
     "*[_type == \"aboutPage\"][0]{\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n        }\n      },\n      featuresTitle,\n      features[]{\n        icon,\n        title,\n        description\n      },\n      becomeADistributor{\n        title,\n        description,\n        email\n      },\n      becomeARep{\n        title,\n        description[]{\n          ...,\n          children[]{\n            ...\n          }\n        },\n        button{\n          label,\n          href,\n          icon\n        }\n      },\n      enoceanVisible,\n      enoceanTitle,\n      enoceanDescription,\n      enoceanAction{\n        label,\n        href,\n        icon\n      },\n      enoceanImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n    companyInfo{\n      visible,\n      overviewTitle,\n      overview[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      email,\n      phone,\n      headquarters,\n      satelliteOffice\n    },\n    seo{\n      title,\n      titleTemplate,\n      description,\n      keywords,\n      siteUrl,\n      ogImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      favicon{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      twitterCard,\n      twitterSite,\n      twitterCreator,\n      locale\n    }\n  }": AboutPageQueryResult;
     "\n  *[_type == \"product\" && count(videos[defined(externalUrl)]) > 0]{\n    _id,\n    title,\n    \"slug\": slug.current,\n    \"productUrl\": \"/products/\" + slug.current,\n    videos[]{\n      title,\n      externalUrl\n    }\n  } | order(_createdAt desc)\n": PRODUCTS_WITH_VIDEOS_QUERYResult;
     "\n  *[_type == \"store\"] | order(name asc) {\n    _id,\n    name,\n    storeType,\n    address,\n    city,\n    state,\n    zipCode,\n    country,\n    phone,\n    email,\n    website,\n    location\n  }\n": STORES_QUERYResult;
-    "\n  *[_type == \"faq\"][0]{\n    visible,\n    title,\n    description,\n    items[]{\n      group,\n      question,\n      answer\n    },\n    \n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n  }\n": FAQ_QUERYResult;
+    "\n  *[_type == \"faq\"][0]{\n    visible,\n    title,\n    description,\n    items[]{\n      group,\n      question,\n      answer\n    },\n    backgroundImage{\n      source,\n      altText,\n      externalUrl,\n      image{\n        asset,\n        crop,\n        hotspot\n      }\n\t  },\n    \n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n  }\n": FAQ_QUERYResult;
     "\n  *[_type == \"aboutPage\"][0].becomeARep{\n    title,\n    description[]{\n      ...,\n      children[]{\n        ...\n      }\n    },\n    button{\n      label,\n      href,\n      icon\n    }\n  }\n": BecomeARepQueryResult;
     "\n  *[_type == \"aboutPage\"][0].becomeADistributor{\n    title,\n    description,\n    email\n  }\n": BecomeADistributorQueryResult;
     "*[_type == \"caseStudiesPage\"][0]{\n\tbackgroundImage{\n\t\tsource,\n\t\taltText,\n\t\texternalUrl,\n\t\timage{\n\t\t\tasset,\n\t\t\tcrop,\n\t\t\thotspot\n\t\t}\n\t},\n\tpageTitle,\n\tdescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": CaseStudiesPageQueryResult;
     "*[_type == \"distributorsPage\"][0]{\n\tbackgroundImage{\n\t\tsource,\n\t\taltText,\n\t\texternalUrl,\n\t\timage{\n\t\t\tasset,\n\t\t\tcrop,\n\t\t\thotspot\n\t\t}\n\t},\n\tpageTitle,\n\tdescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": DistributorsPageQueryResult;
     "*[_type == \"contactPage\"][0]{\n\tquoteFormTitle,\n\tquoteFormDescription,\n\tcontactFormTitle,\n\tcontactFormDescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": ContactPageQueryResult;
+    "*[_type == \"productsPage\"][0]{\n\tbackgroundImage{\n\t\tsource,\n\t\taltText,\n\t\texternalUrl,\n\t\timage{\n\t\t\tasset,\n\t\t\tcrop,\n\t\t\thotspot\n\t\t}\n\t},\n\ttitle,\n\tdescription,\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": ProductsPageQueryResult;
     "*[_type == \"legal\" && slug.current == $slug][0]{\n\t_id,\n\ttitle,\n\t\"slug\": slug.current,\n\t_updatedAt,\n\tcontent[]{\n\t\t...,\n\t\tchildren[]{\n\t\t\t...\n\t\t},\n\t\t_type == \"contentImage\" => {\n\t\t\t_type,\n\t\t\t_key,\n\t\t\tmedia{\n\t\t\t\tsource,\n\t\t\t\taltText,\n\t\t\t\texternalUrl,\n\t\t\t\timage{\n\t\t\t\t\tasset,\n\t\t\t\t\tcrop,\n\t\t\t\t\thotspot\n\t\t\t\t}\n\t\t\t},\n\t\t\tcaption\n\t\t}\n\t},\n\t\n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n}": LegalQueryResult;
     "*[_type == \"legal\" && defined(slug.current)]{\"slug\": slug.current, title}": LegalSlugsQueryResult;
   }

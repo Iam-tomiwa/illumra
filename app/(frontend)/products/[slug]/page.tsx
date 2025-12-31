@@ -14,6 +14,7 @@ import {
 } from "@/sanity/lib/utils";
 import SingleProductWrapper from "@/components/products/single-product-wrapper";
 import type { PRODUCT_QUERYResult } from "@/sanity.types";
+import { ProductType } from "@/components/home-widgets/featured-products-section";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -80,27 +81,31 @@ export async function generateMetadata(
 }
 
 export default async function ProductPage({ params }: Props) {
-  const [product, relevantProducts] = await Promise.all([
-    sanityFetch({ query: PRODUCT_QUERY, params }),
-    sanityFetch({
-      query: PRODUCT_QUERY,
-      params,
-    }).then(async (product) => {
-      if (!product?._id || !product?.category?.slug) {
-        return [];
-      }
-      return sanityFetch({
-        query: relevantProductsQuery,
-        params: {
-          category: product.category.slug,
-          excludeId: product._id,
-        },
-      });
-    }),
-  ]);
+  const product = await sanityFetch({ query: PRODUCT_QUERY, params });
 
   if (!product?._id) {
     return notFound();
+  }
+
+  // First, try to use relatedProducts from the product document
+  let relevantProducts: any[] = [];
+
+  if (product?.relatedProducts && product.relatedProducts.length > 0) {
+    // Use the related products selected in Sanity (already dereferenced in the query)
+    relevantProducts = product.relatedProducts.filter(
+      (p: ProductType) => p?._id && p._id !== product._id
+    );
+  }
+
+  // Fallback to category-based products if no related products are selected
+  if (relevantProducts.length === 0 && product?.category?.slug) {
+    relevantProducts = await sanityFetch({
+      query: relevantProductsQuery,
+      params: {
+        category: product.category.slug,
+        excludeId: product._id,
+      },
+    });
   }
 
   return (

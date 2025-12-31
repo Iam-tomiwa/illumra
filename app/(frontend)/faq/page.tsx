@@ -11,6 +11,7 @@ import { CTASection } from "@/components/home-widgets/cta-section";
 import { HomePageQueryResult } from "@/sanity.types";
 import { mergeSeo, seoToMetadata } from "@/sanity/lib/utils";
 import { Metadata } from "next";
+import { resolveBackgroundUrl } from "@/components/home-widgets/hero-section";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [faqPage, settings] = await Promise.all([
@@ -33,9 +34,15 @@ export default async function FaqPage() {
   const homePage = (await sanityFetch({
     query: ctaSectionQuery,
   })) as HomePageQueryResult;
+
+  // Resolve background image
+  const backgroundImage = resolveBackgroundUrl(
+    faq?.backgroundImage as Parameters<typeof resolveBackgroundUrl>[0]
+  )?.url;
+
   return (
     <div className="bg-white">
-      <PagesHero>
+      <PagesHero backgroundImageUrl={backgroundImage}>
         <div className="max-w-3xl">
           <AnimatedElement delay={0.1}>
             <h1 className="page-title">Frequently Asked Questions</h1>

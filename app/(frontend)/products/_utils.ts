@@ -1,8 +1,9 @@
 import { cleanString } from "@/sanity/lib/utils";
 
 export const PAGE_SIZE = 20;
-export const DEFAULT_SORT = "name-asc";
+export const DEFAULT_SORT = "top-selling-asc";
 export const SORT_VALUES = new Set([
+  "top-selling-asc",
   "name-asc",
   "name-desc",
   "sku-asc",

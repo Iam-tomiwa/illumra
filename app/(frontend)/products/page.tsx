@@ -8,6 +8,7 @@ import {
   productProtocolQuery,
   productVoltageQuery,
   productsQuery,
+  productsPageQuery,
   settingsQuery,
 } from "@/sanity/lib/queries";
 import type {
@@ -19,36 +20,46 @@ import type {
   ProductProtocol,
   ProductVoltage,
 } from "@/sanity.types";
-import { cleanString, seoToMetadata } from "@/sanity/lib/utils";
+import { mergeSeo, resolveMediaAsset, seoToMetadata } from "@/sanity/lib/utils";
 import { Metadata } from "next";
 import { buildFilterParams, PAGE_SIZE } from "./_utils";
+import type { MediaAsset } from "@/sanity.types";
 
 type ProductsPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [settings] = await Promise.all([
+  const [productsPage, settings] = await Promise.all([
+    sanityFetch({
+      query: productsPageQuery,
+      revalidate: 3600,
+    }),
     sanityFetch({
       query: settingsQuery,
       revalidate: 3600,
     }),
   ]);
 
-  const metadata = seoToMetadata(settings?.seo);
+  // Merge products page SEO with settings SEO
+  const mergedSeo = mergeSeo(productsPage?.seo, settings?.seo);
+  const metadata = seoToMetadata(mergedSeo);
 
   return {
     ...metadata,
-    title:
-      "Wireless Lighting Control Products | Switches, Sensors, Controllers",
+    title: productsPage?.seo?.title
+      ? {
+          template:
+            productsPage.seo.titleTemplate ||
+            mergedSeo?.titleTemplate ||
+            "%s | Illumra",
+          default: productsPage.seo.title,
+        }
+      : "Wireless Lighting Control Products | Switches, Sensors, Controllers",
     description:
+      productsPage?.seo?.description ||
+      productsPage?.description ||
       "Browse ILLUMRA's complete line of self-powered wireless switches, occupancy sensors, and controllers. EnOcean, ZigBee & Bluetooth compatible.",
-    keywords: [
-      "wireless controllers",
-      "self-powered switches",
-      "wireless controllers",
-      "occupancy sensors,",
-    ],
   } satisfies Metadata;
 }
 
@@ -69,13 +80,14 @@ export default async function ProductsPage(props: ProductsPageProps) {
   } = buildFilterParams(searchParams);
 
   const sortMap: Record<string, string> = {
+    "top-selling-asc": `select(topSelling == "yes" => 1, 0) desc, title asc`,
     "name-asc": "title asc",
     "name-desc": "title desc",
     "sku-asc": "sku asc",
     "sku-desc": "sku desc",
   };
 
-  const orderClause = sortMap[sort] || "title asc";
+  const orderClause = sortMap[sort] || sortMap["top-selling-asc"];
 
   const FILTERED_PRODUCTS_QUERY = `
 		*[
@@ -86,9 +98,8 @@ export default async function ProductsPage(props: ProductsPageProps) {
 			(!defined($frequencies) || count($frequencies) == 0 || frequency->value in $frequencies) &&
 			(!defined($protocols) || count($protocols) == 0 || count((protocols[]->value)[@ in $protocols]) > 0)
 		]
-		[$offset...$end]
 		| order(${orderClause})
-		{
+		[$offset...$end]{
 			${productsQuery}
 		}
 	`;
@@ -96,6 +107,7 @@ export default async function ProductsPage(props: ProductsPageProps) {
   const [
     products,
     total,
+    productsPageData,
     categories,
     frequencyOptions,
     protocolOptions,
@@ -125,6 +137,7 @@ export default async function ProductsPage(props: ProductsPageProps) {
         protocols,
       },
     }),
+    sanityFetch({ query: productsPageQuery, revalidate: 3600 }),
     sanityFetch({ query: categoryQuery }),
     sanityFetch({ query: productFrequencyQuery }),
     sanityFetch({ query: productProtocolQuery }),
@@ -160,27 +173,47 @@ export default async function ProductsPage(props: ProductsPageProps) {
     protocols,
   };
 
+  // Resolve background image for hero section
+  const backgroundImage = productsPageData?.backgroundImage
+    ? resolveMediaAsset(
+        {
+          ...(productsPageData.backgroundImage as MediaAsset),
+          _type: "mediaAsset",
+        },
+        {
+          width: 1920,
+          height: 1080,
+          fit: "crop",
+        }
+      )
+    : undefined;
+
   return (
-    <ProductsWrapper
-      products={productsList}
-      total={totalCount}
-      page={page}
-      pageSize={PAGE_SIZE}
-      initialFilters={initialFilters}
-      initialSearch={search}
-      initialSort={sort}
-      categories={categoryOptions.sort(
-        (a, b) => a?.title?.localeCompare(b?.title ?? "") ?? 0
-      )}
-      frequencies={frequencyOptionsList.sort(
-        (a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0
-      )}
-      protocols={protocolOptionsList.sort(
-        (a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0
-      )}
-      voltages={voltageOptionsList.sort(
-        (a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0
-      )}
-    />
+    <div className="min-h-screen bg-background">
+      <ProductsWrapper
+        heroTitle={productsPageData?.title || "All Products"}
+        heroDescription={productsPageData?.description || ""}
+        backgroundImage={backgroundImage}
+        products={productsList}
+        total={totalCount}
+        page={page}
+        pageSize={PAGE_SIZE}
+        initialFilters={initialFilters}
+        initialSearch={search}
+        initialSort={sort}
+        categories={categoryOptions.sort(
+          (a, b) => a?.title?.localeCompare(b?.title ?? "") ?? 0
+        )}
+        frequencies={frequencyOptionsList.sort(
+          (a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0
+        )}
+        protocols={protocolOptionsList.sort(
+          (a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0
+        )}
+        voltages={voltageOptionsList.sort(
+          (a, b) => a?.value?.localeCompare(b?.value ?? "") ?? 0
+        )}
+      />
+    </div>
   );
 }

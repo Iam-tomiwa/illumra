@@ -7,6 +7,7 @@ import {
   productFrequencyQuery,
   productProtocolQuery,
   productVoltageQuery,
+  productsPageQuery,
   productsQuery,
   settingsQuery,
 } from "@/sanity/lib/queries";
@@ -15,11 +16,16 @@ import type {
   ProductType,
 } from "@/components/home-widgets/featured-products-section";
 import type {
+  MediaAsset,
   ProductFrequency,
   ProductProtocol,
   ProductVoltage,
 } from "@/sanity.types";
-import { cleanString, seoToMetadata } from "@/sanity/lib/utils";
+import {
+  cleanString,
+  resolveMediaAsset,
+  seoToMetadata,
+} from "@/sanity/lib/utils";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { buildFilterParams, PAGE_SIZE } from "../../_utils";
@@ -130,13 +136,14 @@ export default async function CategoryProductsPage(props: CategoryPageProps) {
   }
 
   const sortMap: Record<string, string> = {
+    "top-selling-asc": `select(topSelling == "yes" => 1, 0) desc, title asc`,
     "name-asc": "title asc",
     "name-desc": "title desc",
     "sku-asc": "sku asc",
     "sku-desc": "sku desc",
   };
 
-  const orderClause = sortMap[sort] || "title asc";
+  const orderClause = sortMap[sort] || sortMap["top-selling-asc"];
 
   const FILTERED_PRODUCTS_QUERY = `
 		*[
@@ -147,9 +154,8 @@ export default async function CategoryProductsPage(props: CategoryPageProps) {
 			(!defined($frequencies) || count($frequencies) == 0 || frequency->value in $frequencies) &&
 			(!defined($protocols) || count($protocols) == 0 || count((protocols[]->value)[@ in $protocols]) > 0)
 		]
-		[$offset...$end]
 		| order(${orderClause})
-		{
+		[$offset...$end]{
 			${productsQuery}
 		}
 	`;
@@ -157,6 +163,7 @@ export default async function CategoryProductsPage(props: CategoryPageProps) {
   const [
     products,
     total,
+    productsPageData,
     allCategories,
     frequencyOptions,
     protocolOptions,
@@ -186,6 +193,7 @@ export default async function CategoryProductsPage(props: CategoryPageProps) {
         protocols: protocolsFilter,
       },
     }),
+    sanityFetch({ query: productsPageQuery, revalidate: 3600 }),
     sanityFetch({ query: categoryQuery }),
     sanityFetch({ query: productFrequencyQuery }),
     sanityFetch({ query: productProtocolQuery }),
@@ -221,8 +229,26 @@ export default async function CategoryProductsPage(props: CategoryPageProps) {
     protocols: protocolsFilter,
   };
 
+  // Resolve background image for hero section
+  const backgroundImage = productsPageData?.backgroundImage
+    ? resolveMediaAsset(
+        {
+          ...(productsPageData.backgroundImage as MediaAsset),
+          _type: "mediaAsset",
+        },
+        {
+          width: 1920,
+          height: 1080,
+          fit: "crop",
+        }
+      )
+    : undefined;
+
   return (
     <ProductsWrapper
+      heroTitle={productsPageData?.title || "All Products"}
+      heroDescription={productsPageData?.description || ""}
+      backgroundImage={backgroundImage}
       products={productsList}
       total={totalCount}
       page={page}

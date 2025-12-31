@@ -17,6 +17,7 @@ import { seoToMetadata } from "@/sanity/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { CategoryType } from "@/components/home-widgets/featured-products-section";
 import { SettingsQueryResult } from "@/sanity.types";
+import { Head } from "next/document";
 
 export async function generateMetadata(): Promise<Metadata> {
   // Fetch settings to get SEO configuration
@@ -84,6 +85,21 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${inter.variable} bg-white text-black`}>
+      {/* <!-- Google tag (gtag.js) --> */}
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-M534TM7TC9"
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-M534TM7TC9');
+          `,
+        }}
+      />
       <body>
         <Providers>
           <section className="min-h-screen">

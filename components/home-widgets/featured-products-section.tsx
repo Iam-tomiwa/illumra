@@ -65,6 +65,7 @@ export function FeaturedProductsSection({
 								name={product.title ?? ""}
 								sku={product.sku ?? ""}
 								image={product.image}
+								topSelling={product.topSelling ?? undefined}
 							/>
 						))}
 					</div>

@@ -16,6 +16,7 @@ export interface ProductCardProps {
   installationGuideUrl?: string;
   detailsUrl?: string;
   showActions?: boolean;
+  topSelling?: string | null;
 }
 
 export function ProductCard({
@@ -24,15 +25,23 @@ export function ProductCard({
   image,
   sku,
   detailsUrl = `/products/${id}`,
+  topSelling,
 }: ProductCardProps) {
   const imageResolved = resolveMediaAsset({
     ...(image as MediaAsset),
     _type: "mediaAsset",
   });
 
+  const isTopSelling = topSelling === "yes";
+
   return (
-    <div className="bg-white rounded-lg border hover:border-primary transition-shadow p-4 flex flex-col">
+    <div className="bg-white rounded-lg overflow-hidden border hover:border-primary transition-shadow p-4 flex flex-col relative">
       {/* Product Image */}
+      {isTopSelling && (
+        <div className="bg-[#CF0F0F] z-10 absolute top-0 left-0 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
+          Top Selling
+        </div>
+      )}
       <Link
         href={detailsUrl}
         className="relative aspect-square w-full mb-4 bg-gray-50 rounded-lg overflow-hidden"
