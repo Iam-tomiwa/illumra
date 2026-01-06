@@ -1224,12 +1224,13 @@ export type CtaSectionQueryResult = {
   } | null;
 } | null;
 // Variable: categoryQuery
-// Query: *[_type == "productCategory"] {    _id,    "slug": slug.current,    title,    description  } | order(_createdAt desc)
+// Query: *[_type == "productCategory"] {    _id,    "slug": slug.current,    title,    description,    order  } | order(_createdAt desc)
 export type CategoryQueryResult = Array<{
   _id: string;
   slug: string | null;
   title: string | null;
   description: string | null;
+  order: number | null;
 }>;
 // Variable: productFrequencyQuery
 // Query: *[_type == "productFrequency"] {    _id,    "value": value,    label  } | order(_createdAt desc)
@@ -2312,7 +2313,7 @@ declare module "@sanity/client" {
     "\n  *[_type == \"homePage\"][0]{\n    hero{\n      visible,\n      attentionLabel,\n      attentionIcon,\n      headline,\n      summary,\n      primaryAction{\n        label,\n        href,\n        icon\n      },\n      secondaryAction{\n        label,\n        href,\n        icon\n      },\n      backgroundImage{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      }\n    },\n    controlSolutions{\n      visible,\n      title,\n      subtitle,\n      features[]{\n        icon,\n        title,\n        description,\n        url\n      }\n    },\n    trustedBy{\n      visible,\n      heading,\n      logos[]{\n        name,\n        href,\n        logo{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        }\n      }\n    },\n    about{\n      visible,\n      title,\n      body[]{\n        ...,\n        children[]{\n          ...\n        }\n      },\n      cta{\n        label,\n        href,\n        icon\n      },\n      background{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      features[]{\n        icon,\n        title,\n        description\n      }\n    },\n    featuredProductsVisible,\n    testimonialsVisible,\n    testimonials[]{\n      author->{\n        \"name\": coalesce(name, \"Anonymous\"),\n        picture{\n          source,\n          altText,\n          externalUrl,\n          image{\n            asset,\n            crop,\n            hotspot\n          }\n        },\n        role\n      },\n      testimony,     \n    },\n    projectsVisible,\n    projectsHeading,\n    projectsSubheading,\n    projects[]{\n      picture{\n        source,\n        altText,\n        externalUrl,\n        image{\n          asset,\n          crop,\n          hotspot\n        }\n      },\n      title,\n      projectCategory,\n      url\n    },\n    cta{\n      visible,\n      title,\n      description,\n      action{\n        label,\n        href,\n        icon\n      }\n    },\n    \n\tseo{\n\t\ttitle,\n\t\ttitleTemplate,\n\t\tdescription,\n\t\tkeywords,\n\t\tsiteUrl,\n\t\togImage{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\tfavicon{\n\t\t\tsource,\n\t\t\taltText,\n\t\t\texternalUrl,\n\t\t\timage{\n\t\t\t\tasset,\n\t\t\t\tcrop,\n\t\t\t\thotspot\n\t\t\t}\n\t\t},\n\t\ttwitterCard,\n\t\ttwitterSite,\n\t\ttwitterCreator,\n\t\tlocale\n\t}\n\n  }\n": HomePageQueryResult;
     "\n  *[_type == \"homePage\"][0].projects[]{\n    picture{\n      source,\n      altText,\n      externalUrl,\n      image{\n        asset,\n        crop,\n        hotspot\n      }\n    },\n    title,\n    projectCategory,\n    url\n  }\n": ProjectsQueryResult;
     "\n  *[_type == \"homePage\"][0]{\n   cta{\n      visible,\n      title,\n      description,\n      action{\n        label,\n        href,\n        icon\n      }\n    }\n  }\n  ": CtaSectionQueryResult;
-    "\n  *[_type == \"productCategory\"] {\n    _id,\n    \"slug\": slug.current,\n    title,\n    description\n  } | order(_createdAt desc)  \n": CategoryQueryResult;
+    "\n  *[_type == \"productCategory\"] {\n    _id,\n    \"slug\": slug.current,\n    title,\n    description,\n    order\n  } | order(_createdAt desc)  \n": CategoryQueryResult;
     "\n  *[_type == \"productFrequency\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)  \n": ProductFrequencyQueryResult;
     "\n  *[_type == \"productProtocol\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)\n": ProductProtocolQueryResult;
     "\n  *[_type == \"productVoltage\"] {\n    _id,\n    \"value\": value,\n    label\n  } | order(_createdAt desc)\n": ProductVoltageQueryResult;

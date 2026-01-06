@@ -231,7 +231,8 @@ export const categoryQuery = defineQuery(`
     _id,
     "slug": slug.current,
     title,
-    description
+    description,
+    order
   } | order(_createdAt desc)  
 `);
 

@@ -23,12 +23,12 @@ export function Footer({
       href: `/legal/${slug.slug}`,
     })) ?? [];
 
-  const productCategories = (categories ?? productCategoriesDemo ?? []).map(
-    (category) => ({
+  const productCategories = (categories ?? [])
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map((category) => ({
       label: category.title,
       href: `/products/category/${category.slug}`,
-    })
-  );
+    }));
 
   const linkGroups: LinkGroup[] = [
     {
